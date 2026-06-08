@@ -1,0 +1,33 @@
+@reference "./main.css";
+
+.visualPanel {
+  position: relative;
+  isolation: isolate;
+}
+
+.bubble {
+  @apply absolute right-0 w-96 h-96 bg-red-950 rounded-full blur-3xl opacity-40 pointer-events-none transition-all duration-700 ease-in-out;
+}
+
+.bubbleRed {
+  top: -4rem;
+  right: -4rem;
+  background: radial-gradient(circle, #7f1d1d, transparent 70%);
+}
+
+.bubbleBlue {
+  bottom: -4rem;
+  left: -4rem;
+  background: radial-gradient(circle, #1e3a8a, transparent 70%);
+}
+
+/* ✨ Hover effect */
+.visualPanel:hover .bubbleRed {
+  transform: translate(-20px, 20px) scale(1.1);
+  opacity: 0.55;
+}
+
+.visualPanel:hover .bubbleBlue {
+  transform: translate(20px, -20px) scale(1.15);
+  opacity: 0.6;
+}

@@ -146,6 +146,7 @@ const login = async () => {
 
           <!-- Submit Button -->
           <UButton
+            :disabled="loading"
             color="neutral"
             variant="solid"
             type="submit"

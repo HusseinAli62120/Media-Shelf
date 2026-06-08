@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-template",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --dotenv .env.development",
+    "test": "nuxt dev --dotenv .env.test",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "db:generate:dev": "dotenv -e .env.development -- drizzle-kit generate",
+    "db:push:dev": "dotenv -e .env.development -- drizzle-kit push",
+    "db:studio:dev": "dotenv -e .env.development -- drizzle-kit studio",
+    "db:generate:test": "dotenv -e .env.test -- drizzle-kit generate",
+    "db:push:test": "dotenv -e .env.test -- drizzle-kit push",
+    "db:studio:test": "dotenv -e .env.test -- drizzle-kit studio",
+    "db:generate:production": "dotenv -e .env -- drizzle-kit generate",
+    "db:push:production": "dotenv -e .env -- drizzle-kit push",
+    "db:studio:production": "dotenv -e .env -- drizzle-kit studio"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^4.8.2",
+    "@nuxtjs/color-mode": "^4.0.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "drizzle-orm": "^0.45.2",
+    "nuxt": "^4.4.6",
+    "nuxt-auth-utils": "^0.5.29",
+    "pg": "^8.21.0",
+    "tailwindcss": "^4.3.0",
+    "vue": "^3.5.34",
+    "vue-router": "^5.0.7",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.20.0",
+    "dotenv-cli": "^11.0.0",
+    "drizzle-kit": "^0.31.10"
+  }
+}

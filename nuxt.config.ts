@@ -32,5 +32,10 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["nuxt-auth-utils", "@nuxtjs/color-mode", "@nuxt/ui"],
+  modules: [
+    "nuxt-auth-utils",
+    "@nuxtjs/color-mode",
+    "@nuxt/ui",
+    "nuxt-lucide-icons",
+  ],
 });

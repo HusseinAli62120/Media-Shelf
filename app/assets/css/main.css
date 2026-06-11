@@ -8,16 +8,24 @@
   color-scheme: light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+
+  --secondary-background: oklch(0.97 0 0);
+  --muted: oklch(0.97 0 0);
 }
 
 .dark {
   color-scheme: dark;
   --background: oklch(12.98% 0.043 265.13);
   --foreground: oklch(0.96 0.01 255);
+
+  --secondary-background: oklch(0.145 0 0);
+  --muted: oklch(0.269 0 0);
 }
 
 /* Define new utility classes */
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-secondary-background: var(--secondary-background);
 }

@@ -114,7 +114,7 @@ const login = async () => {
               color="neutral"
               v-model="credentials.userName"
               placeholder="Enter your username"
-              @keypress.enter.prevent="login"
+              @keypress.prevent.enter="login"
             />
           </UFormField>
 
@@ -127,7 +127,7 @@ const login = async () => {
               placeholder="Password"
               :type="showPassword ? 'text' : 'password'"
               :ui="{ trailing: 'pe-1' }"
-              @keypress.enter.prevent="login"
+              @keypress.prevent.enter="login"
             >
               <template #trailing>
                 <UButton

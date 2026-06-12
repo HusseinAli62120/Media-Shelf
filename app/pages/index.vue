@@ -9,25 +9,17 @@ definePageMeta({
 
 const routes: Ref<string[]> = ref(["Admin"]);
 
-const colorMode = useColorMode();
-
 // The Auth data
-const { user, clear: clearSession } = useUserSession();
-// console.log(user);
-
-const toggleTheme = () => {
-  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
-};
-
-const logout = async () => {
-  await clearSession();
-  await navigateTo("/login");
-};
+const { user } = useUserSession();
 </script>
 
 <template>
-  <div class="flex-1 w-full flex flex-col items-center justify-center gap-3">
-    <div class="w-full flex flex-col items-center justify-center gap-3">
+  <Navbar />
+  <div class="flex-1 w-full flex flex-col">
+    <div class="min-h-[250px] bg-green-300">Hello</div>
+    <div
+      class="w-full flex-1 bg-red-50 flex flex-col items-center justify-center gap-3"
+    >
       <!-- Gretting message -->
       <p>
         Hello <b>{{ user?.userName }}</b>
@@ -58,25 +50,6 @@ const logout = async () => {
           :url="route"
           :key="route"
         />
-
-        <ClientOnly>
-          <UButton color="neutral" variant="solid" @click="toggleTheme">
-            {{ colorMode?.value }}
-          </UButton>
-
-          <template #fallback>
-            <button class="px-3 py-1 rounded">loading...</button>
-          </template>
-        </ClientOnly>
-
-        <UButton
-          class="text-white"
-          color="error"
-          variant="solid"
-          @click="logout"
-        >
-          Logout
-        </UButton>
       </div>
     </div>
   </div>

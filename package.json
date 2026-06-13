@@ -22,20 +22,25 @@
   "dependencies": {
     "@nuxt/ui": "^4.8.2",
     "@nuxtjs/color-mode": "^4.0.0",
-    "@tailwindcss/vite": "^4.3.0",
+    "@rolldown/binding-win32-x64-msvc": "^1.1.1",
+    "@tailwindcss/vite": "^4.3.1",
     "drizzle-orm": "^0.45.2",
     "nuxt": "^4.4.6",
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-lucide-icons": "^2.1.0",
     "pg": "^8.21.0",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.1",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.112",
     "@types/pg": "^8.20.0",
     "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.10"
+  },
+  "overrides": {
+    "esbuild": "^0.28.0"
   }
 }

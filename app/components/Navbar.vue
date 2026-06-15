@@ -98,7 +98,7 @@ const menuItem = ref<DropdownMenuItem[][]>([
         </template>
       </ClientOnly>
 
-      <UDropdownMenu :items="menuItem">
+      <UDropdownMenu :modal="false" :items="menuItem">
         <UButton variant="ghost" color="neutral" class="rounded-lg">
           <LucideUser class="h-6 w-6" />
         </UButton>

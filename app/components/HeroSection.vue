@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import { ref } from "vue";
+
+const searchQuery = ref("");
+
+const handleSearch = () => {
+  console.log(searchQuery.value);
+};
+
+// tsParticles options
+const particlesOptions = {
+  background: {
+    color: {
+      value: "transparent",
+    },
+  },
+  fpsLimit: 120,
+  interactivity: {
+    events: {
+      onClick: {
+        enable: true,
+        mode: "push",
+      },
+      onHover: {
+        enable: true,
+        mode: "grab",
+      },
+    },
+    modes: {
+      push: {
+        quantity: 4,
+      },
+      grab: {
+        distance: 140,
+        links: {
+          opacity: 0.5,
+        },
+      },
+    },
+  },
+  particles: {
+    color: {
+      value: "#6366f1", // indigo-500
+    },
+    links: {
+      color: "#6366f1",
+      distance: 150,
+      enable: true,
+      opacity: 0.25,
+      width: 1,
+    },
+    move: {
+      direction: "none" as const,
+      enable: true,
+      outModes: {
+        default: "bounce" as const,
+      },
+      random: false,
+      speed: 1,
+      straight: false,
+    },
+    number: {
+      density: {
+        enable: true,
+      },
+      value: 60,
+    },
+    opacity: {
+      value: 0.35,
+    },
+    shape: {
+      type: "circle",
+    },
+    size: {
+      value: { min: 1, max: 4 },
+    },
+  },
+  detectRetina: true,
+};
+</script>
+
+<template>
+  <div
+    class="relative w-full overflow-hidden border-b border-border/40 py-20 md:py-28 px-4 flex flex-col items-center justify-center bg-linear-to-b from-indigo-50/30 via-background to-background dark:from-indigo-950/10 dark:via-background dark:to-background"
+  >
+    <!-- Background Particles -->
+    <ClientOnly>
+      <vue-particles
+        id="tsparticles"
+        class="absolute inset-0 z-0"
+        :options="particlesOptions"
+      />
+    </ClientOnly>
+
+    <!-- Content Layer -->
+    <div
+      class="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center gap-6"
+    >
+      <h1
+        class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-foreground"
+      >
+        Your Personal
+        <span
+          class="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+        >
+          Media Shelf
+        </span>
+      </h1>
+
+      <p
+        class="text-base sm:text-lg md:text-xl text-foreground/80 max-w-2xl font-light leading-relaxed"
+      >
+        Track your favorite movies, TV shows, and media collections. Discover
+        trending releases and organize your watchlist effortlessly.
+      </p>
+
+      <!-- Search Bar Form -->
+      <form
+        @submit.prevent="handleSearch"
+        class="w-full max-w-lg mt-4 flex flex-row gap-2 relative z-20"
+      >
+        <UInput
+          v-model="searchQuery"
+          icon="i-lucide-search"
+          placeholder="Search movies, TV shows..."
+          size="lg"
+          class="flex-1"
+        />
+        <UButton
+          type="submit"
+          size="lg"
+          color="primary"
+          class="font-semibold shadow-md rounded-xl hover:scale-[1.02] active:scale-95 transition-all duration-150 px-6"
+        >
+          Search
+        </UButton>
+      </form>
+    </div>
+  </div>
+</template>

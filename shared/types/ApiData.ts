@@ -1,4 +1,4 @@
-export type apiData = {
+export type ApiData = {
   backdrop_path?: string;
   first_air_date: string;
   release_date?: string; // For movies
@@ -19,5 +19,5 @@ export type apiData = {
   imgURL: string;
   backdropURL: string;
   averageRating: number;
-  media_type?: string;
+  media_type?: "movie" | "tv";
 };

@@ -1,10 +1,10 @@
-import { apiData } from "#shared/types/ApiData";
+import { ApiData } from "#shared/types/ApiData";
 
 const formatApiData = (data: any[], media_type?: string) => {
-  const baseURL = process.env.SHOW_MOVIE_BASE_URL;
+  const baseURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BASE_URL;
 
   return data
-    .map((item: apiData) => ({
+    .map((item: ApiData) => ({
       id: item.id,
       // Uses 'name' (shows) or 'title' (movies)
       name: item.name || item?.title,

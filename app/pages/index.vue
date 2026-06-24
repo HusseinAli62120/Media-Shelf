@@ -70,7 +70,7 @@ const {
         <!-- Loading Skeleton -->
         <div
           v-if="pending"
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6"
         >
           <div
             v-for="i in 10"
@@ -86,7 +86,7 @@ const {
         <!-- Error State -->
         <div v-else-if="error" class="text-center py-12 text-red-500">
           <p class="font-medium">
-            Failed to load trending media. Please try again later.
+            Failed to load media. Please try again later.
           </p>
         </div>
 

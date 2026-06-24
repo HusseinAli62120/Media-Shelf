@@ -24,6 +24,12 @@ const credentials = reactive({
 
 const showPassword = ref<boolean>(false);
 const loading = ref<boolean>(false);
+const hydrated = ref<boolean>(false);
+
+// To prevent form submission before the page is mounted
+onMounted(() => {
+  hydrated.value = true;
+});
 
 // Login function
 const login = async () => {
@@ -110,6 +116,7 @@ const login = async () => {
           <!-- Username -->
           <UFormField label="Username">
             <UInput
+              :disabled="!hydrated"
               class="w-full max-w-[300px]"
               color="neutral"
               v-model="credentials.userName"
@@ -121,6 +128,7 @@ const login = async () => {
           <!-- Password -->
           <UFormField orientation="vertical" label="Password">
             <UInput
+              :disabled="!hydrated"
               class="w-full max-w-[300px]"
               color="neutral"
               v-model="credentials.password"
@@ -146,7 +154,7 @@ const login = async () => {
 
           <!-- Submit Button -->
           <UButton
-            :disabled="loading"
+            :disabled="!hydrated || loading"
             color="neutral"
             variant="solid"
             type="submit"

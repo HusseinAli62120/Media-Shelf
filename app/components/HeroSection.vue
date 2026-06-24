@@ -1,10 +1,29 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+// Hooks
+const toast = useToast();
+
+// Variables
 const searchQuery = ref("");
+const hydrated = ref<boolean>(false);
+
+// To prevent form submission if the page is not hydrated
+onMounted(() => {
+  hydrated.value = true;
+});
 
 const handleSearch = () => {
-  console.log(searchQuery.value);
+  // Check if the search query is empty
+  if (!searchQuery.value) {
+    toast.add({
+      title: "Please enter a title",
+      color: "warning",
+    });
+    return;
+  }
+
+  navigateTo(`/search-${searchQuery?.value}`);
 };
 
 // tsParticles options
@@ -120,6 +139,7 @@ const particlesOptions = {
         class="w-full max-w-lg mt-4 flex flex-row gap-2 relative z-20"
       >
         <UInput
+          :disabled="!hydrated"
           v-model="searchQuery"
           icon="i-lucide-search"
           placeholder="Search movies, TV shows..."
@@ -127,6 +147,7 @@ const particlesOptions = {
           class="flex-1"
         />
         <UButton
+          :disabled="!hydrated"
           type="submit"
           size="lg"
           color="primary"

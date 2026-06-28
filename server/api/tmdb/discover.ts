@@ -44,22 +44,29 @@ export default defineEventHandler(async (event) => {
       let discoveredMovies = [];
 
       // Format the returned shows
-      discoveredShows = formatCardData({ item: showResponse?.results });
+      discoveredShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "T.V",
+      });
       // Format the returned movies
-      discoveredMovies = formatCardData({ item: movieResponse?.results });
+      discoveredMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "Movie",
+      });
 
       // Shuffle and return the first ten elements of each array
       discoveredShows = discoveredShows
         .sort(() => 0.5 - Math.random())
-        .slice(0, 5);
+        .slice(0, 6);
       discoveredMovies = discoveredMovies
         .sort(() => 0.5 - Math.random())
-        .slice(0, 5);
+        .slice(0, 6);
 
       // Combine the arrays
       let discovered = discoveredShows.concat(discoveredMovies);
       // Shuffle the array
       discovered = discovered.sort(() => 0.5 - Math.random());
+
       return {
         status: 200,
         message: "Data fetched successfully",

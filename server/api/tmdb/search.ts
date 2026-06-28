@@ -33,11 +33,11 @@ export default defineEventHandler(async (event) => {
       },
     );
 
-    // console.log(response);
+    // console.log(response.results);
 
     let formattedData: any[] = [];
     if (response.results.length > 0) {
-      formattedData = formatCardData({ item: response.results });
+      formattedData = formatCardData({ items: response.results });
 
       // Keep only shows and movies
       formattedData = formattedData.filter(

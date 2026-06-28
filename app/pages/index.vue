@@ -13,9 +13,23 @@ const { user } = useUserSession();
 // Fetch trending movies and shows
 const {
   data: trendingData,
-  pending,
-  error,
+  pending: trendingPending,
+  error: trendingError,
 } = await useFetch("/api/tmdb/trending");
+
+// Fetch the top rated movies and shows
+const {
+  data: topRatedData,
+  pending: topRatedPending,
+  error: topRatedError,
+} = await useFetch("/api/tmdb/topRated");
+
+// Discover movies and shows
+const {
+  data: discoverData,
+  pending: discoverPending,
+  error: discoverError,
+} = await useFetch("/api/tmdb/discover");
 </script>
 
 <template>
@@ -53,57 +67,32 @@ const {
         </div>
       </div>
 
-      <!-- Section -->
-      <div class="flex flex-col gap-6">
-        <!-- Section headline -->
-        <div
-          class="flex justify-between items-end border-b border-border/40 pb-4"
-        >
-          <div>
-            <h3 class="text-2xl font-black tracking-tight">Trending Now</h3>
-            <p class="text-muted-foreground text-sm mt-0.5">
-              The most popular movies and shows this week
-            </p>
-          </div>
-        </div>
+      <!-- Trending -->
+      <Section
+        :loading="trendingPending"
+        :error="trendingError"
+        :data="trendingData?.trending || []"
+        sectionTitle="Trending Now"
+        sectionDescription="The most popular movies and shows this week"
+      />
 
-        <!-- Loading Skeleton -->
-        <div
-          v-if="pending"
-          class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
-        >
-          <div
-            v-for="i in 6"
-            :key="i"
-            class="flex flex-col gap-3 animate-pulse w-[150px] sm:w-[180px] md:w-[200px] lg:w-[225px] flex-none"
-          >
-            <div class="aspect-2/3 w-full bg-muted rounded-xl" />
-            <div class="h-4 w-3/4 bg-muted rounded" />
-            <div class="h-3 w-1/2 bg-muted rounded" />
-          </div>
-        </div>
+      <!-- Top Rated -->
+      <Section
+        :loading="topRatedPending"
+        :error="topRatedError"
+        :data="topRatedData?.topRated || []"
+        sectionTitle="Top Rated"
+        sectionDescription="The highest rated movies and shows"
+      />
 
-        <!-- Error State -->
-        <div v-else-if="error" class="text-center py-12 text-red-500">
-          <p class="font-medium">
-            Failed to load media. Please try again later.
-          </p>
-        </div>
-
-        <!-- Media Grid -->
-        <div
-          v-else
-          class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
-        >
-          <!-- Card -->
-          <Card
-            v-for="item in trendingData?.trending"
-            :key="item.id"
-            :item="item"
-            class="w-[150px] sm:w-[180px] md:w-[200px] lg:w-[227px] flex-none"
-          />
-        </div>
-      </div>
+      <!-- Discover -->
+      <Section
+        :loading="discoverPending"
+        :error="discoverError"
+        :data="discoverData?.discovered || []"
+        sectionTitle="Discover"
+        sectionDescription="Discover new movies and shows"
+      />
     </div>
   </div>
 </template>

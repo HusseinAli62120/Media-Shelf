@@ -44,13 +44,19 @@ export default defineEventHandler(async (event) => {
       let trendingMovies = [];
 
       // Format the returned shows
-      trendingShows = formatCardData({ item: showResponse?.results });
+      trendingShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "T.V",
+      });
       // Format the returned movies
-      trendingMovies = formatCardData({ item: movieResponse?.results });
+      trendingMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "Movie",
+      });
 
       // Return the first five elements of each array
-      trendingShows = trendingShows.slice(0, 5);
-      trendingMovies = trendingMovies.slice(0, 5);
+      trendingShows = trendingShows.slice(0, 6);
+      trendingMovies = trendingMovies.slice(0, 6);
 
       // Combine the arrays
       let trending = trendingShows.concat(trendingMovies);

@@ -17,5 +17,5 @@ export type ApiData = {
   poster_path: string;
   vote_average: number;
   vote_count: number;
-  media_type: "movie" | "tv";
+  media_type: "tv" | "movie";
 };

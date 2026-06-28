@@ -44,13 +44,19 @@ export default defineEventHandler(async (event) => {
       let topRatedMovies = [];
 
       // Format the returned shows
-      topRatedShows = formatCardData({ item: showResponse?.results });
+      topRatedShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "T.V",
+      });
       // Format the returned movies
-      topRatedMovies = formatCardData({ item: movieResponse?.results });
+      topRatedMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "Movie",
+      });
 
       // Return the first ten elements of each array
-      topRatedShows = topRatedShows.slice(0, 5);
-      topRatedMovies = topRatedMovies.slice(0, 5);
+      topRatedShows = topRatedShows.slice(0, 6);
+      topRatedMovies = topRatedMovies.slice(0, 6);
 
       // Combine the arrays
       let topRated = topRatedShows.concat(topRatedMovies);

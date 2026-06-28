@@ -1,4 +1,5 @@
-import { ApiData } from "#shared/types/ApiData";
+import type { CardData } from "#shared/types/CardData";
+import formatCardData from "~~/server/utils/formatCardData";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -36,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
     let formattedData: any[] = [];
     if (response.results.length > 0) {
-      formattedData = formatApiData(response.results);
+      formattedData = formatCardData({ item: response.results });
 
       // Keep only shows and movies
       formattedData = formattedData.filter(
@@ -46,7 +47,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         message: "Data fetched successfully",
-        searchData: formattedData as ApiData[],
+        searchData: formattedData as CardData[],
         count: formattedData.length,
       };
     }

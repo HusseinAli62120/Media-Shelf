@@ -1,4 +1,5 @@
-import formatApiData from "~~/server/utils/formatApiData";
+import formatCardData from "~~/server/utils/formatCardData";
+import type { CardData } from "#shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -43,22 +44,23 @@ export default defineEventHandler(async (event) => {
       let trendingMovies = [];
 
       // Format the returned shows
-      trendingShows = formatApiData(showResponse?.results, "show");
+      trendingShows = formatCardData({ item: showResponse?.results });
       // Format the returned movies
-      trendingMovies = formatApiData(movieResponse?.results, "movie");
+      trendingMovies = formatCardData({ item: movieResponse?.results });
 
-      // Return the first ten elements of each array
-      trendingShows = trendingShows.slice(0, 10);
-      trendingMovies = trendingMovies.slice(0, 10);
+      // Return the first five elements of each array
+      trendingShows = trendingShows.slice(0, 5);
+      trendingMovies = trendingMovies.slice(0, 5);
 
       // Combine the arrays
       let trending = trendingShows.concat(trendingMovies);
       // Shuffle the array
       trending = trending.sort(() => 0.5 - Math.random());
+
       return {
         status: 200,
         message: "Data fetched successfully",
-        trending: trending,
+        trending: trending as CardData[],
         count: trending.length,
       };
     }

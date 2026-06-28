@@ -1,6 +1,8 @@
+// Raw API data
+
 export type ApiData = {
   backdrop_path?: string;
-  first_air_date: string;
+  first_air_date?: string;
   release_date?: string; // For movies
   genre_ids: number[];
   id: number;
@@ -11,13 +13,9 @@ export type ApiData = {
   original_name?: string;
   original_title?: string; // For movies
   overview: string;
-  popularity?: number;
-  poster_path?: string;
-  vote_average?: number;
-  vote_count?: number;
-  // Derived properties
-  imgURL: string;
-  backdropURL: string;
-  averageRating: number;
-  media_type?: "movie" | "tv";
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+  media_type: "movie" | "tv";
 };

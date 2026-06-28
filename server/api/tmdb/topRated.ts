@@ -1,4 +1,5 @@
-import formatApiData from "~~/server/utils/formatApiData";
+import formatCardData from "~~/server/utils/formatCardData";
+import type { CardData } from "#shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -43,13 +44,13 @@ export default defineEventHandler(async (event) => {
       let topRatedMovies = [];
 
       // Format the returned shows
-      topRatedShows = formatApiData(showResponse?.results, "show");
+      topRatedShows = formatCardData({ item: showResponse?.results });
       // Format the returned movies
-      topRatedMovies = formatApiData(movieResponse?.results, "movie");
+      topRatedMovies = formatCardData({ item: movieResponse?.results });
 
       // Return the first ten elements of each array
-      topRatedShows = topRatedShows.slice(0, 10);
-      topRatedMovies = topRatedMovies.slice(0, 10);
+      topRatedShows = topRatedShows.slice(0, 5);
+      topRatedMovies = topRatedMovies.slice(0, 5);
 
       // Combine the arrays
       let topRated = topRatedShows.concat(topRatedMovies);
@@ -58,7 +59,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 200,
         message: "Data fetched successfully",
-        topRated: topRated,
+        topRated: topRated as CardData[],
         count: topRated.length,
       };
     }

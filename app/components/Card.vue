@@ -2,7 +2,7 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
 
 const props = defineProps<{
-  item: ApiData;
+  item: CardData;
 }>();
 
 const cardItems = ref<DropdownMenuItem[][]>([

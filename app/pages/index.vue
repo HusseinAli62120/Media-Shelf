@@ -15,7 +15,7 @@ const {
   data: trendingData,
   pending,
   error,
-} = await useFetch<{ trending: ApiData[] }>("/api/tmdb/trending");
+} = await useFetch("/api/tmdb/trending");
 </script>
 
 <template>
@@ -70,12 +70,12 @@ const {
         <!-- Loading Skeleton -->
         <div
           v-if="pending"
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6"
+          class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
         >
           <div
-            v-for="i in 10"
+            v-for="i in 6"
             :key="i"
-            class="flex flex-col gap-3 animate-pulse"
+            class="flex flex-col gap-3 animate-pulse w-[150px] sm:w-[180px] md:w-[200px] lg:w-[225px] flex-none"
           >
             <div class="aspect-2/3 w-full bg-muted rounded-xl" />
             <div class="h-4 w-3/4 bg-muted rounded" />
@@ -93,13 +93,14 @@ const {
         <!-- Media Grid -->
         <div
           v-else
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6"
+          class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
         >
           <!-- Card -->
           <Card
             v-for="item in trendingData?.trending"
             :key="item.id"
             :item="item"
+            class="w-[150px] sm:w-[180px] md:w-[200px] lg:w-[227px] flex-none"
           />
         </div>
       </div>

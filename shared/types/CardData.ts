@@ -1,5 +1,6 @@
 export type CardData = {
-  id: number;
+  id?: string; // db id if present
+  mediaId: number; // tmdb id
   name: string;
   first_air_date: string;
   overview: string;

@@ -30,7 +30,10 @@ const cardItems = ref<DropdownMenuItem[][]>([
     class="group flex flex-col gap-2 relative bg-secondary-background border border-border/40 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
   >
     <!-- Poster Image -->
-    <div class="aspect-2/3 w-full overflow-hidden relative bg-muted">
+    <NuxtLink
+      :to="`/media-${item.media_type}-${item.mediaId}`"
+      class="aspect-2/3 w-full overflow-hidden relative bg-muted"
+    >
       <img
         v-if="item.imgURL"
         :src="item.imgURL"
@@ -56,17 +59,18 @@ const cardItems = ref<DropdownMenuItem[][]>([
       >
         {{ item.media_type }}
       </div>
-    </div>
+    </NuxtLink>
 
     <!-- Card Info -->
     <div class="flex flex-row justify-between items-center pr-1">
       <div class="p-3 flex flex-col justify-between">
         <div>
-          <h4
-            class="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors"
+          <NuxtLink
+            :to="`/media-${item.media_type}-${item.mediaId}`"
+            class="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer"
           >
             {{ item.name }}
-          </h4>
+          </NuxtLink>
           <p class="text-[11px] text-muted-foreground mt-0.5">
             {{
               item.first_air_date

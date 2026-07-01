@@ -10,13 +10,13 @@ const formatCardData = ({
   const baseURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BASE_URL;
   return items.map((value: ApiData) => {
     return {
-      id: value.id,
+      mediaId: value.id,
       name: value.name || value.title,
       first_air_date: value.first_air_date || value?.release_date,
       overview: value.overview,
       imgURL: `${baseURL}${value.poster_path}`,
       averageRating: value.vote_average,
-      media_type: value?.media_type || mediaType,
+      media_type: value?.media_type?.toLowerCase() || mediaType?.toLowerCase(),
     };
   });
 };

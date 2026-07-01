@@ -16,6 +16,10 @@ export default defineNuxtConfig({
       showMovieBaseUrl: "",
       showMovieBackdropUrl: "",
     },
+
+    session: {
+      maxAge: 60 * 60 * 24 * 7, // Cookie persists for one week.
+    },
   },
 
   components: [

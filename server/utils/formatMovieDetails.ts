@@ -1,4 +1,10 @@
-const formatMovieDetails = ({ item }: { item: any }) => {
+const formatMovieDetails = ({
+  item,
+  trailer,
+}: {
+  item: any;
+  trailer: string;
+}) => {
   const baseURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BASE_URL;
   const backdropURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BACKDROP_URL;
 
@@ -20,6 +26,8 @@ const formatMovieDetails = ({ item }: { item: any }) => {
     averageRating: item.vote_average,
     release_date: item.release_date,
     runtime: runtime,
+    trailer: trailer || "",
+    genres: item.genres.map((genre: any) => genre.name),
   };
 };
 

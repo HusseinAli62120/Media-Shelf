@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { DropdownMenuItem } from "@nuxt/ui";
 
+defineProps<{
+  transparent?: boolean;
+}>();
+
 // Variables
 const loading = ref<boolean>(false);
 // Composables
@@ -58,7 +62,11 @@ const menuItem = ref<DropdownMenuItem[][]>([
 
 <template>
   <div
-    class="w-full px-4 py-2 border-b border-border min-h-[10vh] flex flex-row items-center justify-between"
+    class="w-full px-4 py-2 min-h-[10vh] flex flex-row items-center justify-between transition-all duration-300"
+    :class="
+      transparent &&
+      'absolute top-0 left-0 z-50 bg-transparent backdrop-blur-md '
+    "
   >
     <!-- Right section -->
     <div class="flex flex-row items-center gap-0 sm:gap-16">

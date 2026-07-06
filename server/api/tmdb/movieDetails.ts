@@ -1,5 +1,6 @@
 import type { MovieDetails } from "#shared/types/MovieDetails";
 import formatMovieDetails from "~~/server/utils/formatMovieDetails";
+import formatVideos from "~~/server/utils/formatVideos";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -26,6 +27,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    // Fetch the movie details
     const res = await $fetch(
       `https://api.themoviedb.org/3/${mediaType?.toString()?.toLowerCase()}/${mediaId}?language=en-US`,
       {
@@ -37,7 +39,26 @@ export default defineEventHandler(async (event) => {
       },
     );
 
-    const details = formatMovieDetails({ item: res });
+    // Fetch the movie related videos
+    const videos: any = await $fetch(
+      `https://api.themoviedb.org/3/${mediaType?.toString()?.toLowerCase()}/${mediaId}/videos?language=en-US`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
+    // console.log(videos);
+
+    // Get trailer URL
+    const trailer = formatVideos({ videos: videos?.results });
+
+    // Format movie details
+    const details = formatMovieDetails({ item: res, trailer: trailer });
+
     return {
       status: 200,
       message: "Success",

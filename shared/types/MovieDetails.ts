@@ -10,6 +10,6 @@ export type MovieDetails = {
   averageRating: string; // vote_average
   release_date: string;
   runtime: string;
-
-  // add trailer, genres
+  trailer: string;
+  genres: string[];
 };

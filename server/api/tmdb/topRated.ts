@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
         mediaType: "Movie",
       });
 
-      // Return the first ten elements of each array
+      // Return the first six elements of each array
       topRatedShows = topRatedShows.slice(0, 6);
       topRatedMovies = topRatedMovies.slice(0, 6);
 

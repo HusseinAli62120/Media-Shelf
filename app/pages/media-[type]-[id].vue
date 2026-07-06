@@ -22,6 +22,17 @@ const {
 });
 
 const {
+  data: recommendations,
+  pending: recommendationsLoading,
+  error: recommendationsError,
+} = await useFetch("/api/tmdb/recommendations", {
+  query: {
+    mediaId: route.params.id,
+    mediaType: route.params.type,
+  },
+});
+
+const {
   isSeen,
   isWatchlisted,
   toggleSeen,
@@ -277,6 +288,17 @@ const {
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Similar Section -->
+      <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <Section
+          :loading="recommendationsLoading"
+          :data="recommendations?.recommendations || []"
+          :error="recommendationsError"
+          sectionTitle="More To Watch"
+          sectionDescription="Discover other titles you might enjoy"
+        />
       </div>
     </div>
   </div>

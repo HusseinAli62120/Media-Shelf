@@ -1,3 +1,5 @@
+import type { CastData } from "./CastData";
+
 export type MovieDetails = {
   id: number;
   title: string;
@@ -12,4 +14,5 @@ export type MovieDetails = {
   runtime: string;
   trailer: string;
   genres: string[];
+  cast: CastData[];
 };

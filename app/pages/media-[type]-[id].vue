@@ -290,6 +290,61 @@ const {
         </div>
       </div>
 
+      <!-- Cast Section -->
+      <div
+        v-if="movie?.details?.cast && movie.details.cast.length > 0"
+        class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-6"
+      >
+        <div
+          class="flex justify-between items-end border-b border-border/40 pb-4 mb-6"
+        >
+          <div>
+            <h3 class="text-2xl font-black tracking-tight">Cast</h3>
+            <p class="text-muted-foreground text-sm mt-0.5">
+              Top billed cast members
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-row overflow-x-auto gap-6 pb-4 no-scrollbar">
+          <div
+            v-for="member in movie.details.cast"
+            :key="member.id"
+            class="flex flex-col items-center text-center gap-2 flex-none w-25 sm:w-30 group"
+          >
+            <!-- Avatar Image -->
+            <div
+              class="w-18 h-18 sm:w-25 sm:h-25 rounded-full overflow-hidden border border-border/40 bg-secondary-background shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:shadow-md"
+            >
+              <img
+                v-if="
+                  member.image &&
+                  !member.image.endsWith('null') &&
+                  !member.image.endsWith('undefined')
+                "
+                :src="member.image"
+                :alt="member.name"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground"
+              >
+                <LucideUser class="h-8 w-8" />
+              </div>
+            </div>
+
+            <!-- Name -->
+            <span
+              class="text-xs font-semibold text-foreground line-clamp-2 px-1"
+            >
+              {{ member.name }}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <!-- Similar Section -->
       <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <Section

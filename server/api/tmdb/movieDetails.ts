@@ -1,4 +1,5 @@
 import type { MovieDetails } from "#shared/types/MovieDetails";
+import formatCast from "~~/server/utils/formatCast";
 import formatMovieDetails from "~~/server/utils/formatMovieDetails";
 import formatVideos from "~~/server/utils/formatVideos";
 
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
     // Fetch the movie details
     const res = await $fetch(
-      `https://api.themoviedb.org/3/${mediaType?.toString()?.toLowerCase()}/${mediaId}?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${mediaId}?language=en-US`,
       {
         method: "GET",
         headers: {
@@ -41,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
     // Fetch the movie related videos
     const videos: any = await $fetch(
-      `https://api.themoviedb.org/3/${mediaType?.toString()?.toLowerCase()}/${mediaId}/videos?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${mediaId}/videos?language=en-US`,
       {
         method: "GET",
         headers: {
@@ -53,11 +54,30 @@ export default defineEventHandler(async (event) => {
 
     // console.log(videos);
 
+    // Fetch the movie related credits
+    const credits: any = await $fetch(
+      `https://api.themoviedb.org/3/movie/${mediaId}/credits`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      },
+    );
+
     // Get trailer URL
     const trailer = formatVideos({ videos: videos?.results });
 
+    // Get cast
+    const cast = formatCast({ cast: credits?.cast });
+
+    // console.log(cast);
+
     // Format movie details
-    const details = formatMovieDetails({ item: res, trailer: trailer });
+    const details = formatMovieDetails({ item: res, trailer: trailer, cast });
+
+    // console.log(details);
 
     return {
       status: 200,

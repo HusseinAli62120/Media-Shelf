@@ -1,9 +1,13 @@
+import type { CastData } from "#shared/types/CastData";
+
 const formatMovieDetails = ({
   item,
   trailer,
+  cast,
 }: {
   item: any;
   trailer: string;
+  cast: CastData[];
 }) => {
   const baseURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BASE_URL;
   const backdropURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BACKDROP_URL;
@@ -28,6 +32,7 @@ const formatMovieDetails = ({
     runtime: runtime,
     trailer: trailer || "",
     genres: item.genres.map((genre: any) => genre.name),
+    cast: cast,
   };
 };
 

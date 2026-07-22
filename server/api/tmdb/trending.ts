@@ -43,6 +43,8 @@ export default defineEventHandler(async (event) => {
       let trendingShows = [];
       let trendingMovies = [];
 
+      // console.log(movieResponse?.results);
+
       // Format the returned shows
       trendingShows = formatCardData({
         items: showResponse?.results,

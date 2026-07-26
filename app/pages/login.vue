@@ -83,12 +83,12 @@ const login = async () => {
     <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div
         :class="[
-          'flex flex-col items-center justify-center lg:w-full lg:max-w-[400px] sm:w-[450px] w-full space-y-4 p-8 sm:p-10 rounded-2xl border border-gray-700 shadow-sm lg:border-0 lg:shadow-none lg:p-0',
+          'flex flex-col items-center justify-center lg:w-full lg:max-w-100 sm:w-112.5 w-full space-y-4 p-8 sm:p-10 rounded-2xl border border-gray-700 shadow-sm lg:border-0 lg:shadow-none lg:p-0',
         ]"
       >
         <!-- Title and description -->
         <div
-          class="w-full max-w-[300px] flex flex-col space-y-2 text-center lg:text-left"
+          class="w-full max-w-75 flex flex-col space-y-2 text-center lg:text-left"
         >
           <!-- Mobile Logo -->
           <div class="flex justify-center lg:hidden mb-4">
@@ -110,14 +110,14 @@ const login = async () => {
 
         <!-- Form -->
         <UForm
-          class="w-full max-w-[300px] flex flex-col gap-3"
+          class="w-full max-w-75 flex flex-col gap-3"
           @submit.prevent="login"
         >
           <!-- Username -->
           <UFormField label="Username">
             <UInput
               :disabled="!hydrated"
-              class="w-full max-w-[300px]"
+              class="w-full max-w-75"
               color="neutral"
               v-model="credentials.userName"
               placeholder="Enter your username"
@@ -129,7 +129,7 @@ const login = async () => {
           <UFormField orientation="vertical" label="Password">
             <UInput
               :disabled="!hydrated"
-              class="w-full max-w-[300px]"
+              class="w-full max-w-75"
               color="neutral"
               v-model="credentials.password"
               placeholder="Password"
@@ -146,7 +146,11 @@ const login = async () => {
                   :aria-label="showPassword ? 'Hide password' : 'Show password'"
                   :aria-pressed="showPassword"
                   aria-controls="password"
-                  @click="showPassword = !showPassword"
+                  @click="
+                    () => {
+                      showPassword = !showPassword;
+                    }
+                  "
                 />
               </template>
             </UInput>
@@ -158,15 +162,15 @@ const login = async () => {
             color="neutral"
             variant="solid"
             type="submit"
-            class="w-full max-w-[300px] flex justify-center"
+            class="w-full max-w-75 flex justify-center"
           >
             <LucideLoader2 v-if="loading" class="animate-spin" />
             <span v-else>Sign In</span>
           </UButton>
         </UForm>
 
-        <USeparator label="Or" class="w-full max-w-[300px]" />
-        <div class="flex flex-row items-center max-w-[300px]">
+        <USeparator label="Or" class="w-full max-w-75" />
+        <div class="flex flex-row items-center max-w-75">
           <p class="text-muted mr-1">Don't have an account?</p>
           <NuxtLink class="hover:underline text-foreground" to="/signup">
             Signup here

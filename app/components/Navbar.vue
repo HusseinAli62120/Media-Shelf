@@ -1,63 +1,48 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from "@nuxt/ui";
-
 defineProps<{
   transparent?: boolean;
 }>();
 
-// Variables
-const loading = ref<boolean>(false);
 // Composables
 const colorMode = useColorMode();
-const toast = useToast();
-const { clear: clearSession, user } = useUserSession();
+const { toggleTheme, menuItem, toast } = useNavbar();
 
-// Functions
-const toggleTheme = () => {
-  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
-};
-
-const logout = async () => {
-  try {
-    loading.value = true;
-    await clearSession();
-    await navigateTo("/login");
-  } catch (error) {
-    console.log(error);
+// Fetch genres
+const {
+  data: movieGenres,
+  error: movieError,
+  pending: moviePending,
+} = await useFetch("/api/tmdb/genres", {
+  query: {
+    type: "movie",
+  },
+  server: false,
+  onResponseError({ response }) {
     toast.add({
+      color: "error",
       title: "Error",
-      description: "Failed to logout",
-      color: "error",
+      description: response?._data?.message,
     });
-  } finally {
-    loading.value = false;
-  }
-};
+  },
+});
 
-const menuItem = ref<DropdownMenuItem[][]>([
-  [
-    {
-      label: user?.value?.userName,
-      type: "label",
-    },
-  ],
-  [
-    {
-      label: "Change Password",
-      icon: "i-lucide-settings",
-      onSelect: () => {
-        console.log("Change password");
-      },
-    },
-    {
-      label: loading.value ? "Logging out..." : "Logout",
-      icon: loading.value ? "i-lucide-loader-2" : "i-lucide-log-out",
+const {
+  data: showGenres,
+  error: showError,
+  pending: showPending,
+} = await useFetch("/api/tmdb/genres", {
+  query: {
+    type: "tv",
+  },
+  server: false, // So that the nav appears on the client when the request is being made
+  onResponseError({ response }) {
+    toast.add({
       color: "error",
-      onSelect: logout,
-      disabled: loading.value,
-    },
-  ],
-]);
+      title: "Error",
+      description: response?._data?.message,
+    });
+  },
+});
 </script>
 
 <template>
@@ -76,8 +61,50 @@ const menuItem = ref<DropdownMenuItem[][]>([
       </NuxtLink>
 
       <div class="hidden sm:flex flex-row items-center">
-        <UButton variant="link" color="neutral" to="/movies">Movies</UButton>
-        <UButton variant="link" color="neutral" to="/shows">Shows</UButton>
+        <UPopover mode="hover" enable-touch>
+          <UButton label="Movies" color="neutral" variant="link" />
+
+          <template #content>
+            <div v-if="movieError" class="p-4 text-center text-error text-sm">
+              <p>Failed to load movies genres</p>
+            </div>
+            <div v-else-if="moviePending" class="p-4 text-center text-sm">
+              <p>Loading movies genres...</p>
+            </div>
+            <div v-else class="grid grid-cols-4 gap-x-2 gap-y-2 p-4">
+              <ULink
+                v-for="genre in movieGenres?.genres"
+                :to="`/Movies-${genre.name}`"
+                :key="genre.id"
+                class="text-sm text-center text-muted hover:text-primary transition-colors whitespace-nowrap"
+              >
+                {{ genre.name }}
+              </ULink>
+            </div>
+          </template>
+        </UPopover>
+        <UPopover mode="hover" enable-touch>
+          <UButton label="Shows" color="neutral" variant="link" />
+
+          <template #content>
+            <div v-if="showError" class="p-4 text-center text-error text-sm">
+              <p>Failed to load shows genres</p>
+            </div>
+            <div v-else-if="showPending" class="p-4 text-center text-sm">
+              <p>Loading shows genres...</p>
+            </div>
+            <div v-else class="grid grid-cols-4 gap-x-1 gap-y-2 p-4">
+              <ULink
+                v-for="genre in showGenres?.genres"
+                :to="`/Shows-${genre.name}`"
+                :key="genre.id"
+                class="text-sm text-center text-muted hover:text-primary transition-colors whitespace-nowrap"
+              >
+                {{ genre.name }}
+              </ULink>
+            </div>
+          </template>
+        </UPopover>
       </div>
     </div>
 

@@ -7,4 +7,5 @@ export type CardData = {
   imgURL: string;
   averageRating: number;
   media_type: "movie" | "tv";
+  genre_ids: number[];
 };

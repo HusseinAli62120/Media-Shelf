@@ -5,7 +5,7 @@ const formatCardData = ({
   mediaType,
 }: {
   items: any;
-  mediaType?: "T.V" | "Movie";
+  mediaType?: "tv" | "movie";
 }) => {
   const baseURL = process.env.NUXT_PUBLIC_SHOW_MOVIE_BASE_URL;
   return items.map((value: ApiData) => {

@@ -46,12 +46,12 @@ export default defineEventHandler(async (event) => {
       // Format the returned shows
       topRatedShows = formatCardData({
         items: showResponse?.results,
-        mediaType: "T.V",
+        mediaType: "tv",
       });
       // Format the returned movies
       topRatedMovies = formatCardData({
         items: movieResponse?.results,
-        mediaType: "Movie",
+        mediaType: "movie",
       });
 
       // Return the first six elements of each array

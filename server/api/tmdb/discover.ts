@@ -46,12 +46,12 @@ export default defineEventHandler(async (event) => {
       // Format the returned shows
       discoveredShows = formatCardData({
         items: showResponse?.results,
-        mediaType: "T.V",
+        mediaType: "tv",
       });
       // Format the returned movies
       discoveredMovies = formatCardData({
         items: movieResponse?.results,
-        mediaType: "Movie",
+        mediaType: "movie",
       });
 
       // Shuffle and return the first ten elements of each array

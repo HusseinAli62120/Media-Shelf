@@ -48,12 +48,12 @@ export default defineEventHandler(async (event) => {
       // Format the returned shows
       trendingShows = formatCardData({
         items: showResponse?.results,
-        mediaType: "T.V",
+        mediaType: "tv",
       });
       // Format the returned movies
       trendingMovies = formatCardData({
         items: movieResponse?.results,
-        mediaType: "Movie",
+        mediaType: "movie",
       });
 
       // Return the first five elements of each array

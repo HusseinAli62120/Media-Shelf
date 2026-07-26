@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
       genreMedia = formatCardData({
         items: res?.results,
-        mediaType: type === "movie" ? "Movie" : "T.V",
+        mediaType: type === "movie" ? "movie" : "tv",
       });
 
       return {

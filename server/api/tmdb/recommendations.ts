@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     );
 
     if (res?.results?.length > 0) {
-      const desiredType = mediaType === "tv" ? "T.V" : "Movie";
+      const desiredType = mediaType === "tv" ? "tv" : "movie";
 
       const formattedResults = formatCardData({
         items: res.results,

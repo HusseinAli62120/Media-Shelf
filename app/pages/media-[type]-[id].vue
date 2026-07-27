@@ -75,7 +75,7 @@ const {
     <div v-else class="w-full grow flex flex-col">
       <!-- Hero Banner -->
       <div
-        class="relative w-full h-[30vh] sm:h-[40vh] md:h-[50vh] min-h-[220px] bg-neutral-950 overflow-hidden"
+        class="relative w-full h-[30vh] sm:h-[40vh] md:h-[50vh] min-h-55 bg-neutral-950 overflow-hidden"
       >
         <!-- Backdrop Image -->
         <img
@@ -337,9 +337,12 @@ const {
 
             <!-- Name -->
             <span
-              class="text-xs font-semibold text-foreground line-clamp-2 px-1"
+              class="text-sm font-semibold text-foreground line-clamp-2 px-1"
             >
               {{ member.name }}
+            </span>
+            <span class="text-xs font-medium text-muted line-clamp-2 px-1">
+              {{ member.character }}
             </span>
           </div>
         </div>

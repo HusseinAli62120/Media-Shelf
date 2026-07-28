@@ -48,13 +48,13 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
     <FetchMessage :message="'Failed to fetch data'" :type="'error'" />
   </div>
   <div v-else class="flex flex-1 flex-col items-start justify-start w-full">
-    <div class="border-b border-border/40 pb-4 px-4 w-full">
+    <div class="border-b border-border/40 pb-4 px-4 lg:px-8 py-4 w-full">
       <h1 class="text-3xl font-black tracking-tight">
         {{ route.params.genre }}
       </h1>
     </div>
     <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 px-4"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 lg:px-8 px-4"
     >
       <Card v-for="item in data?.genreMedia" :item="item" :key="item?.id" />
     </div>

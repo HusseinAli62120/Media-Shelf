@@ -32,6 +32,7 @@ const {
   },
 });
 
+// Composables
 const {
   isSeen,
   isWatchlisted,
@@ -44,6 +45,10 @@ const {
   hasPoster,
   goBack,
 } = details({ movie: movie?.value?.details! });
+
+const handleCastClick = ({ memberId }: { memberId: number }) => {
+  navigateTo(`/person-${memberId}`);
+};
 </script>
 
 <template>
@@ -310,7 +315,8 @@ const {
           <div
             v-for="member in movie.details.cast"
             :key="member.id"
-            class="flex flex-col items-center text-center gap-2 flex-none w-25 sm:w-30 group"
+            class="flex flex-col items-center text-center gap-2 flex-none w-25 sm:w-30 group hover:cursor-pointer"
+            @click="handleCastClick({ memberId: member?.id! })"
           >
             <!-- Avatar Image -->
             <div
@@ -337,7 +343,7 @@ const {
 
             <!-- Name -->
             <span
-              class="text-sm font-semibold text-foreground line-clamp-2 px-1"
+              class="text-sm font-semibold text-foreground line-clamp-2 px-1 group-hover:text-primary transition-colors duration-300"
             >
               {{ member.name }}
             </span>

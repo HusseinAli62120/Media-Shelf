@@ -1,4 +1,4 @@
-import { Genre } from "~~/server/types/Genre";
+import type { Genre } from "~~/server/types/Genre";
 
 export default defineEventHandler(async (event) => {
   try {

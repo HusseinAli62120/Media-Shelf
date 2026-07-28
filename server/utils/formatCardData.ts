@@ -1,4 +1,4 @@
-import { ApiData } from "#shared/types/ApiData";
+import type { ApiData } from "#shared/types/ApiData";
 
 const formatCardData = ({
   items,
@@ -18,6 +18,7 @@ const formatCardData = ({
       averageRating: value.vote_average,
       media_type: value?.media_type?.toLowerCase() || mediaType?.toLowerCase(),
       genre_ids: value.genre_ids || [],
+      voteCount: value.vote_count,
     };
   });
 };

@@ -8,4 +8,5 @@ export type CardData = {
   averageRating: number;
   media_type: "movie" | "tv";
   genre_ids: number[];
+  voteCount: number;
 };

@@ -244,18 +244,17 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
             >
               <!-- Watchlist Toggle CTA -->
               <UButton
-                :variant="isWatchlisted ? 'solid' : 'outline'"
+                :variant="'ghost'"
+                :size="'lg'"
                 :color="isWatchlisted ? 'primary' : 'neutral'"
-                class="rounded-xl px-5 py-2.5 font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
+                class="rounded-full font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
                 @click="toggleWatchlist"
               >
-                <LucideStar
+                <LucideListChecks
                   class="h-4.5 w-4.5"
                   :class="{ 'fill-current': isWatchlisted }"
                 />
-                <span>{{
-                  isWatchlisted ? "On Watchlist" : "Add to Watchlist"
-                }}</span>
+                {{ isWatchlisted ? "In Watchlist" : "Add to Watchlist" }}
               </UButton>
 
               <!-- Seen Toggle CTA -->

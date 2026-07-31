@@ -4,29 +4,16 @@ import { Role } from "#shared/enums/Role";
 definePageMeta({
   layout: "screen",
   middleware: ["require-auth"],
-  allowedRoles: [Role.USER, Role.ADMIN],
+  allowedRoles: [Role?.USER, Role?.ADMIN],
 });
 
-// Composables
-const route = useRoute();
 const toast = useToast();
-
-// Get the genre id from name
-const genreId = getGenreId({
-  type: route?.params?.type?.toString() as string,
-  genre: route?.params?.genre?.toString() as string,
-});
-
-const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
-  query: {
-    type: route.params.type === "Movies" ? "movie" : "tv",
-    genreId: genreId,
-    page: 1,
-  },
+const { data, pending, error } = await useFetch("/api/watchlist/watchlist", {
+  method: "GET",
   onResponseError({ response }) {
     toast.add({
       title: "Error",
-      description: response?._data?.message,
+      description: response?._data?.statusMessage,
       color: "error",
     });
   },
@@ -49,18 +36,20 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
   </div>
   <div v-else class="flex flex-1 flex-col items-start justify-start w-full">
     <div class="border-b border-border/40 pb-4 px-4 lg:px-8 py-4 w-full">
-      <h1 class="text-3xl font-black tracking-tight">
-        {{ route.params.genre }}
-      </h1>
+      <h1 class="text-3xl font-black tracking-tight">My Watchlist</h1>
     </div>
     <div
+      v-if="data?.userWatchList?.length && data?.userWatchList?.length > 0"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 lg:px-8 px-4"
     >
       <Card
-        v-for="(item, index) in data?.genreMedia"
+        v-for="(item, index) in data?.userWatchList"
         :item="item"
         :key="index"
       />
+    </div>
+    <div v-else class="flex flex-1 flex-col items-center justify-center w-full">
+      <FetchMessage :message="'Watchlist is empty'" :type="'not-found'" />
     </div>
   </div>
 </template>

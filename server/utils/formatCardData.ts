@@ -17,7 +17,6 @@ const formatCardData = ({
       imgURL: `${baseURL}${value.poster_path}`,
       averageRating: value.vote_average,
       media_type: value?.media_type?.toLowerCase() || mediaType?.toLowerCase(),
-      genre_ids: value.genre_ids || [],
       voteCount: value.vote_count,
     };
   });

@@ -44,7 +44,11 @@ const { data, error } = await useFetch("/api/tmdb/search", {
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 px-4"
         v-else
       >
-        <Card v-for="item in data?.searchData" :item="item" :key="item.id" />
+        <Card
+          v-for="(item, index) in data?.searchData"
+          :item="item"
+          :key="index"
+        />
       </div>
     </div>
 

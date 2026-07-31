@@ -41,6 +41,15 @@ export default function useNavbar() {
     ],
     [
       {
+        label: "Watchlist",
+        icon: "i-lucide-list-checks",
+        onSelect: () => {
+          navigateTo("/user/watchlist");
+        },
+      },
+    ],
+    [
+      {
         label: "Change Password",
         icon: "i-lucide-settings",
         onSelect: () => {

@@ -28,7 +28,7 @@ defineProps<{
       <div
         v-for="i in 6"
         :key="i"
-        class="flex flex-col gap-3 animate-pulse w-[150px] sm:w-[180px] md:w-[200px] lg:w-[225px] flex-none"
+        class="flex flex-col gap-3 animate-pulse w-37.5 sm:w-45 md:w-50 lg:w-56.75 flex-none"
       >
         <div class="aspect-2/3 w-full bg-muted rounded-xl" />
         <div class="h-4 w-3/4 bg-muted rounded" />
@@ -56,10 +56,10 @@ defineProps<{
     >
       <!-- Card -->
       <Card
-        v-for="item in data"
-        :key="item.id"
+        v-for="(item, index) in data"
+        :key="index"
         :item="item"
-        class="w-[150px] sm:w-[180px] md:w-[200px] lg:w-[227px] flex-none"
+        class="w-37.5 sm:w-45 md:w-50 lg:w-56.75 flex-none"
       />
     </div>
   </div>

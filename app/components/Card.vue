@@ -37,7 +37,7 @@ const cardItems = ref<DropdownMenuItem[][]>([
       <img
         v-if="item.imgURL"
         :src="item.imgURL"
-        :alt="item.name"
+        :alt="item.name!"
         class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
         loading="lazy"
       />
@@ -46,7 +46,7 @@ const cardItems = ref<DropdownMenuItem[][]>([
         class="absolute top-2 right-2 bg-background/80 backdrop-blur-md px-2 py-0.5 rounded-md text-xs font-semibold flex items-center gap-1 shadow-sm border border-border/20"
       >
         <LucideStar class="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
-        <span>{{ item.averageRating?.toFixed(1) }}</span>
+        <span>{{ Number(item.averageRating).toFixed(1) }}</span>
       </div>
       <!-- Media type -->
       <div

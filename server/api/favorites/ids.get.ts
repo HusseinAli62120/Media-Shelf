@@ -1,5 +1,5 @@
 import { db } from "../../utils/drizzleDriver";
-import { watchList } from "../../db/schema";
+import { favorites } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
 
 export default defineEventHandler(async (event) => {
@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
     // Auth
     await requireAuth({ event: event });
 
-    const userWatchlist = await db
-      .select({ id: watchList.mediaId })
-      .from(watchList);
+    const userFavorites = await db
+      .select({ id: favorites.mediaId })
+      .from(favorites);
 
     return {
       statusCode: 200,
-      statusMessage: "Watchlist refrerence fetched successfully",
-      watchListIds: userWatchlist,
+      statusMessage: "Favorites refrerence fetched successfully",
+      favoriteIds: userFavorites,
     };
   } catch (error) {
     if (error) {

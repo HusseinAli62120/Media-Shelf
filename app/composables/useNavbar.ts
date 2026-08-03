@@ -47,6 +47,13 @@ export default function useNavbar() {
           navigateTo("/user/watchlist");
         },
       },
+      {
+        label: "Favorites",
+        icon: "i-lucide-heart",
+        onSelect: () => {
+          navigateTo("/user/favorites");
+        },
+      },
     ],
     [
       {

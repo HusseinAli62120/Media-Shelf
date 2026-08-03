@@ -36,8 +36,10 @@ const {
 const {
   isSeen,
   isWatchlisted,
+  isFavorite,
   toggleSeen,
   toggleWatchlist,
+  toggleFavorite,
   getCountryName,
   getLanguageName,
   getReleaseYear,
@@ -255,6 +257,21 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                   :class="{ 'fill-current': isWatchlisted }"
                 />
                 {{ isWatchlisted ? "In Watchlist" : "Add to Watchlist" }}
+              </UButton>
+
+              <!-- Favorite Toggle CTA -->
+              <UButton
+                :variant="'ghost'"
+                :size="'lg'"
+                :color="isFavorite ? 'error' : 'neutral'"
+                class="rounded-full font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
+                @click="toggleFavorite"
+              >
+                <LucideHeart
+                  class="h-4.5 w-4.5"
+                  :class="{ 'fill-current': isFavorite }"
+                />
+                {{ isFavorite ? "Favorite" : "Add to Favorites" }}
               </UButton>
 
               <!-- Seen Toggle CTA -->

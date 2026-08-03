@@ -29,6 +29,7 @@ const formatMovieDetails = ({
     backdrop_path: `${backdropURL}${item.backdrop_path}`,
     averageRating: item.vote_average,
     release_date: item.release_date,
+    voteCount: item?.vote_count,
     runtime: runtime,
     trailer: trailer || "",
     genres: item.genres.map((genre: any) => genre.name),

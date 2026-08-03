@@ -24,6 +24,7 @@ export default function details({ movie }: { movie: MovieDetails }) {
             imgURL: movie?.poster_path,
             averageRating: movie?.averageRating,
             media_type: route.params?.type,
+            voteCount: movie?.voteCount,
           },
         });
 

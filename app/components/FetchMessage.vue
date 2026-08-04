@@ -22,8 +22,12 @@ const message = computed(() => {
       type === 'error' ? 'text-error' : 'text-foreground',
     ]"
   >
-    <LucideAlertCircle v-if="type === 'error'" class="w-10 h-10 mx-auto mb-2" />
-    <LucideSearchSlash v-else class="w-10 h-10 mx-auto mb-2" />
+    <UIcon
+      name="i-lucide-alert-circle"
+      v-if="type === 'error'"
+      class="w-10 h-10 mx-auto mb-2"
+    />
+    <UIcon name="i-lucide-search-slash" v-else class="w-10 h-10 mx-auto mb-2" />
     <p class="font-medium">{{ message }}</p>
   </div>
 </template>

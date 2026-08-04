@@ -45,7 +45,10 @@ const cardItems = ref<DropdownMenuItem[][]>([
       <div
         class="absolute top-2 right-2 bg-background/80 backdrop-blur-md px-2 py-0.5 rounded-md text-xs font-semibold flex items-center gap-1 shadow-sm border border-border/20"
       >
-        <LucideStar class="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+        <UIcon
+          name="i-heroicons-star-solid"
+          class="h-3.5 w-3.5 text-yellow-500 fill-yellow-500"
+        />
         <span>{{ Number(item.averageRating).toFixed(1) }}</span>
       </div>
       <!-- Media type -->
@@ -87,7 +90,7 @@ const cardItems = ref<DropdownMenuItem[][]>([
           variant="ghost"
           color="neutral"
         >
-          <LucideMoreHorizontal />
+          <UIcon class="h-5 w-5" name="i-lucide-more-horizontal" />
         </UButton>
       </UDropdownMenu>
     </div>

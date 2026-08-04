@@ -95,7 +95,7 @@ const login = async () => {
             <div
               class="h-12 w-12 bg-gray-950 dark:border dark:border-gray-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-200 dark:shadow-gray-900"
             >
-              <LucideFilm :size="24" />
+              <UIcon name="i-lucide-film" :size="24" />
             </div>
           </div>
 
@@ -164,7 +164,11 @@ const login = async () => {
             type="submit"
             class="w-full max-w-75 flex justify-center"
           >
-            <LucideLoader2 v-if="loading" class="animate-spin" />
+            <UIcon
+              name="i-lucide-loader-2"
+              v-if="loading"
+              class="animate-spin"
+            />
             <span v-else>Sign In</span>
           </UButton>
         </UForm>
@@ -192,7 +196,7 @@ const login = async () => {
       <div
         class="absolute top-10 left-10 flex items-center text-lg font-medium z-10"
       >
-        <LucideFilm class="mr-2 h-6 w-6" />
+        <UIcon name="i-lucide-film" class="mr-2 h-6 w-6" />
         MediaShelf
       </div>
 

@@ -110,7 +110,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
             class="rounded-full text-foreground hover:bg-neutral-50/0 active:bg-neutral-50/0 hover:scale-105 cursor-pointer"
             @click="goBack"
           >
-            <LucideArrowLeft class="h-6 w-6" />
+            <UIcon name="i-lucide-arrow-left" class="h-6 w-6" />
           </UButton>
         </div>
       </div>
@@ -136,7 +136,10 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-else
                 class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-secondary-background"
               >
-                <LucideFilm class="h-12 w-12 text-muted-foreground mb-2" />
+                <UIcon
+                  name="i-lucide-film"
+                  class="h-12 w-12 text-muted-foreground mb-2"
+                />
                 <span
                   class="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider"
                   >No Poster Available</span
@@ -184,7 +187,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
               <div
                 class="flex items-center gap-1 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 px-3 py-1.5 rounded-full border border-yellow-500/20 shadow-sm"
               >
-                <LucideStar
+                <UIcon
+                  name="i-lucide-star"
                   class="h-3.5 w-3.5 fill-yellow-600 dark:fill-yellow-500 text-yellow-600 dark:text-yellow-500"
                 />
                 <span
@@ -198,7 +202,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-if="movie.details?.release_date"
                 :content="getReleaseYear(movie.details.release_date)"
               >
-                <LucideCalendar class="h-3.5 w-3.5" />
+                <UIcon name="i-lucide-calendar" class="h-3.5 w-3.5" />
               </Badge>
 
               <!-- Runtime Badge -->
@@ -206,7 +210,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-if="movie.details.runtime"
                 :content="movie.details.runtime"
               >
-                <LucideClock class="h-3.5 w-3.5" />
+                <UIcon name="i-lucide-clock" class="h-3.5 w-3.5" />
               </Badge>
 
               <!-- Origin Country Badge -->
@@ -214,7 +218,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-if="movie.details.origin_country"
                 :content="getCountryName(movie.details.origin_country)"
               >
-                <LucideGlobe class="h-3.5 w-3.5" />
+                <UIcon name="i-lucide-globe" class="h-3.5 w-3.5" />
               </Badge>
 
               <!-- Original Language Badge -->
@@ -222,73 +226,116 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-if="movie.details.original_language"
                 :content="getLanguageName(movie.details.original_language)"
               >
-                <LucideText class="h-3.5 w-3.5" />
+                <UIcon name="i-lucide-text" class="h-3.5 w-3.5" />
               </Badge>
             </div>
 
-            <div v-if="movie?.details?.trailer" class="flex justify-start mt-4">
+            <!-- Trailer -->
+            <div
+              v-if="movie?.details?.trailer"
+              class="flex w-full justify-center md:justify-start mt-4"
+            >
               <!-- Trailer Badge -->
               <NuxtLink
                 :to="movie.details.trailer"
                 target="_blank"
                 class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-sky-500/10! text-sky-600! dark:text-sky-400! border-sky-500/20! shadow-xs text-xs font-bold uppercase tracking-wider hover:opacity-85 transition-opacity cursor-pointer"
               >
-                <LucidePlay
+                <UIcon
+                  name="i-lucide-play"
                   class="h-3.5 w-3.5 fill-sky-600 dark:fill-sky-400 text-sky-600 dark:text-sky-400"
                 />
                 <span>Watch Trailer</span>
               </NuxtLink>
             </div>
 
-            <!-- Library/Watchlist Actions -->
+            <!-- Library Actions -->
             <div
-              class="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-8"
+              class="flex flex-col xs:flex-row items-center justify-center md:justify-start gap-1 mt-8"
             >
-              <!-- Watchlist Toggle CTA -->
-              <UButton
-                :variant="'ghost'"
-                :size="'lg'"
-                :color="isWatchlisted ? 'primary' : 'neutral'"
-                class="rounded-full font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
-                @click="toggleWatchlist"
-              >
-                <LucideListChecks
-                  class="h-4.5 w-4.5"
-                  :class="{ 'fill-current': isWatchlisted }"
-                />
-                {{ isWatchlisted ? "In Watchlist" : "Add to Watchlist" }}
-              </UButton>
+              <!-- Diary -->
+              <DiarySlideover :movie="movie.details" />
+              <DiaryDrawer :movie="movie.details" />
 
-              <!-- Favorite Toggle CTA -->
-              <UButton
-                :variant="'ghost'"
-                :size="'lg'"
-                :color="isFavorite ? 'error' : 'neutral'"
-                class="rounded-full font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
-                @click="toggleFavorite"
+              <!-- Watchlist & Favorites & Watched -->
+              <div
+                class="flex flex-wrap items-center justify-center gap-1 xs:mt-0 mt-2"
               >
-                <LucideHeart
-                  class="h-4.5 w-4.5"
-                  :class="{ 'fill-current': isFavorite }"
-                />
-                {{ isFavorite ? "Favorite" : "Add to Favorites" }}
-              </UButton>
+                <!-- Watchlist Toggle -->
+                <UTooltip
+                  arrow
+                  :delay-duration="0"
+                  :text="isWatchlisted ? 'In Watchlist' : 'Add to Watchlist'"
+                  :ui="{ text: 'border-none' }"
+                >
+                  <UButton
+                    :variant="'ghost'"
+                    :size="'lg'"
+                    :class="isWatchlisted ? 'text-indigo-400' : 'text-neutral '"
+                    class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                    @click="toggleWatchlist"
+                  >
+                    <UIcon
+                      :name="
+                        isWatchlisted
+                          ? 'i-heroicons-bookmark-solid'
+                          : 'i-heroicons-bookmark'
+                      "
+                      class="h-6 w-6"
+                    />
+                  </UButton>
+                </UTooltip>
 
-              <!-- Seen Toggle CTA -->
-              <UButton
-                :variant="isSeen ? 'solid' : 'outline'"
-                :color="isSeen ? 'neutral' : 'neutral'"
-                class="rounded-xl px-5 py-2.5 font-bold shadow-sm transition-all duration-300 hover:scale-102 cursor-pointer flex items-center gap-2 text-sm"
-                :class="
-                  isSeen
-                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:border-emerald-500'
-                    : ''
-                "
-                @click="toggleSeen"
-              >
-                <LucideCheck class="h-4.5 w-4.5 font-extrabold" />
-                <span>{{ isSeen ? "Marked as Seen" : "Mark as Seen" }}</span>
-              </UButton>
+                <!-- Favorite Toggle -->
+                <UTooltip
+                  arrow
+                  :delay-duration="0"
+                  :text="isFavorite ? 'Favorite' : 'Add to Favorites'"
+                  :ui="{ text: 'border-none' }"
+                >
+                  <UButton
+                    :variant="'ghost'"
+                    :size="'lg'"
+                    :color="isFavorite ? 'error' : 'neutral'"
+                    class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                    @click="toggleFavorite"
+                    :class="{ 'fill-current': isFavorite }"
+                  >
+                    <UIcon
+                      :name="
+                        isFavorite
+                          ? 'i-heroicons-heart-solid'
+                          : 'i-heroicons-heart'
+                      "
+                      class="h-6 w-6"
+                    />
+                  </UButton>
+                </UTooltip>
+
+                <!-- Watched Toggle -->
+                <UTooltip
+                  arrow
+                  :delay-duration="0"
+                  :text="isSeen ? 'Watched' : 'Mark as Seen'"
+                  :ui="{ text: 'border-none' }"
+                >
+                  <UButton
+                    :variant="'ghost'"
+                    :size="'lg'"
+                    :color="isSeen ? 'success' : 'neutral'"
+                    class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                    @click="toggleSeen"
+                    :class="{ 'fill-current': isSeen }"
+                  >
+                    <UIcon
+                      :name="
+                        isSeen ? 'i-heroicons-eye-solid' : 'i-heroicons-eye'
+                      "
+                      class="h-6 w-6"
+                    />
+                  </UButton>
+                </UTooltip>
+              </div>
             </div>
 
             <!-- Overview Section -->
@@ -353,7 +400,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 v-else
                 class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground"
               >
-                <LucideUser class="h-8 w-8" />
+                <UIcon name="i-lucide-user" class="h-8 w-8" />
               </div>
             </div>
 

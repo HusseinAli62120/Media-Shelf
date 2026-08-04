@@ -1,3 +1,7 @@
+// To prevent reinitialization when calling the composable in nested components.
+let rating = ref<number>(0);
+let reviewText = ref<string>("");
+
 export default function details({ movie }: { movie: MovieDetails }) {
   const router = useRouter();
   const toast = useToast();
@@ -127,6 +131,19 @@ export default function details({ movie }: { movie: MovieDetails }) {
     }
   };
 
+  const handleMediaRating = ({
+    selectedRating,
+  }: {
+    selectedRating: number;
+  }) => {
+    rating.value = selectedRating;
+  };
+
+  const resetValues = () => {
+    rating.value = 0;
+    reviewText.value = "";
+  };
+
   const toggleSeen = () => {
     isSeen.value = !isSeen.value;
   };
@@ -183,11 +200,15 @@ export default function details({ movie }: { movie: MovieDetails }) {
     isFavorite,
     toggleFavorite,
     toggleSeen,
+    rating,
+    handleMediaRating,
+    reviewText,
     goBack,
     hasBackdrop,
     hasPoster,
     getReleaseYear,
     getLanguageName,
     getCountryName,
+    resetValues,
   };
 }

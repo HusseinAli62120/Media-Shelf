@@ -40,6 +40,7 @@ export default defineNuxtConfig({
         "@tsparticles/plugin-background-mask",
         "@tsparticles/slim",
         "@tsparticles/vue3",
+        "@inspira-ui/plugins",
       ],
     },
   },
@@ -48,7 +49,11 @@ export default defineNuxtConfig({
     "nuxt-auth-utils",
     "@nuxtjs/color-mode",
     "@nuxt/ui",
-    "nuxt-lucide-icons",
     "@tsparticles/nuxt4",
+    "nuxt-rating",
   ],
+
+  icon: {
+    collections: ["lucide", "heroicons", ""],
+  },
 });

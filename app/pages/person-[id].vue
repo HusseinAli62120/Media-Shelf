@@ -49,7 +49,10 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
               v-else
               class="w-full h-full flex flex-col items-center justify-center text-center p-4"
             >
-              <LucideUser class="h-12 w-12 text-muted-foreground" />
+              <UIcon
+                name="i-lucide-user"
+                class="h-12 w-12 text-muted-foreground"
+              />
             </div>
           </div>
         </div>
@@ -71,14 +74,14 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
                 v-if="data?.actorData?.birthday"
                 class="flex items-center gap-1.5"
               >
-                <LucideCalendar class="h-4 w-4" />
+                <UIcon name="i-lucide-calendar" class="h-4 w-4" />
                 <span>Born: {{ data.actorData.birthday }}</span>
               </div>
               <div
                 v-if="data?.actorData?.placeOfBirth"
                 class="flex items-center gap-1.5"
               >
-                <LucideMapPin class="h-4 w-4" />
+                <UIcon name="i-lucide-map-pin" class="h-4 w-4" />
                 <span>From: {{ data.actorData.placeOfBirth }}</span>
               </div>
             </div>
@@ -116,8 +119,8 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
           class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6"
         >
           <Card
-            v-for="media in data?.discovered"
-            :key="media.mediaId"
+            v-for="(media, index) in data?.discovered"
+            :key="index"
             :item="media"
           />
         </div>

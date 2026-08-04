@@ -56,7 +56,7 @@ const {
     <!-- Right section -->
     <div class="flex flex-row items-center gap-0 sm:gap-16">
       <NuxtLink to="/" class="flex flex-row items-center gap-2">
-        <LucideFilm class="h-6 w-6" />
+        <UIcon name="i-lucide-film" class="h-6 w-6" />
         <h1 class="font-semibold text-lg">Media Shelf</h1>
       </NuxtLink>
 
@@ -112,30 +112,36 @@ const {
     <div>
       <ClientOnly>
         <UButton
-          class="rounded-lg"
+          class="rounded-full"
           variant="ghost"
           color="neutral"
           @click="toggleTheme"
         >
           <ClientOnly>
-            <LucideSun
-              class="text-yellow-500"
+            <UIcon
+              name="i-lucide-sun"
+              class="text-yellow-500 w-6 h-6"
               v-if="colorMode.preference === 'light'"
             />
-            <LucideMoon v-else />
+            <UIcon name="i-lucide-moon" class="w-6 h-6" v-else />
           </ClientOnly>
         </UButton>
 
         <template #fallback>
-          <UButton disabled class="rounded-lg" variant="ghost" color="neutral">
-            <LucideMoon class="text-gray-500" />
+          <UButton
+            disabled
+            class="rounded-full"
+            variant="ghost"
+            color="neutral"
+          >
+            <UIcon name="i-lucide-moon" class="text-gray-500 w-6 h-6" />
           </UButton>
         </template>
       </ClientOnly>
 
       <UDropdownMenu :modal="false" :items="menuItem">
-        <UButton variant="ghost" color="neutral" class="rounded-lg">
-          <LucideUser class="h-6 w-6" />
+        <UButton variant="ghost" color="neutral" class="rounded-full">
+          <UIcon name="i-lucide-user" class="h-6 w-6" />
         </UButton>
       </UDropdownMenu>
     </div>

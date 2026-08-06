@@ -4,7 +4,7 @@
 const { movie } = defineProps<{ movie: MovieDetails }>();
 
 // Composables
-const { resetValues } = details({ movie: movie });
+const { resetValues } = useEngagement({ movie: movie });
 </script>
 
 <template>

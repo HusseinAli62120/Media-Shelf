@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { getLocalTimeZone } from "@internationalized/date";
 const { movie } = defineProps<{ movie: MovieDetails }>();
 
+const { getReleaseYear, hasPoster } = details({ movie: movie });
 const {
   isFavorite,
   toggleFavorite,
   handleMediaRating,
   rating,
   reviewText,
-  getReleaseYear,
-  hasPoster,
-} = details({ movie: movie });
+  diaryDate,
+} = useEngagement({
+  movie: movie,
+});
 
 const { preference } = useColorMode();
 </script>
@@ -59,43 +62,71 @@ const { preference } = useColorMode();
       </div>
     </div>
 
-    <!-- Rating + Like -->
-    <div
-      class="flex items-center justify-between bg-accent/50 dark:bg-neutral-950/40 p-4 rounded-2xl border border-neutral-300/80 dark:border-neutral-800/60 shadow-xs"
-    >
-      <!-- Rating -->
-      <div class="flex items-center gap-1">
-        <NuxtRating
-          :read-only="false"
-          :clearable="true"
-          border-color="#db8403"
-          active-color="#ffa41c"
-          :inactive-color="preference === 'light' ? '#cecece' : '#fff'"
-          :border-width="0"
-          :rating-step="0.5"
-          :rating-value="rating"
-          :rating-size="25"
-          @rating-hovered="
-            (event: number) => {
-              handleMediaRating({ selectedRating: event });
-            }
-          "
-        />
-      </div>
-
-      <!-- Like Toggle -->
-      <UButton
-        :variant="'ghost'"
-        :size="'lg'"
-        :color="isFavorite ? 'error' : 'neutral'"
-        class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-        @click="toggleFavorite"
+    <div class="flex flex-col items-start space-y-1">
+      <!-- Rating + Like -->
+      <div
+        class="flex items-center w-full justify-between bg-accent/50 dark:bg-neutral-950/40 p-4 rounded-2xl border border-neutral-300/80 dark:border-neutral-800/60 shadow-xs"
       >
-        <UIcon
-          :name="isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
-          class="h-8 w-8"
-        />
-      </UButton>
+        <!-- Rating -->
+        <div class="flex items-center gap-1">
+          <NuxtRating
+            :read-only="false"
+            :clearable="true"
+            border-color="#db8403"
+            active-color="#ffa41c"
+            :inactive-color="preference === 'light' ? '#cecece' : '#fff'"
+            :border-width="0"
+            :rating-step="0.5"
+            :rating-value="rating"
+            :rating-size="25"
+            @rating-hovered="
+              (event: number) => {
+                handleMediaRating({ selectedRating: event });
+              }
+            "
+          />
+        </div>
+
+        <!-- Like Toggle -->
+        <UButton
+          :variant="'ghost'"
+          :size="'lg'"
+          :color="isFavorite ? 'error' : 'neutral'"
+          class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+          @click="toggleFavorite"
+        >
+          <UIcon
+            :name="isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
+            class="h-8 w-8"
+          />
+        </UButton>
+      </div>
+      <!-- Date Picker -->
+      <div class="w-full">
+        <UPopover>
+          <UButton
+            class="cursor-pointer"
+            color="neutral"
+            size="xs"
+            variant="link"
+            icon="i-lucide-calendar"
+          >
+            {{ diaryDate ? formatDate({ date: diaryDate }) : "Select a date" }}
+          </UButton>
+
+          <template #content>
+            <UCalendar
+              @update:model-value="
+                () => {
+                  console.log(diaryDate.toDate(getLocalTimeZone()));
+                }
+              "
+              v-model="diaryDate"
+              class="p-2"
+            />
+          </template>
+        </UPopover>
+      </div>
     </div>
 
     <!-- Review Text Box -->

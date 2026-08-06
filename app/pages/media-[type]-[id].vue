@@ -34,12 +34,6 @@ const {
 
 // Composables
 const {
-  isSeen,
-  isWatchlisted,
-  isFavorite,
-  toggleSeen,
-  toggleWatchlist,
-  toggleFavorite,
   getCountryName,
   getLanguageName,
   getReleaseYear,
@@ -47,6 +41,15 @@ const {
   hasPoster,
   goBack,
 } = details({ movie: movie?.value?.details! });
+
+const {
+  isSeen,
+  isWatchlisted,
+  isFavorite,
+  toggleSeen,
+  toggleWatchlist,
+  toggleFavorite,
+} = useEngagement({ movie: movie?.value?.details! });
 
 const handleCastClick = ({ memberId }: { memberId: number }) => {
   navigateTo(`/person-${memberId}`);

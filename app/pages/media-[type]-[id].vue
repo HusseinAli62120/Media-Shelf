@@ -51,6 +51,11 @@ const {
   toggleFavorite,
 } = useEngagement({ movie: movie?.value?.details! });
 
+const colorMode = useColorMode();
+
+let rating = ref<number>(0);
+let watchedPopoverOpen = ref<boolean>(false);
+
 const handleCastClick = ({ memberId }: { memberId: number }) => {
   navigateTo(`/person-${memberId}`);
 };
@@ -316,18 +321,25 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 </UTooltip>
 
                 <!-- Watched Toggle -->
-                <UTooltip
+                <UPopover
                   arrow
-                  :delay-duration="0"
-                  :text="isSeen ? 'Watched' : 'Mark as Seen'"
-                  :ui="{ text: 'border-none' }"
+                  mode="hover"
+                  :open-delay="0"
+                  :close-delay="0"
+                  v-model:open="watchedPopoverOpen"
+                  @update:open="
+                    (value) => {
+                      if (!value) {
+                        rating = 0;
+                      }
+                    }
+                  "
                 >
                   <UButton
-                    :variant="'ghost'"
-                    :size="'lg'"
+                    variant="ghost"
+                    size="lg"
                     :color="isSeen ? 'success' : 'neutral'"
                     class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-                    @click="toggleSeen"
                     :class="{ 'fill-current': isSeen }"
                   >
                     <UIcon
@@ -337,7 +349,52 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                       class="h-6 w-6"
                     />
                   </UButton>
-                </UTooltip>
+
+                  <template #content>
+                    <div class="flex flex-col items-center space-y-2 px-3 py-2">
+                      <p
+                        class="text-xs text-center border-b-border text-neutral-500 dark:text-neutral-400"
+                      >
+                        {{ isSeen ? "Watched" : "Mark as Watched" }}
+                      </p>
+                      <NuxtRating
+                        :read-only="false"
+                        :clearable="true"
+                        border-color="#db8403"
+                        active-color="#ffa41c"
+                        :inactive-color="
+                          colorMode.preference === 'light' ? '#cecece' : '#fff'
+                        "
+                        :border-width="0"
+                        :rating-step="0.5"
+                        :rating-value="rating"
+                        :rating-size="20"
+                        @rating-hovered="
+                          (event: number) => {
+                            rating = event;
+                          }
+                        "
+                      />
+
+                      <UButton
+                        @click="
+                          () => {
+                            toggleSeen();
+                            rating = 0;
+                            watchedPopoverOpen = false;
+                          }
+                        "
+                        variant="subtle"
+                        color="neutral"
+                        class="cursor-pointer"
+                        size="sm"
+                        >{{
+                          isSeen ? "Update Rating" : "Mark as Watched"
+                        }}</UButton
+                      >
+                    </div>
+                  </template>
+                </UPopover>
               </div>
             </div>
 

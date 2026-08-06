@@ -1,7 +1,7 @@
-const watchListIds = useState<number[]>("watchListIds", () => []);
-const favoriteIds = useState<number[]>("favoriteIds", () => []);
-
 export default function useIdRef() {
+  const watchListIds = useState<number[]>("watchListIds", () => []);
+  const favoriteIds = useState<number[]>("favoriteIds", () => []);
+
   const toast = useToast();
 
   // Fetch watchlist ids

@@ -54,6 +54,13 @@ export default function useNavbar() {
           navigateTo("/user/favorites");
         },
       },
+      {
+        label: "Watched",
+        icon: "i-lucide-tv",
+        onSelect: () => {
+          navigateTo("/user/watched");
+        },
+      },
     ],
     [
       {

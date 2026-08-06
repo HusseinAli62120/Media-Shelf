@@ -35,7 +35,7 @@ export const watched = pgTable("watched", {
     onDelete: "cascade",
     onUpdate: "cascade",
   }),
-  rating: integer(), // 0-5
+  rating: text(), // 0-5
   ...timestamps,
 });
 
@@ -75,7 +75,7 @@ export const diary = pgTable("diary", {
     onDelete: "cascade",
     onUpdate: "cascade",
   }),
-  rating: integer(), // 0-5
+  rating: text(), // 0-5
   review: text(),
   ...timestamps,
 });

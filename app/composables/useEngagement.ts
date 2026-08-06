@@ -1,7 +1,12 @@
 import { CalendarDate } from "@internationalized/date";
 
 // To prevent reinitialization when calling the composable in nested components.
+
+// The onChange rating value
 let rating = ref<number>(0);
+
+// A reference rating value, to set it back when closing popover/drawer without actually updating.
+let ratingRef = ref<number>(0);
 let reviewText = ref<string>("");
 // Default value today
 let diaryDate = shallowRef<CalendarDate>(
@@ -16,7 +21,8 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
   // Composables
   const toast = useToast();
   const route = useRoute();
-  const { watchListIds, favoriteIds } = useIdRef();
+  const { watchListIds, favoriteIds, watchedIds } = useIdRef();
+  const loading = ref<boolean>(false);
 
   // Watchlist and Seen states (local simulation for frontend interaction)
   const isWatchlisted = computed(() => {
@@ -27,7 +33,9 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
     return favoriteIds.value.includes(movie.id);
   });
 
-  const isSeen = ref(false);
+  const isSeen = computed(() => {
+    return watchedIds.value.includes(movie.id);
+  });
 
   const toggleWatchlist = async () => {
     try {
@@ -149,8 +157,79 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
     rating.value = selectedRating;
   };
 
+  const addToWatched = async () => {
+    try {
+      const res = await $fetch("/api/watched/watched", {
+        method: "POST",
+        body: {
+          mediaId: movie?.id,
+          rating: rating.value,
+          name: movie?.title,
+          first_air_date: movie?.release_date,
+          overview: movie?.overview,
+          imgURL: movie?.poster_path,
+          averageRating: movie?.averageRating,
+          media_type: route.params?.type,
+          voteCount: movie?.voteCount,
+        },
+      });
+
+      if (res.statusCode === 200 || res.statusCode === 304) {
+        // Add the media id to the ids reference
+        watchedIds.value.push(movie?.id);
+        // Set the ratingRef to the new rating
+        ratingRef.value = rating.value;
+        toast.add({
+          title: "Success",
+          description: res?.statusMessage,
+          color: "success",
+        });
+
+        resetValues();
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.add({
+        title: "Error",
+        description: error.data?.statusMessage,
+        color: "error",
+      });
+    }
+  };
+
+  const updateRating = async () => {
+    try {
+      loading.value = true;
+      const res = await $fetch("/api/watched/updateRating", {
+        method: "PUT",
+        body: {
+          mediaId: movie?.id,
+          rating: rating.value,
+        },
+      });
+
+      if (res.statusCode === 200 || res.statusCode === 304) {
+        // Make the new value the ref
+        ratingRef.value = rating.value;
+        toast.add({
+          title: "Success",
+          description: res?.statusMessage,
+          color: "success",
+        });
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.add({
+        title: "Error",
+        description: error?.data?.statusMessage,
+        color: "error",
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const resetValues = () => {
-    rating.value = 0;
     reviewText.value = "";
     diaryDate.value = new CalendarDate(
       new Date().getFullYear(),
@@ -159,18 +238,17 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
     );
   };
 
-  const toggleSeen = () => {
-    isSeen.value = !isSeen.value;
-  };
-
   return {
     isWatchlisted,
     toggleWatchlist,
     isFavorite,
     toggleFavorite,
     isSeen,
-    toggleSeen,
+    addToWatched,
     rating,
+    ratingRef,
+    updateRating,
+    loading,
     handleMediaRating,
     reviewText,
     diaryDate,

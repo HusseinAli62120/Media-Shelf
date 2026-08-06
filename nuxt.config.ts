@@ -35,12 +35,13 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        "@vue/devtools-core",
-        "@vue/devtools-kit",
+        "@inspira-ui/plugins",
+        "@internationalized/date",
         "@tsparticles/plugin-background-mask",
         "@tsparticles/slim",
         "@tsparticles/vue3",
-        "@inspira-ui/plugins",
+        "@vue/devtools-core",
+        "@vue/devtools-kit",
       ],
     },
   },

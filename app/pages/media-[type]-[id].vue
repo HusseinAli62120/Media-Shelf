@@ -46,14 +46,36 @@ const {
   isSeen,
   isWatchlisted,
   isFavorite,
-  toggleSeen,
+  addToWatched,
+  handleMediaRating,
   toggleWatchlist,
+  rating,
+  ratingRef,
+  updateRating,
+  loading,
   toggleFavorite,
 } = useEngagement({ movie: movie?.value?.details! });
 
+// Fetch rating if it exists, if not, set it to 0
+const {
+  data: userRating,
+  pending: ratingLoading,
+  error: ratingError,
+} = await useFetch("/api/watched/rating", {
+  method: "GET",
+  server: false,
+  query: {
+    mediaId: route.params.id,
+  },
+  onResponse({ response }) {
+    // Set the stored rating to both dynamic and reference values
+    rating.value = Number(response?._data?.rating) || 0;
+    ratingRef.value = Number(response?._data?.rating) || 0;
+  },
+});
+
 const colorMode = useColorMode();
 
-let rating = ref<number>(0);
 let watchedPopoverOpen = ref<boolean>(false);
 
 const handleCastClick = ({ memberId }: { memberId: number }) => {
@@ -293,7 +315,6 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                     />
                   </UButton>
                 </UTooltip>
-
                 <!-- Favorite Toggle -->
                 <UTooltip
                   arrow
@@ -328,9 +349,10 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                   :close-delay="0"
                   v-model:open="watchedPopoverOpen"
                   @update:open="
+                    // Set rating back to ref when closing the popover without updating
                     (value) => {
                       if (!value) {
-                        rating = 0;
+                        rating = ratingRef;
                       }
                     }
                   "
@@ -371,16 +393,19 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                         :rating-size="20"
                         @rating-hovered="
                           (event: number) => {
-                            rating = event;
+                            handleMediaRating({ selectedRating: event });
                           }
                         "
                       />
-
                       <UButton
                         @click="
                           () => {
-                            toggleSeen();
-                            rating = 0;
+                            if (isSeen) {
+                              updateRating();
+                            } else {
+                              addToWatched();
+                            }
+
                             watchedPopoverOpen = false;
                           }
                         "
@@ -389,9 +414,17 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                         class="cursor-pointer"
                         size="sm"
                         >{{
-                          isSeen ? "Update Rating" : "Mark as Watched"
-                        }}</UButton
-                      >
+                          isSeen && !loading
+                            ? "Update Rating"
+                            : "Mark as Watched"
+                        }}
+                        <!-- Spinner -->
+                        <UIcon
+                          v-if="loading"
+                          class="animate-spin"
+                          name="i-lucide-loader-circle"
+                        />
+                      </UButton>
                     </div>
                   </template>
                 </UPopover>

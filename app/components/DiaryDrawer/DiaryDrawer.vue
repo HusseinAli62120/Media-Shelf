@@ -4,7 +4,7 @@
 const { movie } = defineProps<{ movie: MovieDetails }>();
 
 // Composables
-const { resetValues } = useEngagement({ movie: movie });
+const { resetValues, rating, ratingRef } = useEngagement({ movie: movie });
 </script>
 
 <template>
@@ -15,7 +15,21 @@ const { resetValues } = useEngagement({ movie: movie });
     title="Add Diary Entry"
     direction="bottom"
     class="sm:hidden"
-    @close="resetValues"
+    @update:open="
+      // Clear the rating when opening for a new diary entry
+      (value) => {
+        if (value) {
+          rating = 0;
+        }
+      }
+    "
+    @close="
+      // Reset the text box, and the rating
+      () => {
+        resetValues();
+        rating = ratingRef;
+      }
+    "
   >
     <RainbowButton :speed="2">Review & Log</RainbowButton>
 

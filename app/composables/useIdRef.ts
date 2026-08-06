@@ -1,6 +1,7 @@
 export default function useIdRef() {
   const watchListIds = useState<number[]>("watchListIds", () => []);
   const favoriteIds = useState<number[]>("favoriteIds", () => []);
+  const watchedIds = useState<number[]>("watchedIds", () => []);
 
   const toast = useToast();
 
@@ -54,5 +55,30 @@ export default function useIdRef() {
     }
   });
 
-  return { watchListIds, favoriteIds };
+  // Fetch watched ids
+  onMounted(async () => {
+    // Ids already fetched
+    if (watchedIds?.value?.length && watchedIds.value.length > 0) {
+      return;
+    }
+
+    try {
+      const res = await $fetch("/api/watched/ids");
+
+      if (res?.statusCode === 200 && res?.watchedIds) {
+        // Extract IDs and remove any null or undefined entries
+        watchedIds.value = res.watchedIds
+          .map((item) => item?.id)
+          .filter((id): id is number => typeof id === "number");
+      }
+    } catch (error: any) {
+      toast.add({
+        title: "Error",
+        description: error?.data?.statusMessage,
+        color: "error",
+      });
+    }
+  });
+
+  return { watchListIds, favoriteIds, watchedIds };
 }

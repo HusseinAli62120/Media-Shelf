@@ -4,7 +4,7 @@
 const { movie } = defineProps<{ movie: MovieDetails }>();
 
 // Composables
-const { resetValues } = useEngagement({ movie: movie });
+const { resetValues, rating, ratingRef } = useEngagement({ movie: movie });
 </script>
 
 <template>
@@ -13,7 +13,19 @@ const { resetValues } = useEngagement({ movie: movie });
     title="Add Diary Entry"
     direction="right"
     class="hidden sm:block"
-    @after:leave="resetValues"
+    @update:open="
+      (value) => {
+        if (value) {
+          rating = 0;
+        }
+      }
+    "
+    @after:leave="
+      () => {
+        resetValues();
+        rating = ratingRef;
+      }
+    "
   >
     <RainbowButton :speed="2">Review & Log</RainbowButton>
 

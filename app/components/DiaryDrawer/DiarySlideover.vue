@@ -4,7 +4,16 @@
 const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
 
 // Composables
-const { resetValues, rating, ratingRef } = useEngagement({ media: media });
+const {
+  resetValues,
+  rating,
+  ratingRef,
+  addDiaryEntry,
+  loading,
+  slideoverOpen,
+} = useEngagement({
+  media: media,
+});
 </script>
 
 <template>
@@ -20,6 +29,7 @@ const { resetValues, rating, ratingRef } = useEngagement({ media: media });
         }
       }
     "
+    v-model:open="slideoverOpen"
     @after:leave="
       () => {
         resetValues();
@@ -35,15 +45,9 @@ const { resetValues, rating, ratingRef } = useEngagement({ media: media });
     <!-- Footer -->
     <template #footer>
       <div class="w-full flex flex-col items-start space-y-5">
-        <RainbowButton
-          @click="
-            () => {
-              console.log('Submit');
-            }
-          "
-          class="w-full"
-          >Add Entry</RainbowButton
-        >
+        <RainbowButton :disabled="loading" @click="addDiaryEntry" class="w-full"
+          >{{ loading ? "Adding..." : "Add Entry" }}
+        </RainbowButton>
       </div>
     </template>
   </USlideover>

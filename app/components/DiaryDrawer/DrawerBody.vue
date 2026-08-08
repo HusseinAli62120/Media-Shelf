@@ -48,7 +48,10 @@ const { preference } = useColorMode();
         >
           {{ media.title }}
         </h2>
-        <p class="italic text-sm font-semibold text-neutral-400">
+        <p
+          v-if="media?.tagline"
+          class="italic text-sm font-semibold text-neutral-400"
+        >
           {{ `"${media?.tagline}"` }}
         </p>
         <div class="flex items-center gap-2 mt-2 text-xs">
@@ -114,7 +117,11 @@ const { preference } = useColorMode();
             variant="link"
             icon="i-lucide-calendar"
           >
-            {{ diaryDate ? formatDate({ date: diaryDate }) : "Select a date" }}
+            {{
+              diaryDate
+                ? formatDateTime({ timestamp: diaryDate })?.date // It is a date here, not a timestamp
+                : "Select a date"
+            }}
           </UButton>
 
           <template #content>

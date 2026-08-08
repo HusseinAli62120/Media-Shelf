@@ -26,7 +26,10 @@ export default function useEngagement({
   const toast = useToast();
   const route = useRoute();
   const { watchListIds, favoriteIds, watchedIds } = useIdRef();
-  const loading = ref<boolean>(false);
+
+  // Variables
+  let loading = ref<boolean>(false);
+  let slideoverOpen = ref<boolean>(false); // Used to close the slideover/drawer after adding an entry
 
   // Watchlist and Seen states (local simulation for frontend interaction)
   const isWatchlisted = computed(() => {
@@ -247,6 +250,79 @@ export default function useEngagement({
     );
   };
 
+  const addDiaryEntry = async () => {
+    const now = new Date();
+
+    // Construct the timestamp for the diary entry
+    const timestampInfo = new Date(
+      diaryDate.value.year,
+      diaryDate.value.month - 1,
+      diaryDate.value.day,
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+      now.getMilliseconds(),
+    );
+
+    const diaryTimestamp = timestampInfo.toISOString();
+    try {
+      loading.value = true;
+
+      const res = await $fetch("/api/diary/add", {
+        method: "POST",
+        body: {
+          mediaId: media.id,
+          review: reviewText.value,
+          rating: rating.value,
+          timestamp: diaryTimestamp,
+          name: media.title,
+          first_air_date: media.release_date,
+          overview: media.overview,
+          imgURL: media.poster_path,
+          averageRating: media.averageRating,
+          media_type: mediaType.value,
+          voteCount: media.voteCount,
+        },
+      });
+
+      if (res.statusCode === 200 || res.statusCode === 304) {
+        // Check if it was a new watch or a previously watched
+        if (!isSeen.value) {
+          // New watch, add it to watched and update the rating
+          watchedIds.value.push(media?.id);
+          ratingRef.value = rating.value;
+        } else {
+          // Update the rating only if a new rating was selected
+          if (rating.value > 0) {
+            ratingRef.value = rating.value;
+          }
+        }
+        toast.add({
+          title: "Success",
+          description: res?.statusMessage,
+          color: "success",
+        });
+
+        resetValues();
+      }
+      // console.log(
+      //   "Date: ",
+      //   formatDateTime({ timestamp: diaryTimestamp })?.dateTime,
+      // );
+      // console.log("DB Value: ", diaryTimestamp);
+    } catch (error: any) {
+      console.log(error);
+      toast.add({
+        title: "Error",
+        description: error?.data?.statusMessage,
+        color: "error",
+      });
+    } finally {
+      loading.value = false;
+      slideoverOpen.value = false;
+    }
+  };
+
   return {
     isWatchlisted,
     toggleWatchlist,
@@ -258,9 +334,11 @@ export default function useEngagement({
     ratingRef,
     updateRating,
     loading,
+    slideoverOpen,
     handleMediaRating,
     reviewText,
     diaryDate,
     resetValues,
+    addDiaryEntry,
   };
 }

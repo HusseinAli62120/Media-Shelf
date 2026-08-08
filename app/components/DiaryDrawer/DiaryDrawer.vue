@@ -4,11 +4,19 @@
 const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
 
 // Composables
-const { resetValues, rating, ratingRef } = useEngagement({ media: media });
+const {
+  resetValues,
+  rating,
+  ratingRef,
+  loading,
+  addDiaryEntry,
+  slideoverOpen,
+} = useEngagement({ media: media });
 </script>
 
 <template>
   <UDrawer
+    v-model:open="slideoverOpen"
     :ui="{
       body: 'no-scrollbar flex flex-col justify-between items-center',
     }"
@@ -40,14 +48,12 @@ const { resetValues, rating, ratingRef } = useEngagement({ media: media });
     <template #footer>
       <div class="w-full flex flex-col items-start space-y-5">
         <RainbowButton
-          @click="
-            () => {
-              console.log('Submit');
-            }
-          "
+          :disabled="loading"
+          @click="addDiaryEntry"
           class="w-full"
-          >Add Entry</RainbowButton
         >
+          {{ loading ? "Adding..." : "Add Entry" }}
+        </RainbowButton>
       </div>
     </template>
   </UDrawer>

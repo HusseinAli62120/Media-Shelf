@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Props
 
-const { movie } = defineProps<{ movie: MovieDetails }>();
+const { movie } = defineProps<{ movie: MovieDetails | TvDetails }>();
 
 // Composables
 const { resetValues, rating, ratingRef } = useEngagement({ movie: movie });

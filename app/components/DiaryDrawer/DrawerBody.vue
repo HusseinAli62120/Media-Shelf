@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getLocalTimeZone } from "@internationalized/date";
-const { movie } = defineProps<{ movie: MovieDetails }>();
+const { movie } = defineProps<{ movie: MovieDetails | TvDetails }>();
 
 const { getReleaseYear, hasPoster } = details({ movie: movie });
 const {
@@ -55,8 +55,11 @@ const { preference } = useColorMode();
           <Badge :content="`${getReleaseYear(movie.release_date)}`">
             <UIcon name="i-lucide-calendar" class="h-3.5 w-3.5" />
           </Badge>
-          <Badge :content="`${movie.runtime}`">
+          <Badge v-if="'runtime' in movie" :content="`${movie.runtime}`">
             <UIcon name="i-lucide-clock" class="h-3.5 w-3.5" />
+          </Badge>
+          <Badge v-if="'status' in movie" :content="`${movie.status}`">
+            <UIcon name="i-lucide-info" class="h-3.5 w-3.5" />
           </Badge>
         </div>
       </div>

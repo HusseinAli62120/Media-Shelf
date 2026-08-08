@@ -1,4 +1,8 @@
-export default function details({ movie }: { movie: MovieDetails }) {
+export default function details({
+  movie,
+}: {
+  movie: MovieDetails | TvDetails;
+}) {
   const router = useRouter();
 
   const goBack = () => {

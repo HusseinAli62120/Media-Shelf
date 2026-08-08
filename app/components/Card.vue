@@ -31,7 +31,11 @@ const cardItems = ref<DropdownMenuItem[][]>([
   >
     <!-- Poster Image -->
     <NuxtLink
-      :to="`/media-${item.media_type}-${item.mediaId}`"
+      :to="
+        item?.media_type === 'movie'
+          ? `/movie/details-${item.mediaId}`
+          : `/tv/details-${item.mediaId}`
+      "
       class="aspect-2/3 w-full overflow-hidden relative bg-muted"
     >
       <img
@@ -69,7 +73,11 @@ const cardItems = ref<DropdownMenuItem[][]>([
       <div class="p-3 flex flex-col justify-between">
         <div>
           <NuxtLink
-            :to="`/media-${item.media_type}-${item.mediaId}`"
+            :to="
+              item?.media_type === 'movie'
+                ? `/movie/details-${item.mediaId}`
+                : `/tv/details-${item.mediaId}`
+            "
             class="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer"
           >
             {{ item.name }}

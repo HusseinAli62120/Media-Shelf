@@ -17,7 +17,11 @@ let diaryDate = shallowRef<CalendarDate>(
   ),
 );
 
-export default function useEngagement({ movie }: { movie: MovieDetails }) {
+export default function useEngagement({
+  movie,
+}: {
+  movie: MovieDetails | TvDetails;
+}) {
   // Composables
   const toast = useToast();
   const route = useRoute();
@@ -37,6 +41,11 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
     return watchedIds.value.includes(movie.id);
   });
 
+  // Check media type based on route
+  const mediaType = computed(() => {
+    return route?.path.split("/")[1];
+  });
+
   const toggleWatchlist = async () => {
     try {
       let res;
@@ -50,7 +59,7 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
             overview: movie?.overview,
             imgURL: movie?.poster_path,
             averageRating: movie?.averageRating,
-            media_type: route.params?.type,
+            media_type: mediaType.value,
             voteCount: movie?.voteCount,
           },
         });
@@ -106,7 +115,7 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
             overview: movie?.overview,
             imgURL: movie?.poster_path,
             averageRating: movie?.averageRating,
-            media_type: route.params?.type,
+            media_type: mediaType.value,
             voteCount: movie?.voteCount,
           },
         });
@@ -169,7 +178,7 @@ export default function useEngagement({ movie }: { movie: MovieDetails }) {
           overview: movie?.overview,
           imgURL: movie?.poster_path,
           averageRating: movie?.averageRating,
-          media_type: route.params?.type,
+          media_type: mediaType.value,
           voteCount: movie?.voteCount,
         },
       });

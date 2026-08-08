@@ -6,7 +6,7 @@ const formatCast = ({ cast }: { cast: any[] }) => {
     castMemebers.push({
       id: member.id,
       name: member.name,
-      character: member?.character,
+      character: member?.character || member?.roles[0]?.character,
       image: `${baseURL}${member.profile_path}`,
     });
   });

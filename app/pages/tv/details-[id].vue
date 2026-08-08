@@ -9,15 +9,15 @@ definePageMeta({
 
 const route = useRoute();
 
-// Fetch movie details
+// Fetch tv details
 const {
-  data: movie,
-  pending: movieLoading,
-  error: movieError,
-} = await useFetch("/api/tmdb/movieDetails", {
+  data: tvDetails,
+  pending: tvLoading,
+  error: tvError,
+} = await useFetch("/api/tmdb/tvDetails", {
   query: {
     mediaId: route.params.id,
-    mediaType: route.params.type,
+    mediaType: "tv",
   },
 });
 
@@ -28,19 +28,13 @@ const {
 } = await useFetch("/api/tmdb/recommendations", {
   query: {
     mediaId: route.params.id,
-    mediaType: route.params.type,
+    mediaType: "tv",
   },
 });
 
 // Composables
-const {
-  getCountryName,
-  getLanguageName,
-  getReleaseYear,
-  hasBackdrop,
-  hasPoster,
-  goBack,
-} = details({ movie: movie?.value?.details! });
+const { getLanguageName, getReleaseYear, hasBackdrop, hasPoster, goBack } =
+  details({ movie: tvDetails?.value?.details! });
 
 const {
   isSeen,
@@ -54,7 +48,7 @@ const {
   updateRating,
   loading,
   toggleFavorite,
-} = useEngagement({ movie: movie?.value?.details! });
+} = useEngagement({ movie: tvDetails?.value?.details! });
 
 // Fetch rating if it exists, if not, set it to 0
 const {
@@ -90,7 +84,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
   >
     <!-- Loading State -->
     <div
-      v-if="movieLoading"
+      v-if="tvLoading"
       class="flex-1 flex flex-col items-center justify-center py-20"
     >
       <div
@@ -103,8 +97,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
 
     <!-- Error State -->
     <DetailsError
-      v-else-if="movieError || !movie?.details"
-      :movie-error="movieError"
+      v-else-if="tvError || !tvDetails?.details"
+      :movie-error="tvError"
       :go-back="goBack"
     />
 
@@ -117,8 +111,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
         <!-- Backdrop Image -->
         <img
           v-if="hasBackdrop"
-          :src="movie.details.backdrop_path"
-          :alt="movie.details.title"
+          :src="tvDetails.details.backdrop_path"
+          :alt="tvDetails.details.title"
           class="w-full h-full object-cover opacity-60 dark:opacity-40 transition-transform duration-1000 scale-102 hover:scale-105"
           loading="eager"
         />
@@ -157,8 +151,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
             >
               <img
                 v-if="hasPoster"
-                :src="movie.details.poster_path"
-                :alt="movie.details.title"
+                :src="tvDetails.details.poster_path"
+                :alt="tvDetails.details.title"
                 class="w-full h-full object-cover"
                 loading="eager"
               />
@@ -187,23 +181,25 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
               <h1
                 class="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-tight"
               >
-                {{ movie.details.title }}
+                {{ tvDetails.details.title }}
               </h1>
               <p
-                v-if="movie.details.tagline"
+                v-if="tvDetails.details.tagline"
                 class="text-base sm:text-lg md:text-xl text-neutral-500 dark:text-neutral-400 italic font-medium mt-3"
               >
-                "{{ movie.details.tagline }}"
+                "{{ tvDetails.details.tagline }}"
               </p>
             </div>
 
             <!-- Genres/Categories -->
             <div
-              v-if="movie.details.genres && movie.details.genres.length > 0"
+              v-if="
+                tvDetails.details.genres && tvDetails.details.genres.length > 0
+              "
               class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-4"
             >
               <CategoryBadge
-                v-for="genre in movie.details.genres"
+                v-for="genre in tvDetails.details.genres"
                 :key="genre"
                 :genre="genre"
               />
@@ -222,61 +218,52 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                   class="h-3.5 w-3.5 fill-yellow-600 dark:fill-yellow-500 text-yellow-600 dark:text-yellow-500"
                 />
                 <span
-                  >{{ Number(movie.details.averageRating || 0).toFixed(1) }} /
-                  10</span
+                  >{{
+                    Number(tvDetails.details.averageRating || 0).toFixed(1)
+                  }}
+                  / 10</span
                 >
               </div>
 
               <!-- Release Date Badge -->
               <Badge
-                v-if="movie.details?.release_date"
-                :content="getReleaseYear(movie.details.release_date)"
+                v-if="tvDetails.details?.release_date"
+                :content="getReleaseYear(tvDetails.details.release_date)"
               >
                 <UIcon name="i-lucide-calendar" class="h-3.5 w-3.5" />
               </Badge>
 
-              <!-- Runtime Badge -->
-              <Badge
-                v-if="movie.details.runtime"
-                :content="movie.details.runtime"
-              >
-                <UIcon name="i-lucide-clock" class="h-3.5 w-3.5" />
-              </Badge>
-
-              <!-- Origin Country Badge -->
-              <Badge
-                v-if="movie.details.origin_country"
-                :content="getCountryName(movie.details.origin_country)"
-              >
-                <UIcon name="i-lucide-globe" class="h-3.5 w-3.5" />
-              </Badge>
-
               <!-- Original Language Badge -->
               <Badge
-                v-if="movie.details.original_language"
-                :content="getLanguageName(movie.details.original_language)"
+                v-if="tvDetails.details.original_language"
+                :content="getLanguageName(tvDetails.details.original_language)"
               >
                 <UIcon name="i-lucide-text" class="h-3.5 w-3.5" />
               </Badge>
-            </div>
 
-            <!-- Trailer -->
-            <div
-              v-if="movie?.details?.trailer"
-              class="flex w-full justify-center md:justify-start mt-4"
-            >
-              <!-- Trailer Badge -->
-              <NuxtLink
-                :to="movie.details.trailer"
-                target="_blank"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-sky-500/10! text-sky-600! dark:text-sky-400! border-sky-500/20! shadow-xs text-xs font-bold uppercase tracking-wider hover:opacity-85 transition-opacity cursor-pointer"
+              <!-- Number of episodes -->
+              <Badge
+                v-if="tvDetails.details.number_of_episodes"
+                :content="`${tvDetails.details.number_of_episodes} episodes`"
               >
-                <UIcon
-                  name="i-lucide-play"
-                  class="h-3.5 w-3.5 fill-sky-600 dark:fill-sky-400 text-sky-600 dark:text-sky-400"
-                />
-                <span>Watch Trailer</span>
-              </NuxtLink>
+                <UIcon name="i-lucide-tv" class="h-3.5 w-3.5" />
+              </Badge>
+
+              <!-- Number of seasons -->
+              <Badge
+                v-if="tvDetails.details.number_of_seasons"
+                :content="`${tvDetails.details.number_of_seasons} seasons`"
+              >
+                <UIcon name="i-lucide-list-checks" class="h-3.5 w-3.5" />
+              </Badge>
+
+              <!-- Status -->
+              <Badge
+                v-if="tvDetails.details.status"
+                :content="tvDetails.details.status"
+              >
+                <UIcon name="i-lucide-info" class="h-3.5 w-3.5" />
+              </Badge>
             </div>
 
             <!-- Library Actions -->
@@ -284,8 +271,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
               class="flex flex-col xs:flex-row items-center justify-center md:justify-start gap-1 mt-8"
             >
               <!-- Diary -->
-              <DiarySlideover :movie="movie.details" />
-              <DiaryDrawer :movie="movie.details" />
+              <DiarySlideover :movie="tvDetails.details" />
+              <DiaryDrawer :movie="tvDetails.details" />
 
               <!-- Watchlist & Favorites & Watched -->
               <div
@@ -442,7 +429,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 class="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base leading-relaxed tracking-wide max-w-3xl font-light"
               >
                 {{
-                  movie.details.overview ||
+                  tvDetails.details.overview ||
                   "No overview available for this movie."
                 }}
               </p>
@@ -453,7 +440,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
 
       <!-- Cast Section -->
       <div
-        v-if="movie?.details?.cast && movie.details.cast.length > 0"
+        v-if="tvDetails.details?.cast && tvDetails.details.cast.length > 0"
         class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-6"
       >
         <div
@@ -469,7 +456,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
 
         <div class="flex flex-row overflow-x-auto gap-6 pb-4 no-scrollbar">
           <div
-            v-for="member in movie.details.cast"
+            v-for="member in tvDetails.details.cast"
             :key="member.id"
             class="flex flex-col items-center text-center gap-2 flex-none w-25 sm:w-30 group hover:cursor-pointer"
             @click="handleCastClick({ memberId: member?.id! })"

@@ -18,9 +18,9 @@ let diaryDate = shallowRef<CalendarDate>(
 );
 
 export default function useEngagement({
-  movie,
+  media,
 }: {
-  movie: MovieDetails | TvDetails;
+  media: MovieDetails | TvDetails;
 }) {
   // Composables
   const toast = useToast();
@@ -30,15 +30,15 @@ export default function useEngagement({
 
   // Watchlist and Seen states (local simulation for frontend interaction)
   const isWatchlisted = computed(() => {
-    return watchListIds.value.includes(movie.id);
+    return watchListIds.value.includes(media.id);
   });
 
   const isFavorite = computed(() => {
-    return favoriteIds.value.includes(movie.id);
+    return favoriteIds.value.includes(media.id);
   });
 
   const isSeen = computed(() => {
-    return watchedIds.value.includes(movie.id);
+    return watchedIds.value.includes(media.id);
   });
 
   // Check media type based on route
@@ -53,34 +53,34 @@ export default function useEngagement({
         res = await $fetch("/api/watchlist/watchlist", {
           method: "POST",
           body: {
-            mediaId: movie?.id,
-            name: movie?.title,
-            first_air_date: movie?.release_date,
-            overview: movie?.overview,
-            imgURL: movie?.poster_path,
-            averageRating: movie?.averageRating,
+            mediaId: media?.id,
+            name: media?.title,
+            first_air_date: media?.release_date,
+            overview: media?.overview,
+            imgURL: media?.poster_path,
+            averageRating: media?.averageRating,
             media_type: mediaType.value,
-            voteCount: movie?.voteCount,
+            voteCount: media?.voteCount,
           },
         });
 
         // Add the new id to the list
         if (res.statusCode === 200 || res.statusCode === 304) {
-          watchListIds.value.push(movie?.id);
+          watchListIds.value.push(media?.id);
         }
         // Remove from watchlist
       } else {
         res = await $fetch("/api/watchlist/watchlist", {
           method: "DELETE",
           body: {
-            mediaId: movie?.id,
+            mediaId: media?.id,
           },
         });
 
         // Remove the id from the list
         if (res.statusCode === 200 || res.statusCode === 304) {
           watchListIds.value = watchListIds.value.filter(
-            (id) => id !== movie?.id,
+            (id) => id !== media?.id,
           );
         }
       }
@@ -109,34 +109,34 @@ export default function useEngagement({
         res = await $fetch("/api/favorites/favorites", {
           method: "POST",
           body: {
-            mediaId: movie?.id,
-            name: movie?.title,
-            first_air_date: movie?.release_date,
-            overview: movie?.overview,
-            imgURL: movie?.poster_path,
-            averageRating: movie?.averageRating,
+            mediaId: media?.id,
+            name: media?.title,
+            first_air_date: media?.release_date,
+            overview: media?.overview,
+            imgURL: media?.poster_path,
+            averageRating: media?.averageRating,
             media_type: mediaType.value,
-            voteCount: movie?.voteCount,
+            voteCount: media?.voteCount,
           },
         });
 
         // Add the new id to the list
         if (res.statusCode === 200 || res.statusCode === 304) {
-          favoriteIds.value.push(movie?.id);
+          favoriteIds.value.push(media?.id);
         }
         // Remove from favorites
       } else {
         res = await $fetch("/api/favorites/favorites", {
           method: "DELETE",
           body: {
-            mediaId: movie?.id,
+            mediaId: media?.id,
           },
         });
 
         // Remove the id from the list
         if (res.statusCode === 200 || res.statusCode === 304) {
           favoriteIds.value = favoriteIds.value.filter(
-            (id) => id !== movie?.id,
+            (id) => id !== media?.id,
           );
         }
       }
@@ -171,21 +171,21 @@ export default function useEngagement({
       const res = await $fetch("/api/watched/watched", {
         method: "POST",
         body: {
-          mediaId: movie?.id,
+          mediaId: media?.id,
           rating: rating.value,
-          name: movie?.title,
-          first_air_date: movie?.release_date,
-          overview: movie?.overview,
-          imgURL: movie?.poster_path,
-          averageRating: movie?.averageRating,
+          name: media?.title,
+          first_air_date: media?.release_date,
+          overview: media?.overview,
+          imgURL: media?.poster_path,
+          averageRating: media?.averageRating,
           media_type: mediaType.value,
-          voteCount: movie?.voteCount,
+          voteCount: media?.voteCount,
         },
       });
 
       if (res.statusCode === 200 || res.statusCode === 304) {
         // Add the media id to the ids reference
-        watchedIds.value.push(movie?.id);
+        watchedIds.value.push(media?.id);
         // Set the ratingRef to the new rating
         ratingRef.value = rating.value;
         toast.add({
@@ -212,7 +212,7 @@ export default function useEngagement({
       const res = await $fetch("/api/watched/updateRating", {
         method: "PUT",
         body: {
-          mediaId: movie?.id,
+          mediaId: media?.id,
           rating: rating.value,
         },
       });

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 // Props
 
-const { movie } = defineProps<{ movie: MovieDetails | TvDetails }>();
+const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
 
 // Composables
-const { resetValues, rating, ratingRef } = useEngagement({ movie: movie });
+const { resetValues, rating, ratingRef } = useEngagement({ media: media });
 </script>
 
 <template>
@@ -34,7 +34,7 @@ const { resetValues, rating, ratingRef } = useEngagement({ movie: movie });
     <RainbowButton :speed="2">Review & Log</RainbowButton>
 
     <template class="overflow-hidden" #body>
-      <DrawerBody :movie="movie" />
+      <DrawerBody :media="media" />
     </template>
     <!-- Footer -->
     <template #footer>

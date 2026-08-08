@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { getLocalTimeZone } from "@internationalized/date";
-const { movie } = defineProps<{ movie: MovieDetails | TvDetails }>();
+const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
 
-const { getReleaseYear, hasPoster } = details({ movie: movie });
+const { getReleaseYear, hasPoster } = details({ media: media });
 const {
   isFavorite,
   toggleFavorite,
@@ -11,7 +11,7 @@ const {
   reviewText,
   diaryDate,
 } = useEngagement({
-  movie: movie,
+  media: media,
 });
 
 const { preference } = useColorMode();
@@ -29,8 +29,8 @@ const { preference } = useColorMode();
       >
         <img
           v-if="hasPoster"
-          :src="movie.poster_path"
-          :alt="movie.title"
+          :src="media.poster_path"
+          :alt="media.title"
           class="w-full h-full object-cover"
         />
         <div
@@ -46,19 +46,19 @@ const { preference } = useColorMode();
         <h2
           class="text-2xl font-bold tracking-tight text-foreground line-clamp-2"
         >
-          {{ movie.title }}
+          {{ media.title }}
         </h2>
         <p class="italic text-sm font-semibold text-neutral-400">
-          {{ `"${movie?.tagline}"` }}
+          {{ `"${media?.tagline}"` }}
         </p>
         <div class="flex items-center gap-2 mt-2 text-xs">
-          <Badge :content="`${getReleaseYear(movie.release_date)}`">
+          <Badge :content="`${getReleaseYear(media.release_date)}`">
             <UIcon name="i-lucide-calendar" class="h-3.5 w-3.5" />
           </Badge>
-          <Badge v-if="'runtime' in movie" :content="`${movie.runtime}`">
+          <Badge v-if="'runtime' in media" :content="`${media.runtime}`">
             <UIcon name="i-lucide-clock" class="h-3.5 w-3.5" />
           </Badge>
-          <Badge v-if="'status' in movie" :content="`${movie.status}`">
+          <Badge v-if="'status' in media" :content="`${media.status}`">
             <UIcon name="i-lucide-info" class="h-3.5 w-3.5" />
           </Badge>
         </div>
@@ -142,7 +142,7 @@ const { preference } = useColorMode();
           base: 'resize-none! no-scrollbar h-full ',
         }"
         v-model="reviewText"
-        :placeholder="`Share your thoughts on ${movie.title}... (What made it memorable? Your favorite scenes, acting, visuals?)`"
+        :placeholder="`Share your thoughts on ${media.title}... (What made it memorable? Your favorite scenes, acting, visuals?)`"
         :maxlength="1000"
         class="w-full text-sm text-neutral-200 bg-transparent border-0 p-2 placeholder:text-neutral-500"
         variant="none"

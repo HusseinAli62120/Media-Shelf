@@ -1,7 +1,7 @@
 export default function details({
-  movie,
+  media,
 }: {
-  movie: MovieDetails | TvDetails;
+  media: MovieDetails | TvDetails;
 }) {
   const router = useRouter();
 
@@ -10,12 +10,12 @@ export default function details({
   };
 
   const hasBackdrop = computed(() => {
-    const path = movie?.backdrop_path;
+    const path = media?.backdrop_path;
     return path && !path.endsWith("/null") && !path.endsWith("undefined");
   });
 
   const hasPoster = computed(() => {
-    const path = movie?.poster_path;
+    const path = media?.poster_path;
     return path && !path.endsWith("/null") && !path.endsWith("undefined");
   });
 

@@ -40,7 +40,7 @@ const {
   hasBackdrop,
   hasPoster,
   goBack,
-} = details({ movie: movie?.value?.details! });
+} = details({ media: movie?.value?.details! });
 
 const {
   isSeen,
@@ -54,7 +54,7 @@ const {
   updateRating,
   loading,
   toggleFavorite,
-} = useEngagement({ movie: movie?.value?.details! });
+} = useEngagement({ media: movie?.value?.details! });
 
 // Fetch rating if it exists, if not, set it to 0
 const {
@@ -284,8 +284,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
               class="flex flex-col xs:flex-row items-center justify-center md:justify-start gap-1 mt-8"
             >
               <!-- Diary -->
-              <DiarySlideover :movie="movie.details" />
-              <DiaryDrawer :movie="movie.details" />
+              <DiarySlideover :media="movie.details" />
+              <DiaryDrawer :media="movie.details" />
 
               <!-- Watchlist & Favorites & Watched -->
               <div

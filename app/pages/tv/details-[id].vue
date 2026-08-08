@@ -34,7 +34,7 @@ const {
 
 // Composables
 const { getLanguageName, getReleaseYear, hasBackdrop, hasPoster, goBack } =
-  details({ movie: tvDetails?.value?.details! });
+  details({ media: tvDetails?.value?.details! });
 
 const {
   isSeen,
@@ -48,7 +48,7 @@ const {
   updateRating,
   loading,
   toggleFavorite,
-} = useEngagement({ movie: tvDetails?.value?.details! });
+} = useEngagement({ media: tvDetails?.value?.details! });
 
 // Fetch rating if it exists, if not, set it to 0
 const {
@@ -271,8 +271,8 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
               class="flex flex-col xs:flex-row items-center justify-center md:justify-start gap-1 mt-8"
             >
               <!-- Diary -->
-              <DiarySlideover :movie="tvDetails.details" />
-              <DiaryDrawer :movie="tvDetails.details" />
+              <DiarySlideover :media="tvDetails.details" />
+              <DiaryDrawer :media="tvDetails.details" />
 
               <!-- Watchlist & Favorites & Watched -->
               <div

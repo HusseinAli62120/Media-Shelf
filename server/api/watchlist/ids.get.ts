@@ -1,15 +1,17 @@
 import { db } from "../../utils/drizzleDriver";
 import { watchList } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
+import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   try {
     // Auth
-    await requireAuth({ event: event });
+    const { id: userId } = await requireAuth({ event: event });
 
     const userWatchlist = await db
       .select({ id: watchList.mediaId })
-      .from(watchList);
+      .from(watchList)
+      .where(eq(watchList.userId, userId));
 
     return {
       statusCode: 200,

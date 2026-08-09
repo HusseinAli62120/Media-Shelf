@@ -1,12 +1,16 @@
-<script setup lang="ts">
-import type { ToasterProps } from "@nuxt/ui";
-import { duration } from "drizzle-orm/gel-core";
-
-const toaster = { position: "top-center", max: 3, duration: 2000 };
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <UApp :toaster="toaster as ToasterProps">
+  <UApp
+    :toaster="{
+      duration: 2000,
+      max: 3,
+      position: 'top-center',
+    }"
+  >
+    <NuxtLoadingIndicator
+      color="linear-gradient(to right, #6366f1, #a855f7, #ec4899)"
+    />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const res: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/${type}?sort_by=popularity.desc&with_genres=${genreId}`,
+      `https://api.themoviedb.org/3/discover/${type}?sort_by=popularity.desc&with_genres=${genreId}&page=${page}`,
       {
         method: "GET",
         headers: {
@@ -36,11 +36,28 @@ export default defineEventHandler(async (event) => {
         mediaType: type === "movie" ? "movie" : "tv",
       });
 
+      // remove duplicates by mediaId
+      genreMedia.filter((item: any, index: number) => {
+        return (
+          genreMedia.findIndex((i: any) => i.mediaId === item.mediaId) === index
+        );
+      });
+
+      // filter shows & movies without a poster
+      genreMedia.filter(
+        (item: any) =>
+          item?.imgURL?.length > 0 && !item?.imgURL?.endsWith("null"),
+      );
+
+      const totalPages: number = res.total_pages ?? 1;
+      const count: number = genreMedia.length;
+
       return {
         statusCode: 200,
         message: "Data fetched successfully",
         genreMedia: genreMedia as CardData[],
-        count: genreMedia.length,
+        totalPages: totalPages,
+        count: count,
       };
     }
 
@@ -48,6 +65,7 @@ export default defineEventHandler(async (event) => {
       statusCode: 400,
       message: "Unexpected Error",
       genreMedia: [],
+      totalPages: 0,
       count: 0,
     };
   } catch (error) {

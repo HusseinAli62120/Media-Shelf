@@ -36,7 +36,12 @@ export default function useNavbar() {
     [
       {
         label: user?.value?.userName,
-        type: "label",
+        description: "View Profile",
+        icon: "i-lucide-user",
+        onSelect: () => {
+          navigateTo("/user/profile");
+        },
+        class: "cursor-pointer",
       },
     ],
     [

@@ -35,13 +35,14 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        "@inspira-ui/plugins",
+        "@inspira-ui/plugins", // CJS
         "@internationalized/date",
         "@tsparticles/plugin-background-mask",
         "@tsparticles/slim",
         "@tsparticles/vue3",
         "@vue/devtools-core",
         "@vue/devtools-kit",
+        "@vueuse/core",
       ],
     },
   },
@@ -52,6 +53,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@tsparticles/nuxt4",
     "nuxt-rating",
+    "nuxt-charts",
   ],
 
   icon: {

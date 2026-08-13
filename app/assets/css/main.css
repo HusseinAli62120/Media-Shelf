@@ -46,6 +46,26 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Chart customization */
+
+  --vis-color0: oklch(0.72 0.192 149.58) !important;
+  --vis-color1: oklch(0.63 0.1963 157.86) !important;
+
+  --tooltip-label-color: rgba(255, 255, 255, 0.5) !important;
+  --tooltip-value-color: rgba(255, 255, 255, 1) !important;
+
+  --vis-axis-grid-color: rgba(255, 255, 255) !important;
+
+  --vis-tooltip-background-color: rgba(255, 255, 255) !important;
+  --vis-tooltip-border-color: none !important;
+
+  /* --vis-tooltip-text-color: oklch(0.269 0 0) !important; */
+  --vis-tooltip-title-color: oklch(0.269 0 0) !important;
+  --vis-axis-tick-label-color: oklch(0.269 0 0, 0.5) !important;
+
+  --vis-axis-label-color: oklch(0.269 0 0, 0.75) !important;
+  --vis-legend-label-color: oklch(0.269 0 0, 0.5) !important;
 }
 
 .dark {
@@ -83,6 +103,29 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Chart customization */
+
+  --vis-color0: oklch(0.72 0.192 149.58) !important;
+  --vis-color1: oklch(0.63 0.1963 157.86) !important;
+
+  /* Tool tip content */
+  --vis-tooltip-label-color: rgba(255, 255, 255, 0.5) !important;
+
+  --vis-tooltip-value-color: rgba(255, 255, 255, 1) !important;
+
+  --vis-axis-grid-color: rgba(255, 255, 255, 0.1) !important;
+
+  --vis-tooltip-background-color: oklch(12.98% 0.043 265.13) !important;
+  --vis-tooltip-border-color: none !important;
+
+  /* --vis-tooltip-text-color: rgba(255, 255, 255) !important; */
+  --vis-tooltip-title-color: rgba(255, 255, 255) !important;
+
+  --vis-axis-tick-label-color: rgba(255, 255, 255, 0.5) !important;
+  --vis-legend-label-color: rgba(255, 255, 255, 0.75) !important;
+
+  --vis-axis-label-color: rgba(255, 255, 255, 0.5) !important;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

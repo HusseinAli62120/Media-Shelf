@@ -3,6 +3,7 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 
 const props = defineProps<{
   item: CardData;
+  favorite?: boolean;
 }>();
 
 const cardItems = ref<DropdownMenuItem[][]>([
@@ -28,6 +29,7 @@ const cardItems = ref<DropdownMenuItem[][]>([
 <template>
   <div
     class="group flex flex-col gap-2 relative bg-secondary-background border border-border/40 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+    :class="favorite && 'max-w-55 w-full mx-auto'"
   >
     <!-- Poster Image -->
     <NuxtLink

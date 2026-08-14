@@ -1,5 +1,10 @@
 <script setup lang="ts">
 const { user } = useUserSession();
+
+// Get Average Ratings
+const { data } = await useFetch("/api/stats/averageRating", {
+  method: "GET",
+});
 </script>
 
 <template>
@@ -47,14 +52,22 @@ const { user } = useUserSession();
         class="flex w-full items-center justify-center gap-4 sm:gap-8 lg:w-auto lg:shrink-0"
       >
         <div class="flex flex-col items-center gap-2">
-          <CircularRating label="Average Rating" :value="4.5" :size="100" />
+          <CircularRating
+            label="Average Rating"
+            :value="data?.averageMovieRating ?? 0"
+            :size="100"
+          />
           <span class="text-xs font-medium text-muted">Movies</span>
         </div>
 
         <USeparator orientation="vertical" class="h-32.5" />
 
         <div class="flex flex-col items-center gap-2">
-          <CircularRating label="Average Rating" :value="3.5" :size="100" />
+          <CircularRating
+            label="Average Rating"
+            :value="data?.averageTvRating ?? 0"
+            :size="100"
+          />
           <span class="text-xs font-medium text-muted">TV Shows</span>
         </div>
       </div>

@@ -13,7 +13,7 @@ defineProps<{
     <!-- Section headline -->
     <div class="flex justify-between items-end border-b border-border/40 pb-4">
       <div>
-        <h3 class="text-2xl font-black tracking-tight">{{ sectionTitle }}</h3>
+        <h3 class="text-xl font-black tracking-tight">{{ sectionTitle }}</h3>
         <p class="text-muted-foreground text-sm mt-0.5">
           {{ sectionDescription }}
         </p>

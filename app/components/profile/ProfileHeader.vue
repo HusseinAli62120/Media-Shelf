@@ -9,9 +9,9 @@ const { data } = await useFetch("/api/stats/averageRating", {
 
 <template>
   <div class="w-full border-b border-t border-border px-4 py-6">
-    <div class="flex flex-col gap-6 sm:flex-row items-center justify-between">
+    <div class="flex flex-col gap-6 md:flex-row items-center justify-between">
       <!-- Profile -->
-      <div class="flex flex-col sm:flex-row min-w-0 items-center gap-4">
+      <div class="flex flex-col md:flex-row min-w-0 items-center gap-4">
         <!-- Profile picture -->
         <div class="shrink-0 flex flex-row items-center gap-4">
           <UAvatar
@@ -21,7 +21,7 @@ const { data } = await useFetch("/api/stats/averageRating", {
           />
 
           <h6
-            class="sm:hidden truncate text-2xl font-bold text-center sm:text-start tracking-tight text-highlighted sm:text-3xl"
+            class="md:hidden truncate text-2xl font-bold text-center sm:text-start tracking-tight text-highlighted sm:text-3xl"
           >
             {{ user?.userName }}
           </h6>
@@ -30,7 +30,7 @@ const { data } = await useFetch("/api/stats/averageRating", {
         <!-- Name & description -->
         <div class="min-w-0">
           <h6
-            class="hidden sm:block truncate text-2xl font-bold text-center sm:text-start tracking-tight text-highlighted sm:text-3xl"
+            class="hidden md:block truncate text-2xl font-bold text-center sm:text-start tracking-tight text-highlighted sm:text-3xl"
           >
             {{ user?.userName }}
           </h6>

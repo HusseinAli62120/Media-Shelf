@@ -6,6 +6,12 @@ definePageMeta({
   middleware: ["require-auth"],
   allowedRoles: [Role.USER, Role.ADMIN],
 });
+
+const {
+  data: personalRecommendations,
+  pending: personalRecommendationsPending,
+  error: personalRecommendationsError,
+} = await useFetch("/api/tmdb/personalRecommendations");
 </script>
 
 <template>
@@ -73,9 +79,20 @@ definePageMeta({
 
     <!-- Stats -->
     <Stats />
-  </div>
 
-  <div class="h-screen overflow-hidden bg-red-50 w-full">
-    <p>This is screen two</p>
+    <!-- Recommended for you -->
+    <div class="w-full px-4 py-6">
+      <Section
+        v-if="
+          personalRecommendations?.recommendations &&
+          personalRecommendations?.recommendations?.length > 0
+        "
+        :loading="personalRecommendationsPending"
+        :error="personalRecommendationsError"
+        :data="personalRecommendations?.recommendations || []"
+        sectionTitle="Recommended for you"
+        sectionDescription="Discover new movies & shows based on your watchlist"
+      />
+    </div>
   </div>
 </template>

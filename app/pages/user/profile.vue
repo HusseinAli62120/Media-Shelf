@@ -6,36 +6,6 @@ definePageMeta({
   middleware: ["require-auth"],
   allowedRoles: [Role.USER, Role.ADMIN],
 });
-
-// defineOptions({
-//   tags: ["donutcharts", "basic"],
-// });
-// const donutData = ref([35, 25, 20, 15, 5]);
-
-// const marketShareLabels = {
-//   "Product A": {
-//     name: "Product A",
-//     color: "var(--ui-primary)",
-//   },
-//   "Product B": {
-//     name: "Product B",
-//     color: "var(--ui-info)",
-//   },
-//   "Product C": {
-//     name: "Product C",
-//     color: "var(--ui-success)",
-//   },
-//   "Product D": {
-//     name: "Product D",
-//     color: "var(--ui-warning)",
-//   },
-//   Other: {
-//     name: "Other",
-//     color: "var(--ui-error)",
-//   },
-// };
-
-const { user } = useUserSession();
 </script>
 
 <template>
@@ -45,29 +15,67 @@ const { user } = useUserSession();
     <ProfileHeader />
 
     <!-- All time favorites/placeholders -->
-
     <div
       class="w-full px-4 py-6 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6"
     >
       <CardPlaceholder v-for="index in 5" :key="index" :slot-number="index" />
     </div>
+
+    <!-- Collection tabs -->
+    <div
+      class="border-b border-muted w-full px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 md:gap-8"
+    >
+      <!-- Emerald 300-500-700 -->
+      <CollectionTab
+        title="Watched"
+        :substring="'200 Entries (10 This year)'"
+        iconName="i-heroicons-eye-solid"
+        iconColor="text-emerald-500"
+        :to="'/user/watched'"
+        :border-color-1="'oklch(84.5% 0.143 164.978)'"
+        :border-color-2="'oklch(69.6% 0.17 162.48)'"
+        :border-color-3="'oklch(50.8% 0.118 165.612)'"
+      />
+
+      <!-- Sky 300-500-700 -->
+      <CollectionTab
+        title="Diary"
+        iconName="i-lucide-notebook"
+        iconColor="text-sky-500"
+        :substring="'200 Entries (10 This year)'"
+        :border-color-1="'oklch(82.8% 0.111 230.318)'"
+        :border-color-2="'oklch(68.5% 0.169 237.323)'"
+        :border-color-3="'oklch(50% 0.134 242.749)'"
+      />
+
+      <!-- Red 300-500-700 -->
+      <CollectionTab
+        title="Favorites"
+        iconName="i-heroicons-heart-solid"
+        iconColor="text-red-600"
+        :to="'/user/favorites'"
+        :border-color-1="'oklch(80.8% 0.114 19.571)'"
+        :border-color-2="'oklch(63.7% 0.237 25.331)'"
+        :border-color-3="'oklch(50.5% 0.213 27.518)'"
+      />
+
+      <!-- Violet 300-500-700 -->
+      <CollectionTab
+        title="Watchlist"
+        iconName="i-heroicons-bookmark-solid"
+        iconColor="text-indigo-400"
+        :to="'/user/watchlist'"
+        :border-color-1="'oklch(81.1% 0.111 293.571)'"
+        :border-color-2="'oklch(60.6% 0.25 292.717)'"
+        :border-color-3="'oklch(49.1% 0.27 292.581)'"
+      />
+    </div>
+
+    <!-- Stats -->
+    <Stats />
   </div>
-  <!-- Collection tabs -->
-  <div class="border border-muted w-full">
-    <p>Collection navigation</p>
-  </div>
+
   <div class="h-screen overflow-hidden bg-red-50 w-full">
     <p>This is screen two</p>
   </div>
 </template>
-
-<!-- <DonutChart
-          :data="donutData"
-          :categories="marketShareLabels"
-          :height="200"
-          :radius="80"
-          :pad-angle="0.1"
-          :arc-width="20"
-          :show-background="false"
-          :style="{ color: '#0a0a0a' }"
-        /> -->

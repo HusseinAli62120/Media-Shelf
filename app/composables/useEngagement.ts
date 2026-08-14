@@ -64,6 +64,7 @@ export default function useEngagement({
             averageRating: media?.averageRating,
             media_type: mediaType.value,
             voteCount: media?.voteCount,
+            genres: media?.genres,
           },
         });
 
@@ -120,6 +121,7 @@ export default function useEngagement({
             averageRating: media?.averageRating,
             media_type: mediaType.value,
             voteCount: media?.voteCount,
+            genres: media?.genres,
           },
         });
 
@@ -183,6 +185,7 @@ export default function useEngagement({
           averageRating: media?.averageRating,
           media_type: mediaType.value,
           voteCount: media?.voteCount,
+          genres: media?.genres,
         },
       });
 
@@ -282,6 +285,7 @@ export default function useEngagement({
           averageRating: media.averageRating,
           media_type: mediaType.value,
           voteCount: media.voteCount,
+          genres: media.genres,
         },
       });
 

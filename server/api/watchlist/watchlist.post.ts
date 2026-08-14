@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
       averageRating,
       media_type,
       voteCount,
+      genres,
     } = await readBody(event);
 
     // Check request parameters
@@ -30,7 +31,8 @@ export default defineEventHandler(async (event) => {
       !imgURL ||
       !averageRating ||
       !media_type ||
-      !voteCount
+      !voteCount ||
+      !genres
     ) {
       throw createError({
         statusCode: 400,
@@ -55,6 +57,7 @@ export default defineEventHandler(async (event) => {
         averageRating: averageRating,
         media_type: media_type,
         voteCount: voteCount,
+        genres: genres,
       });
     }
 

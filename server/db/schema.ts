@@ -22,6 +22,7 @@ export const media = pgTable("media", {
   averageRating: text(), // float
   media_type: mediaType(),
   voteCount: integer(),
+  genres: text("genres").array(),
   ...timestamps,
 });
 

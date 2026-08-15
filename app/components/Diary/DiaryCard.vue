@@ -36,7 +36,8 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
       <!-- Card -->
       <div class="flex flex-row w-full space-x-4">
         <!-- Poster -->
-        <div
+        <NuxtLink
+          :to="`/${item?.mediaType}/details-${item?.mediaId}`"
           class="w-20 h-28 xs:w-24 xs:h-32 shrink-0 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950 shadow-md hover:scale-105 transition-all duration-300"
         >
           <img
@@ -50,7 +51,7 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
           >
             <UIcon name="i-lucide-film" class="h-8 w-8 text-neutral-600" />
           </div>
-        </div>
+        </NuxtLink>
         <!-- Info -->
         <div class="flex flex-col w-full">
           <!-- Title & Date -->

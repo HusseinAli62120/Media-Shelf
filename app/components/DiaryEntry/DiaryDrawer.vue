@@ -52,6 +52,10 @@ const {
           @click="addDiaryEntry"
           class="w-full"
         >
+          <UIcon
+            :name="loading ? 'i-lucide-loader' : 'i-lucide-plus'"
+            :class="loading ? 'animate-spin' : ''"
+          />
           {{ loading ? "Adding..." : "Add Entry" }}
         </RainbowButton>
       </div>

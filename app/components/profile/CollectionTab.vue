@@ -5,6 +5,7 @@ interface Props {
   iconName: string;
   iconColor: string;
   to?: string;
+  openDiary?: boolean;
 
   borderColor1?: string;
   borderColor2?: string;
@@ -35,14 +36,12 @@ const {
 
 <template>
   <NuxtLink
-    :as="to ? 'a' : 'div'"
+    :as="to ? 'a' : 'button'"
     :to="to && to"
     @click="
       () => {
         if (to) {
           return;
-        } else {
-          console.log('open slideover');
         }
       }
     "
@@ -61,8 +60,10 @@ const {
         {{ substring }}
       </p>
     </div>
-    <p class="text-xs text-muted-foreground w-full text-end sm:hidden">
-      {{ substring }}
-    </p>
+    <div class="sm:hidden w-full flex justify-end">
+      <p class="text-xs text-muted-foreground text-center">
+        {{ substring }}
+      </p>
+    </div>
   </NuxtLink>
 </template>

@@ -25,7 +25,7 @@ const { preference } = useColorMode();
     <div class="flex gap-4 items-center">
       <!-- Poster -->
       <div
-        class="w-20 h-28 shrink-0 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950 shadow-md hover:scale-105 transition-all duration-300"
+        class="w-20 h-28 xs:w-24 xs:h-32 shrink-0 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-950 shadow-md hover:scale-105 transition-all duration-300"
       >
         <img
           v-if="hasPoster"
@@ -43,14 +43,14 @@ const { preference } = useColorMode();
 
       <!-- Title & Meta -->
       <div class="flex-1 min-w-0">
-        <h2
-          class="text-2xl font-bold tracking-tight text-foreground line-clamp-2"
+        <h6
+          class="text-base xs:text-lg font-bold tracking-tight text-foreground line-clamp-2"
         >
           {{ media.title }}
-        </h2>
+        </h6>
         <p
           v-if="media?.tagline"
-          class="italic text-sm font-semibold text-neutral-400"
+          class="italic text-sm font-semibold text-muted-foreground"
         >
           {{ `"${media?.tagline}"` }}
         </p>

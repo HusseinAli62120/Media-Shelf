@@ -45,8 +45,17 @@ const {
     <!-- Footer -->
     <template #footer>
       <div class="w-full flex flex-col items-start space-y-5">
-        <RainbowButton :disabled="loading" @click="addDiaryEntry" class="w-full"
-          >{{ loading ? "Adding..." : "Add Entry" }}
+        <RainbowButton
+          :disabled="loading"
+          @click="addDiaryEntry"
+          class="w-full"
+        >
+          <UIcon
+            v-if="loading"
+            name="i-lucide-loader"
+            class="animate-spin w-4 h-4"
+          />
+          {{ loading ? "Adding..." : "Add Entry" }}
         </RainbowButton>
       </div>
     </template>

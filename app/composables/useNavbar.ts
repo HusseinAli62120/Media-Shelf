@@ -46,24 +46,24 @@ export default function useNavbar() {
     ],
     [
       {
-        label: "Watchlist",
-        icon: "i-lucide-list-checks",
+        label: "Watched",
+        icon: "i-heroicons-eye",
         onSelect: () => {
-          navigateTo("/user/watchlist");
+          navigateTo({ path: "/user/collection", query: { tab: "watched" } });
+        },
+      },
+      {
+        label: "Watchlist",
+        icon: "i-heroicons-bookmark",
+        onSelect: () => {
+          navigateTo({ path: "/user/collection", query: { tab: "watchlist" } });
         },
       },
       {
         label: "Favorites",
-        icon: "i-lucide-heart",
+        icon: "i-heroicons-heart",
         onSelect: () => {
-          navigateTo("/user/favorites");
-        },
-      },
-      {
-        label: "Watched",
-        icon: "i-lucide-tv",
-        onSelect: () => {
-          navigateTo("/user/watched");
+          navigateTo({ path: "/user/collection", query: { tab: "favorites" } });
         },
       },
     ],

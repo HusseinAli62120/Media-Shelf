@@ -59,7 +59,7 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
             <h6
               class="text-base xs:text-lg font-bold tracking-tight text-foreground line-clamp-3"
             >
-              {{ item?.name }} {{ last }}
+              {{ item?.name }}
             </h6>
             <p class="font-bold text-xs text-muted-foreground">
               {{
@@ -84,6 +84,7 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
               ]"
             >
               <NuxtRating
+                v-if="Number(item?.rating) > 0"
                 :read-only="true"
                 border-color="#db8403"
                 active-color="#ffa41c"
@@ -94,9 +95,12 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
                 :rating-value="Number(item?.rating)"
                 :rating-size="width < 400 ? 16 : 20"
               />
+              <p v-else class="text-sm font-semibold text-foreground/70">
+                Review
+              </p>
             </UAccordion>
             <NuxtRating
-              v-else
+              v-if="Number(item?.rating) > 0"
               :read-only="true"
               border-color="#db8403"
               active-color="#ffa41c"

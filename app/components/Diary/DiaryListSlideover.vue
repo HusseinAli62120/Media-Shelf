@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useInfiniteScroll } from "@vueuse/core";
 
+// Define a v-modal:open for the component
+const isOpen = defineModel<boolean>("open", { default: false });
+
 const {
   diaryEntries,
   fetchDiaryEntries,
@@ -36,17 +39,9 @@ useInfiniteScroll(
     title="Diary"
     direction="right"
     class="flex"
+    v-model:open="isOpen"
   >
-    <!-- Sky 300-500-700 -->
-    <CollectionTab
-      title="Diary"
-      iconName="i-lucide-notebook"
-      iconColor="text-sky-500"
-      :substring="'200 Entries (10 This year)'"
-      :border-color-1="'oklch(82.8% 0.111 230.318)'"
-      :border-color-2="'oklch(68.5% 0.169 237.323)'"
-      :border-color-3="'oklch(50% 0.134 242.749)'"
-    />
+    <slot />
 
     <template #body>
       <UScrollArea

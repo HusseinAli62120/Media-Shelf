@@ -1,11 +1,24 @@
 import { db } from "../../utils/drizzleDriver";
 import { favorites, media } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
+
 export default defineEventHandler(async (event) => {
   try {
     // Auth
     const { id: userId } = await requireAuth({ event: event });
+
+    const { skip, limit } = getQuery(event);
+
+    // Check request parameters
+    if (!skip || !limit) {
+      return {
+        statusCode: 400,
+        statusMessage: "Bad request parameters",
+        userFavorites: [],
+        pageCount: 0,
+      };
+    }
 
     // Get user favorites
     const userFavorites = await db
@@ -23,12 +36,22 @@ export default defineEventHandler(async (event) => {
       })
       .from(favorites)
       .where(eq(favorites.userId, userId))
-      .fullJoin(media, eq(favorites.mediaId, media.mediaId));
+      .fullJoin(media, eq(favorites.mediaId, media.mediaId))
+      .limit(Number(limit))
+      .offset(Number(skip));
+
+    // Get total count
+    const totalCount = await db
+      .select({ count: count(favorites.id) })
+      .from(favorites)
+      .where(eq(favorites.userId, userId));
 
     return {
       statusCode: 200,
       statusMessage: "User favorites fetched successfully",
-      userFavorites: userFavorites,
+      userFavorites: userFavorites as CardData[],
+      pageCount:
+        Math.ceil(Number(totalCount[0]?.count) / Number(limit)) ?? 0,
     };
   } catch (error) {
     if (error) {

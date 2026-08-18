@@ -19,13 +19,15 @@ let diaryDate = shallowRef<CalendarDate>(
 
 export default function useEngagement({
   media,
+  autoFetch = false,
 }: {
   media: MovieDetails | TvDetails;
+  autoFetch?: boolean;
 }) {
   // Composables
   const toast = useToast();
   const route = useRoute();
-  const { watchListIds, favoriteIds, watchedIds } = useIdRef();
+  const { watchListIds, favoriteIds, watchedIds } = useIdRef({ autoFetch });
 
   // Variables
   let loading = ref<boolean>(false);

@@ -11,6 +11,7 @@ definePageMeta({
 // Composables
 const toast = useToast();
 const route = useRoute();
+const { favoriteIds } = useIdRef({ autoFetch: true });
 
 let tab = ref(route?.query?.tab as "watched" | "watchlist" | "favorites");
 
@@ -132,7 +133,12 @@ useInfiniteScroll(
           'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 px-4 ',
       }"
     >
-      <Card :item="item" />
+      <Card
+        :item="item"
+        is-collection
+        :item-liked="favoriteIds.includes(item?.mediaId!)"
+        :is-watchlist="tab === 'watchlist'"
+      />
     </UScrollArea>
 
     <!-- Tab Switch loading -->

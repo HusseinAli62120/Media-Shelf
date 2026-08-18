@@ -54,7 +54,7 @@ const {
   updateRating,
   loading,
   toggleFavorite,
-} = useEngagement({ media: movie?.value?.details! });
+} = useEngagement({ media: movie?.value?.details!, autoFetch: true });
 
 // Fetch rating if it exists, if not, set it to 0
 const {

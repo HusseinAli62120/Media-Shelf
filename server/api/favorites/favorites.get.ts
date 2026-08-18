@@ -1,5 +1,5 @@
 import { db } from "../../utils/drizzleDriver";
-import { favorites, media } from "../../db/schema";
+import { favorites, media, watched } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
 import { count, eq } from "drizzle-orm";
 
@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
       .select({
         id: favorites?.id,
         createdAt: favorites?.createdAt,
+        rating: watched?.rating,
         mediaId: media?.mediaId,
         name: media?.name,
         first_air_date: media?.first_air_date,
@@ -37,6 +38,7 @@ export default defineEventHandler(async (event) => {
       .from(favorites)
       .where(eq(favorites.userId, userId))
       .fullJoin(media, eq(favorites.mediaId, media.mediaId))
+      .fullJoin(watched, eq(media.mediaId, watched.mediaId))
       .limit(Number(limit))
       .offset(Number(skip));
 
@@ -50,8 +52,7 @@ export default defineEventHandler(async (event) => {
       statusCode: 200,
       statusMessage: "User favorites fetched successfully",
       userFavorites: userFavorites as CardData[],
-      pageCount:
-        Math.ceil(Number(totalCount[0]?.count) / Number(limit)) ?? 0,
+      pageCount: Math.ceil(Number(totalCount[0]?.count) / Number(limit)) ?? 0,
     };
   } catch (error) {
     if (error) {

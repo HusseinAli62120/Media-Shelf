@@ -9,4 +9,5 @@ export type CardData = {
   media_type: "movie" | "tv" | null;
   voteCount: number | null;
   createdAt?: string | null; // Populated only by cards fetched from db
+  rating?: string | null; // User rating (Populated only by cards fetched from db)
 };

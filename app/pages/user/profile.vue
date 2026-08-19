@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role } from "#shared/enums/Role";
+import { useInfiniteScroll } from "@vueuse/core";
 
 definePageMeta({
   layout: "screen",
@@ -7,11 +8,38 @@ definePageMeta({
   allowedRoles: [Role.USER, Role.ADMIN],
 });
 
+// Composables
+const { favoriteIds } = useIdRef({ autoFetch: true });
+
 const {
   data: personalRecommendations,
   pending: personalRecommendationsPending,
   error: personalRecommendationsError,
 } = await useFetch("/api/tmdb/personalRecommendations");
+
+const {
+  topFive,
+  removeTopFive,
+  openTopFiveDrawer,
+  isReplace,
+  slotNumber,
+  replacedId,
+} = useTopFive();
+
+const { data: fetchedTopFive, pending: topFivePending } = await useFetch(
+  "/api/topFive/getTopFive",
+  {
+    method: "GET",
+  },
+);
+
+// Set the top five value
+if (
+  fetchedTopFive?.value?.statusCode === 200 ||
+  fetchedTopFive?.value?.statusCode === 304
+) {
+  topFive.value = fetchedTopFive.value.topFive || [];
+}
 </script>
 
 <template>
@@ -24,7 +52,47 @@ const {
     <div
       class="w-full px-4 py-6 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6"
     >
-      <CardPlaceholder v-for="index in 5" :key="index" :slot-number="index" />
+      <!-- Top-5 & Placeholder -->
+      <div v-for="index in 5">
+        <Card
+          v-if="topFive.some((value) => value.slotNumber === index)"
+          :topFiveItem="topFive.find((value) => value.slotNumber === index)"
+          :item-liked="
+            topFive.find((value) => value.slotNumber === index) &&
+            favoriteIds?.includes(
+              topFive.find((value) => value.slotNumber === index)?.mediaId!,
+            )
+          "
+          @remove-top-five="
+            () => {
+              removeTopFive({
+                id: topFive.find((value) => value.slotNumber === index)?.id!,
+              });
+            }
+          "
+          @replace-top-five="
+            () => {
+              isReplace = true;
+              replacedId = topFive.find(
+                (value) => value.slotNumber === index,
+              )?.id!;
+              openTopFiveDrawer = true;
+            }
+          "
+        />
+        <CardPlaceholder
+          v-else
+          @open-top-five-drawer="
+            () => {
+              openTopFiveDrawer = true;
+              slotNumber = index;
+            }
+          "
+          :key="index"
+          :slot-number="index"
+        />
+      </div>
+      <TopFiveSelectionDrawer />
     </div>
 
     <!-- Collection tabs -->

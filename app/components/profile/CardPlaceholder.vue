@@ -10,17 +10,17 @@ const props = withDefaults(
   },
 );
 
-function handleClick() {
-  console.log(
-    `[CardPlaceholder] Clicked favorite slot ${props.slotNumber ?? ""}`.trim(),
-  );
-}
+const emit = defineEmits(["openTopFiveDrawer"]);
 </script>
 
 <template>
   <div
-    @click="handleClick"
-    class="group flex flex-col gap-2 relative bg-secondary-background/40 border-2 border-dashed border-border/60 hover:border-primary/60 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none max-w-55 w-full mx-auto"
+    @click="
+      () => {
+        emit('openTopFiveDrawer');
+      }
+    "
+    class="group flex flex-col gap-2 relative bg-secondary-background/40 border-2 border-dashed border-border/60 hover:border-primary/60 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none max-w-55 w-full mx-auto h-full"
   >
     <!-- Top Poster Placeholder (matches aspect ratio 2/3 of Card.vue) -->
     <div
@@ -37,16 +37,15 @@ function handleClick() {
     </div>
 
     <!-- Bottom Info Area (matches layout height and padding of Card.vue) -->
-    <div class="flex flex-row justify-between items-center pr-1 p-3">
-      <div class="flex flex-col justify-between">
+    <div class="flex flex-row justify-between items-center">
+      <div
+        class="p-1 pb-2 xs:p-3 flex flex-col space-y-1 justify-between w-full"
+      >
         <span
-          class="font-bold text-sm text-muted-foreground/70 group-hover:text-primary transition-colors line-clamp-1"
+          class="font-bold line-clamp-1 text-xs xs:text-sm text-muted-foreground/70 group-hover:text-primary transition-colors"
         >
           {{ label }}
         </span>
-        <p class="text-[11px] text-muted-foreground/50 mt-0.5">
-          {{ slotNumber ? `Slot #${slotNumber}` : "Empty" }}
-        </p>
       </div>
     </div>
   </div>

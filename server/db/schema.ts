@@ -80,3 +80,17 @@ export const diary = pgTable("diary", {
   review: text(),
   ...timestamps,
 });
+
+export const topFive = pgTable("topFive", {
+  id: uuid().defaultRandom().primaryKey(),
+  mediaId: integer().references(() => media.mediaId, {
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  }),
+  userId: uuid().references(() => users.id, {
+    onDelete: "cascade",
+    onUpdate: "cascade",
+  }),
+  slotNumber: integer(),
+  ...timestamps,
+});

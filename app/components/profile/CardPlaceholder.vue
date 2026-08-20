@@ -20,7 +20,7 @@ const emit = defineEmits(["openTopFiveDrawer"]);
         emit('openTopFiveDrawer');
       }
     "
-    class="group flex flex-col gap-2 relative bg-secondary-background/40 border-2 border-dashed border-border/60 hover:border-primary/60 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none max-w-55 w-full mx-auto h-full"
+    class="group flex flex-col gap-2 relative bg-secondary-background/40 border-2 border-dashed border-border/60 hover:border-primary/60 rounded-t-xl rounded-b-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none max-w-60 w-full mx-auto h-full"
   >
     <!-- Top Poster Placeholder (matches aspect ratio 2/3 of Card.vue) -->
     <div
@@ -39,7 +39,7 @@ const emit = defineEmits(["openTopFiveDrawer"]);
     <!-- Bottom Info Area (matches layout height and padding of Card.vue) -->
     <div class="flex flex-row justify-between items-center">
       <div
-        class="p-1 pb-2 xs:p-3 flex flex-col space-y-1 justify-between w-full"
+        class="p-1 xs:py-1.5 xs:px-3 flex flex-col space-y-1 justify-between w-full"
       >
         <span
           class="font-bold line-clamp-1 text-xs xs:text-sm text-muted-foreground/70 group-hover:text-primary transition-colors"

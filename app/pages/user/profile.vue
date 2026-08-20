@@ -50,7 +50,7 @@ if (
 
     <!-- All time favorites/placeholders -->
     <div
-      class="w-full px-4 py-6 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6"
+      class="w-full px-4 pt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6"
     >
       <!-- Top-5 & Placeholder -->
       <div v-for="index in 5">

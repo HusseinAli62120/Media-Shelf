@@ -97,8 +97,8 @@ const hasRating = computed(() => {
         }
       }
     "
-    class="group flex flex-col justify-between relative bg-secondary-background border border-border/40 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-    :class="topFiveItem && 'max-w-55 w-full mx-auto h-full'"
+    class="group flex flex-col justify-between relative bg-secondary-background border border-border/40 rounded-t-xl rounded-b-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+    :class="topFiveItem && 'max-w-60 w-full mx-auto h-full'"
   >
     <!-- Poster Image -->
     <!-- Link in all cases except when making a top-5 selection -->
@@ -138,7 +138,7 @@ const hasRating = computed(() => {
     <div class="flex flex-row justify-between items-center">
       <!-- Title & Info -->
       <div
-        class="p-1 pb-2 xs:p-3 flex flex-col space-y-1 justify-between w-full"
+        class="p-1 pb-2 xs:py-1.5 xs:px-3 flex flex-col space-y-1 justify-between w-full"
       >
         <NuxtLink
           v-if="showTitle"
@@ -200,11 +200,11 @@ const hasRating = computed(() => {
                   Number(item?.rating) >= star - 0.5 ||
                   Number(topFiveItem?.rating) >= star - 0.5
                 "
-                class="relative w-4 h-4 shrink-0 flex items-center justify-center"
+                class="relative w-3 h-3 xs:w-4 xs:h-4 shrink-0 flex items-center justify-center"
               >
                 <UIcon
                   name="i-heroicons-star"
-                  class="w-4 h-4 text-amber-400/25"
+                  class="w-3 h-3 xs:w-4 xs:h-4 text-amber-400/25"
                 />
 
                 <!-- Full Solid Star -->
@@ -214,14 +214,14 @@ const hasRating = computed(() => {
                     Number(topFiveItem?.rating) >= star
                   "
                   name="i-heroicons-star-solid"
-                  class="absolute inset-0 w-4 h-4 text-amber-400"
+                  class="absolute inset-0 w-3 h-3 xs:w-4 xs:h-4 text-amber-400"
                 />
 
                 <!-- Half Solid Star Clipped -->
                 <UIcon
                   v-else
                   name="i-heroicons-star-solid"
-                  class="absolute inset-0 w-4 h-4 text-amber-400 [clip-path:inset(0_55%_0_0)]"
+                  class="absolute inset-0 w-3 h-3 xs:w-4 xs:h-4 text-amber-400 [clip-path:inset(0_55%_0_0)]"
                 />
               </div>
             </div>
@@ -236,7 +236,7 @@ const hasRating = computed(() => {
           <UIcon
             v-if="itemLiked"
             name="i-heroicons-heart-solid"
-            class="text-red-500"
+            class="text-red-500 w-3 h-3 xs:w-4 xs:h-4"
           />
         </div>
       </div>
@@ -248,7 +248,10 @@ const hasRating = computed(() => {
           variant="ghost"
           color="neutral"
         >
-          <UIcon class="h-4 w-4" name="i-lucide-more-horizontal" />
+          <UIcon
+            class="h-3 xs:h-4 w-3 xs:w-4"
+            name="i-lucide-more-horizontal"
+          />
         </UButton>
       </UDropdownMenu>
     </div>

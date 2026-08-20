@@ -256,20 +256,7 @@ export default function useEngagement({
   };
 
   const addDiaryEntry = async () => {
-    const now = new Date();
-
-    // Construct the timestamp for the diary entry
-    const timestampInfo = new Date(
-      diaryDate.value.year,
-      diaryDate.value.month - 1,
-      diaryDate.value.day,
-      now.getHours(),
-      now.getMinutes(),
-      now.getSeconds(),
-      now.getMilliseconds(),
-    );
-
-    const diaryTimestamp = timestampInfo.toISOString();
+    const { timestamp } = generateTimestamp({ calendarDate: diaryDate.value });
     try {
       loading.value = true;
 
@@ -279,7 +266,7 @@ export default function useEngagement({
           mediaId: media.id,
           review: reviewText.value,
           rating: rating.value,
-          timestamp: diaryTimestamp,
+          timestamp: timestamp,
           name: media.title,
           first_air_date: media.release_date,
           overview: media.overview,

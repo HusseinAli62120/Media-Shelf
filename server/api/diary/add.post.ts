@@ -73,6 +73,7 @@ export default defineEventHandler(async (event) => {
         mediaId: mediaId,
         userId: userId,
         rating: rating,
+        createdAt: new Date(timestamp),
       });
     }
     // Already watched, update rating

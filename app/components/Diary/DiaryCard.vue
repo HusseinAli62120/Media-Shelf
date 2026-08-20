@@ -28,13 +28,19 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
     },
   ],
 ]);
+
+let rated = computed(() => Number(item?.rating) > 0);
+let reviewed = computed(() => item?.review && item?.review?.length > 0);
 </script>
 
 <template>
   <UContextMenu :items="contextMenuItems">
     <div class="w-full flex flex-col items-center">
       <!-- Card -->
-      <div class="flex flex-row w-full space-x-4">
+      <div
+        class="flex flex-row w-full space-x-4"
+        :class="!reviewed && !rated && 'items-center'"
+      >
         <!-- Poster -->
         <NuxtLink
           :to="`/${item?.mediaType}/details-${item?.mediaId}`"
@@ -68,9 +74,12 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
               }}
             </p>
           </div>
-          <div class="w-full flex flex-row items-center space-x-2 my-5">
+          <div
+            v-if="rated || reviewed"
+            class="w-full flex flex-row items-center space-x-2 my-5"
+          >
             <UAccordion
-              v-if="item?.review && item?.review?.length > 0"
+              v-if="reviewed"
               :ui="{
                 trigger: 'w-full p-0 flex flex-row items-center',
                 body: 'py-3.5',
@@ -100,7 +109,7 @@ const contextMenuItems = ref<ContextMenuItem[][]>([
               </p>
             </UAccordion>
             <NuxtRating
-              v-if="Number(item?.rating) > 0"
+              v-else-if="rated"
               :read-only="true"
               border-color="#db8403"
               active-color="#ffa41c"

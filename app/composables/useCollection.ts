@@ -4,6 +4,10 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
   let pageCount = ref<number>(0);
   let isFetching = ref<boolean>(false);
   let collection = ref<CardData[]>([]);
+  let filter = ref<string | Record<string, Record<string, string>> | null>(
+    null,
+  );
+  let totalCount = ref<number>(0);
 
   // Composables
   const toast = useToast();
@@ -28,20 +32,25 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
         userWatched?: CardData[];
         userFavorites?: CardData[];
         pageCount?: number;
+        count: number;
       }>(endpoint, {
         method: "GET",
         query: {
           skip: skip.value,
           limit: limit.value,
+          filter: filter?.value ? filter?.value : null,
         },
       });
 
       if (res.statusCode === 200 || res.statusCode === 304) {
         const newItems =
           res?.userWatchList || res?.userWatched || res?.userFavorites || [];
+
+        // Set the new values
         collection.value = [...collection.value, ...newItems];
         pageCount.value = res.pageCount ?? 0;
         skip.value += limit.value;
+        totalCount.value = res.count;
       }
     } catch (error: any) {
       console.log(error);
@@ -62,5 +71,7 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
     skip,
     limit,
     pageCount,
+    filter,
+    totalCount,
   };
 }

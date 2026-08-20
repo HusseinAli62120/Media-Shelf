@@ -1,44 +1,60 @@
 <script setup lang="ts">
 import type { DropdownMenuItem, TabsItem } from "@nuxt/ui";
 
-const emit = defineEmits<{ (emit: "openDiary"): void }>();
+const { count } = defineProps<{ count: number }>();
+
+const emit = defineEmits<{
+  (emit: "openDiary"): void;
+  (
+    emit: "onFilterChange",
+    value: "dateAdded" | "releaseDate" | "rating" | "dateRange",
+  ): void;
+}>();
+
+// Composables
+const route = useRoute();
 
 // Filter options
-const filterOptions = ref<DropdownMenuItem[][]>([
+let filterOptions = ref<DropdownMenuItem[][]>([
   [
     {
       label: "Date Added",
       onSelect: () => {
-        console.log("Date Added");
+        emit("onFilterChange", "dateAdded");
       },
       icon: "i-lucide-calendar-check",
     },
     {
       label: "Release Date",
       onSelect: () => {
-        console.log("Release Date");
+        emit("onFilterChange", "releaseDate");
       },
       icon: "i-lucide-calendar-1",
     },
     {
       label: "Date Range",
       onSelect: () => {
-        console.log("open modal");
+        emit("onFilterChange", "dateRange");
       },
       icon: "i-lucide-calendar-search",
-    },
-    {
-      label: "Rating",
-      onSelect: () => {
-        console.log("Rating");
-      },
-      icon: "i-lucide-star",
     },
   ],
 ]);
 
-// Composables
-const route = useRoute();
+let ratingFilter = {
+  label: "Rating",
+  onSelect: () => {
+    emit("onFilterChange", "rating");
+  },
+  icon: "i-lucide-star",
+};
+
+// Don't show rating filter on watchlist tab
+if (route.query.tab === "watchlist") {
+  filterOptions.value?.[0]?.pop();
+} else {
+  filterOptions.value?.[0]?.push(ratingFilter);
+}
 
 // Tabs
 const items: TabsItem[] = [
@@ -73,7 +89,6 @@ const active = computed({
   // Do something on tab click
   set(tab) {
     if (tab === "diary") {
-      console.log("diary");
       emit("openDiary");
       return;
     }
@@ -110,18 +125,19 @@ const active = computed({
     >
     </UTabs>
 
-    <!-- Filters -->
-    <UDropdownMenu arrow :items="filterOptions">
-      <UButton
-        @click="
-          () => {
-            console.log('Filter');
-          }
-        "
-        variant="link"
-      >
-        <UIcon class="w-6 h-6" name="i-heroicons-funnel" />
-      </UButton>
-    </UDropdownMenu>
+    <div class="flex flex-row gap-1 items-center">
+      <p class="text-xs text-muted-foreground font-semibold hidden xs:block">
+        Total : {{ count }}
+      </p>
+      <span class="xs:hidden text-xs text-muted-foreground font-semibold">
+        {{ count }}
+      </span>
+      <!-- Filters -->
+      <UDropdownMenu arrow :items="filterOptions">
+        <UButton variant="link">
+          <UIcon class="w-6 h-6" name="i-heroicons-funnel" />
+        </UButton>
+      </UDropdownMenu>
+    </div>
   </div>
 </template>

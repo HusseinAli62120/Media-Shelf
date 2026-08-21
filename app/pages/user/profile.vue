@@ -40,6 +40,12 @@ if (
 ) {
   topFive.value = fetchedTopFive.value.topFive || [];
 }
+
+// Fetch the count stats
+const { data: counts, pending: countsPending } = await useFetch(
+  "/api/stats/counts",
+  { method: "GET" },
+);
 </script>
 
 <template>
@@ -102,7 +108,13 @@ if (
       <!-- Emerald 300-500-700 -->
       <CollectionTab
         title="Watched"
-        :substring="'200 Entries (10 This year)'"
+        :substring="
+          countsPending
+            ? 'Loading...'
+            : counts && counts?.watchedCount > 0
+              ? `${counts.watchedCount} Entries (${counts.watchedThisYear} This year)`
+              : ''
+        "
         iconName="i-heroicons-eye-solid"
         iconColor="text-emerald-500"
         :to="'/user/collection?tab=watched'"
@@ -119,7 +131,13 @@ if (
           title="Diary"
           iconName="i-lucide-notebook"
           iconColor="text-sky-500"
-          :substring="'200 Entries (10 This year)'"
+          :substring="
+            countsPending
+              ? 'Loading...'
+              : counts && counts?.diaryEntriesCount > 0
+                ? `${counts.diaryEntriesCount} Entries (${counts.diaryEntriesThisYear} This year)`
+                : ''
+          "
           :border-color-1="'oklch(82.8% 0.111 230.318)'"
           :border-color-2="'oklch(68.5% 0.169 237.323)'"
           :border-color-3="'oklch(50% 0.134 242.749)'"

@@ -45,6 +45,7 @@ useInfiniteScroll(
 
     <template #body>
       <UScrollArea
+        v-if="diaryEntries?.length > 0"
         :items="diaryEntries"
         v-slot="{ item, index }"
         ref="scrollArea"
@@ -59,6 +60,9 @@ useInfiniteScroll(
           :item="item"
         />
       </UScrollArea>
+      <div v-else class="flex items-center justify-center w-full h-full">
+        <p class="text-muted-foreground">No Entries Yet</p>
+      </div>
 
       <!-- Loading more indicator -->
       <UProgress

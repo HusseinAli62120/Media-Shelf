@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { watched, media } from "../../db/schema";
+import { watched } from "../../db/schema";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -27,7 +27,11 @@ export default defineEventHandler(async (event) => {
 
     // Count the ratings
     ratings.forEach((rating) => {
-      if (rating?.rating && rating.rating !== null) {
+      if (
+        rating?.rating &&
+        rating.rating !== null &&
+        Number(rating?.rating) >= 0.5
+      ) {
         ratingsCount[rating.rating] = (ratingsCount[rating?.rating] ?? 0) + 1;
       }
     });

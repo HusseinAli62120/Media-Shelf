@@ -27,12 +27,6 @@ const { data, error } = await useFetch("/api/tmdb/search", {
     page: 1,
   },
   server: true,
-  onResponse({ response }) {
-    if (response?._data?.searchData) {
-      searchData.value = response._data.searchData;
-      totalPages.value = response._data.totalPages ?? 1;
-    }
-  },
 
   onResponseError({ response }) {
     toast.add({
@@ -42,6 +36,11 @@ const { data, error } = await useFetch("/api/tmdb/search", {
     });
   },
 });
+
+if (data?.value?.searchData) {
+  searchData.value = data.value.searchData;
+  totalPages.value = data.value.totalPages ?? 1;
+}
 
 // Infinite scroll
 const scrollArea = useTemplateRef("scrollArea");

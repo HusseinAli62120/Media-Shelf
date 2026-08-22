@@ -32,12 +32,6 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
     genreId: genreId,
     page: 1,
   },
-  onResponse({ response }) {
-    if (response?._data?.genreMedia) {
-      genreData.value = response._data.genreMedia;
-      totalPages.value = response._data.totalPages ?? 1;
-    }
-  },
   onResponseError({ response }) {
     toast.add({
       title: "Error",
@@ -46,6 +40,11 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
     });
   },
 });
+
+if (data.value?.genreMedia) {
+  genreData.value = data.value.genreMedia;
+  totalPages.value = data.value.totalPages ?? 1;
+}
 
 // Infinite scroll
 const scrollArea = useTemplateRef("scrollArea");

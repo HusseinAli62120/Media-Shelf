@@ -9,11 +9,6 @@ export default function useNavbar() {
   // Variables
   const logoutLoading = ref<boolean>(false);
 
-  // Functions
-  const toggleTheme = () => {
-    colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
-  };
-
   const logout = async () => {
     try {
       logoutLoading.value = true;
@@ -31,11 +26,15 @@ export default function useNavbar() {
     }
   };
 
+  const toggleTheme = () => {
+    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  };
+
   // Dropdown menu items
-  const menuItem = ref<DropdownMenuItem[][]>([
+  const menuItem = computed<DropdownMenuItem[][]>(() => [
     [
       {
-        label: user?.value?.userName,
+        label: user?.value?.userName || "Profile",
         description: "View Profile",
         icon: "i-lucide-user",
         onSelect: () => {
@@ -69,6 +68,13 @@ export default function useNavbar() {
     ],
     [
       {
+        label: colorMode.value === "dark" ? "Dark" : "Light",
+        icon: colorMode.value === "dark" ? "i-lucide-moon" : "i-lucide-sun",
+        onSelect: () => {
+          toggleTheme();
+        },
+      },
+      {
         label: "Change Password",
         icon: "i-lucide-settings",
         onSelect: () => {
@@ -88,6 +94,7 @@ export default function useNavbar() {
   return {
     menuItem,
     toggleTheme,
-    toast,
+    logout,
+    logoutLoading,
   };
 }

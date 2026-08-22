@@ -4,8 +4,15 @@ defineProps<{
 }>();
 
 // Composables
-const colorMode = useColorMode();
-const { toggleTheme, menuItem, toast } = useNavbar();
+const { menuItem } = useNavbar();
+const toast = useToast();
+
+let isHydrated = ref<boolean>(false);
+
+let showTitle = ref<boolean>(true);
+onMounted(() => {
+  isHydrated.value = true;
+});
 
 // Fetch genres
 const {
@@ -53,13 +60,29 @@ const {
       'absolute top-0 left-0 z-50 bg-transparent backdrop-blur-md '
     "
   >
-    <!-- Right section -->
-    <div class="flex flex-row items-center gap-0 sm:gap-16">
+    <!-- Left / Brand & Navigation section -->
+    <div class="flex flex-row items-center gap-2">
+      <!-- Navbar Slideover (Mobile) -->
+      <NavbarSlideover
+        :movie-pending="moviePending"
+        :movie-error="movieError"
+        :movie-genres="movieGenres?.genres"
+        :show-pending="showPending"
+        :show-error="showError"
+        :show-genres="showGenres?.genres"
+      />
+      <!-- Brand Logo -->
       <NuxtLink to="/" class="flex flex-row items-center gap-2">
-        <UIcon name="i-lucide-film" class="h-6 w-6" />
-        <h1 class="font-semibold text-lg">Media Shelf</h1>
+        <UIcon name="i-lucide-film" class="h-6 w-6 hidden sm:inline" />
+        <h1
+          class="font-semibold text-lg"
+          :class="!showTitle && 'hidden sm:inline'"
+        >
+          Media Shelf
+        </h1>
       </NuxtLink>
 
+      <!-- Desktop Navigation Popovers -->
       <div class="hidden sm:flex flex-row items-center">
         <UPopover mode="hover" enable-touch>
           <UButton label="Movies" color="neutral" variant="link" />
@@ -108,39 +131,26 @@ const {
       </div>
     </div>
 
-    <!-- Left section -->
-    <div>
-      <ClientOnly>
+    <!-- Right section -->
+    <div class="flex flex-row items-center gap-1 sm:gap-2">
+      <ExpandableSearchbar
+        @show-title="
+          (value) => {
+            showTitle = value;
+          }
+        "
+        class="inline"
+        expand-direction="left"
+      />
+
+      <!-- User Dropdown -->
+      <UDropdownMenu class="hidden sm:inline" :modal="false" :items="menuItem">
         <UButton
-          class="rounded-full"
+          :disabled="!isHydrated"
           variant="ghost"
           color="neutral"
-          @click="toggleTheme"
+          class="hover:bg-transparent cursor-pointer"
         >
-          <ClientOnly>
-            <UIcon
-              name="i-lucide-sun"
-              class="text-yellow-500 w-6 h-6"
-              v-if="colorMode.preference === 'light'"
-            />
-            <UIcon name="i-lucide-moon" class="w-6 h-6" v-else />
-          </ClientOnly>
-        </UButton>
-
-        <template #fallback>
-          <UButton
-            disabled
-            class="rounded-full"
-            variant="ghost"
-            color="neutral"
-          >
-            <UIcon name="i-lucide-moon" class="text-gray-500 w-6 h-6" />
-          </UButton>
-        </template>
-      </ClientOnly>
-
-      <UDropdownMenu :modal="false" :items="menuItem">
-        <UButton variant="ghost" color="neutral" class="rounded-full">
           <UIcon name="i-lucide-user" class="h-6 w-6" />
         </UButton>
       </UDropdownMenu>

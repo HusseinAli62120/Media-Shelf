@@ -135,7 +135,7 @@ const {
     <div class="flex flex-row items-center gap-1 sm:gap-2">
       <ExpandableSearchbar
         @show-title="
-          (value) => {
+          (value: boolean) => {
             showTitle = value;
           }
         "

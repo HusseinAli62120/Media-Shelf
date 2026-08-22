@@ -113,7 +113,7 @@ const { data: counts, pending: countsPending } = await useFetch(
             ? 'Loading...'
             : counts && counts?.watchedCount > 0
               ? `${counts.watchedCount} Entries (${counts.watchedThisYear} This year)`
-              : ''
+              : 'Start Watching!!!'
         "
         iconName="i-heroicons-eye-solid"
         iconColor="text-emerald-500"
@@ -136,7 +136,7 @@ const { data: counts, pending: countsPending } = await useFetch(
               ? 'Loading...'
               : counts && counts?.diaryEntriesCount > 0
                 ? `${counts.diaryEntriesCount} Entries (${counts.diaryEntriesThisYear} This year)`
-                : ''
+                : 'Start Watching!!!'
           "
           :border-color-1="'oklch(82.8% 0.111 230.318)'"
           :border-color-2="'oklch(68.5% 0.169 237.323)'"

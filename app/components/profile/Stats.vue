@@ -5,44 +5,8 @@ defineOptions({
   tags: ["donutcharts", "basic", "barcharts", "vertical"],
 });
 
-// Donut Data
-let movieGenreData: number[] = [];
-let movieGenreLabels: Record<string, { name: string; color: string }> = {};
-
-let tvGenreData: number[] = [];
-let tvGenreLabels: Record<string, { name: string; color: string }> = {};
-
 const { data } = await useFetch("/api/stats/mostWatchedGenres", {
   method: "GET",
-
-  onResponse({ response }) {
-    if (
-      response?._data?.statusCode === 200 ||
-      response?._data?.statusCode === 304
-    ) {
-      movieGenreData = response?._data?.movieGenres?.map((item) => item.count);
-      movieGenreLabels = Object.fromEntries(
-        response?._data?.movieGenres?.map((item, index) => [
-          item.name,
-          {
-            name: item.name,
-            color: `var(--chart-${index + 1})`,
-          },
-        ]),
-      );
-      // console.log("movieGenreLabels", movieGenreLabels);
-      tvGenreData = response?._data?.tvGenres?.map((item) => item.count);
-      tvGenreLabels = Object.fromEntries(
-        response?._data?.tvGenres?.map((item, index) => [
-          item.name,
-          {
-            name: item.name,
-            color: `var(--chart-${index + 1})`,
-          },
-        ]),
-      );
-    }
-  },
 
   onResponseError() {
     toast.add({
@@ -52,6 +16,39 @@ const { data } = await useFetch("/api/stats/mostWatchedGenres", {
     });
   },
 });
+
+// Donut Data
+const movieGenreData = computed(
+  () => data.value?.movieGenres?.map((item) => item.count) ?? [],
+);
+
+const movieGenreLabels = computed(() =>
+  Object.fromEntries(
+    data.value?.movieGenres?.map((item, index) => [
+      item.name,
+      {
+        name: item.name,
+        color: `var(--chart-${index + 1})`,
+      },
+    ]) ?? [],
+  ),
+);
+
+const tvGenreData = computed(
+  () => data.value?.tvGenres?.map((item) => item.count) ?? [],
+);
+
+const tvGenreLabels = computed(() =>
+  Object.fromEntries(
+    data.value?.tvGenres?.map((item, index) => [
+      item.name,
+      {
+        name: item.name,
+        color: `var(--chart-${index + 1})`,
+      },
+    ]) ?? [],
+  ),
+);
 
 // Bar chart Data //
 const { data: overviewData } = await useFetch("/api/stats/ratingOverview", {
@@ -76,79 +73,122 @@ const ratingCategories = computed(() => ({
 const xFormatter = (i: number): string =>
   `${overviewData?.value?.ratingOverview[i]?.rating?.split(" ")[0]}`;
 const yFormatter = (tick: number) => tick.toString();
+
+let noGenreStats = computed(() => {
+  if (movieGenreData?.value?.length === 0 && tvGenreData?.value?.length === 0) {
+    return true;
+  }
+  return false;
+});
+
+let noRatingStats = computed(() => {
+  let ratingCount = 0;
+  overviewData?.value?.ratingOverview?.forEach((item) => {
+    ratingCount += item.count;
+  });
+  if (ratingCount === 0) {
+    return true;
+  }
+  return false;
+});
 </script>
 
 <template>
   <!-- Donuts -->
   <div class="w-full flex flex-col space-y-4 px-4 py-10 items-start">
     <h6 class="font-semibold text-xl pb-4 w-full">Most Watched Genres</h6>
-    <div
-      class="w-full flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-4"
-    >
-      <DonutChart
-        :data="movieGenreData"
-        :categories="movieGenreLabels"
-        :height="285"
-        :radius="80"
-        :pad-angle="0.1"
-        :arc-width="20"
-        :hide-tooltip="false"
-        :show-background="false"
-        :hide-legend="false"
-        :duration="250"
-        class="sm:w-1/2 w-full"
-        :legend-style="{
-          display: 'flex',
-          flexDirection: 'wrap',
-          marginTop: '20px',
-        }"
+    <ClientOnly>
+      <div
+        v-if="noGenreStats"
+        class="w-full flex flex-col items-center justify-center gap-4"
       >
-        <div class="text-center">
-          <p class="font-semibold text-foreground text-xl">Movies</p>
-        </div>
-      </DonutChart>
+        <p class="text-muted text-center">Start Watching To See Your Stats</p>
+      </div>
+      <div
+        v-else
+        class="w-full flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-4"
+      >
+        <DonutChart
+          :data="movieGenreData"
+          :categories="movieGenreLabels"
+          :height="285"
+          :radius="80"
+          :pad-angle="0.1"
+          :arc-width="20"
+          :hide-tooltip="false"
+          :show-background="false"
+          :hide-legend="false"
+          :duration="250"
+          class="sm:w-1/2 w-full"
+          :legend-style="{
+            display: 'flex',
+            flexDirection: 'wrap',
+            marginTop: '20px',
+          }"
+        >
+          <div class="text-center">
+            <p class="font-semibold text-foreground text-xl">Movies</p>
+          </div>
+        </DonutChart>
 
-      <DonutChart
-        :data="tvGenreData"
-        :categories="tvGenreLabels"
-        :height="285"
-        :radius="80"
-        :pad-angle="0.1"
-        :arc-width="20"
-        :hide-tooltip="false"
-        :show-background="false"
-        :hide-legend="false"
-        class="sm:w-1/2 w-full"
-        :legend-style="{
-          display: 'flex',
-          flexDirection: 'wrap',
-          marginTop: '20px',
-        }"
-      >
-        <div class="text-center">
-          <p class="font-semibold text-foreground text-xl">TV Shows</p>
-        </div>
-      </DonutChart>
-    </div>
+        <DonutChart
+          :data="tvGenreData"
+          :categories="tvGenreLabels"
+          :height="285"
+          :radius="80"
+          :pad-angle="0.1"
+          :arc-width="20"
+          :hide-tooltip="false"
+          :show-background="false"
+          :hide-legend="false"
+          class="sm:w-1/2 w-full"
+          :legend-style="{
+            display: 'flex',
+            flexDirection: 'wrap',
+            marginTop: '20px',
+          }"
+        >
+          <div class="text-center">
+            <p class="font-semibold text-foreground text-xl">TV Shows</p>
+          </div>
+        </DonutChart>
+      </div>
+
+      <template #fallback>
+        <DonutSkeleton />
+      </template>
+    </ClientOnly>
   </div>
 
   <!-- Bar Chart -->
   <div class="w-full sm:px-6 px-4 py-10">
     <h6 class="font-semibold text-xl pb-4 w-full">Rating Overview</h6>
-    <BarChart
-      :data="overviewData?.ratingOverview ?? []"
-      :height="300"
-      :x-axis="'rating'"
-      :y-axis="['count']"
-      :categories="ratingCategories"
-      :x-num-ticks="10"
-      :radius="10"
-      :x-formatter="xFormatter"
-      :y-formatter="yFormatter"
-      :legend-position="LegendPosition.TopRight"
-      :hide-legend="false"
-      :x-axis-config="{ tickTextColor: 'var(--muted-foreground)' }"
-      :y-axis-config="{ tickTextColor: 'var(--muted-foreground)' }"
-    />
+    <ClientOnly>
+      <div
+        v-if="noRatingStats"
+        class="w-full flex flex-col items-center justify-center gap-4"
+      >
+        <p class="text-muted text-center">Start Watching to See Your Stats</p>
+      </div>
+      <BarChart
+        v-else
+        :data="overviewData?.ratingOverview ?? []"
+        :height="300"
+        :x-axis="'rating'"
+        :y-axis="['count']"
+        :categories="ratingCategories"
+        :x-num-ticks="10"
+        :radius="10"
+        :x-formatter="xFormatter"
+        :y-formatter="yFormatter"
+        :legend-position="LegendPosition.TopRight"
+        :hide-legend="false"
+        :x-axis-config="{ tickTextColor: 'var(--muted-foreground)' }"
+        :y-axis-config="{ tickTextColor: 'var(--muted-foreground)' }"
+      />
+      <template #fallback>
+        <BarChartSkeleton />
+      </template>
+    </ClientOnly>
   </div>
 </template>

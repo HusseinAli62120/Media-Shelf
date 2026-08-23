@@ -181,7 +181,7 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
               <h6
                 class="text-base xs:text-lg font-bold tracking-tight text-foreground line-clamp-3"
               >
-                {{ item?.name }} {{ last }}
+                {{ item?.name }}
               </h6>
               <p class="font-bold text-xs text-muted-foreground">
                 {{

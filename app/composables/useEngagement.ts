@@ -28,6 +28,9 @@ export default function useEngagement({
   const toast = useToast();
   const route = useRoute();
   const { watchListIds, favoriteIds, watchedIds } = useIdRef({ autoFetch });
+  const { fetchMediaHistory } = useMediaHistory({
+    mediaId: media.id,
+  });
 
   // Variables
   let loading = ref<boolean>(false);
@@ -297,6 +300,8 @@ export default function useEngagement({
         });
 
         resetValues();
+        fetchMediaHistory({ updateFetch: true });
+        //
       }
       // console.log(
       //   "Date: ",

@@ -50,6 +50,8 @@ const {
   toggleFavorite,
 } = useEngagement({ media: tvDetails?.value?.details!, autoFetch: true });
 
+const { watchedIds } = useIdRef({ autoFetch: false });
+
 // Fetch rating if it exists, if not, set it to 0
 const {
   data: userRating,
@@ -145,7 +147,9 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
       >
         <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
           <!-- Left Column: Poster -->
-          <div class="w-40 sm:w-56 md:w-64 lg:w-72 mx-auto md:mx-0 shrink-0">
+          <div
+            class="w-40 sm:w-56 md:w-64 lg:w-72 mx-auto md:mx-0 shrink-0 relative"
+          >
             <div
               class="aspect-2/3 w-full rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-secondary-background transform transition-all duration-500 hover:scale-[1.02] group relative"
             >
@@ -170,6 +174,33 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 >
               </div>
             </div>
+
+            <!-- History Slideover -->
+            <HistorySlideover
+              v-if="watchedIds.includes(tvDetails.details.id)"
+              :media-id="tvDetails.details.id"
+              :title="tvDetails.details.title"
+            >
+              <UTooltip
+                arrow
+                :delay-duration="0"
+                :text="'Watch History'"
+                :ui="{ text: 'border-none' }"
+                class="absolute bottom-1 right-0"
+              >
+                <UButton
+                  :variant="'ghost'"
+                  :size="'lg'"
+                  color="info"
+                  class="hover:bg-transparent rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <UIcon
+                    name="i-lucide-gallery-horizontal-end"
+                    class="h-4 w-4"
+                  />
+                </UButton>
+              </UTooltip>
+            </HistorySlideover>
           </div>
 
           <!-- Right Column: Info Details -->

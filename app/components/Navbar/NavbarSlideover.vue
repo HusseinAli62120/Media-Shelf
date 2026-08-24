@@ -62,7 +62,14 @@ const colorMode = useColorMode();
               <div
                 class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm"
               >
-                <UIcon name="i-lucide-user" class="w-4 h-4" />
+                <UAvatar
+                  v-if="user?.profileImg"
+                  :src="user?.profileImg"
+                  :alt="user?.userName"
+                  :text="user?.userName?.charAt(0).toUpperCase()"
+                  class="shrink-0 w-8 h-8"
+                />
+                <UIcon v-else name="i-lucide-user" class="w-4 h-4" />
               </div>
               <div class="flex flex-col truncate">
                 <span class="text-sm font-semibold truncate">

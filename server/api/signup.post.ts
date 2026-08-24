@@ -62,6 +62,8 @@ export default defineEventHandler(async (event) => {
         id: createdUser[0]?.id!,
         userName: createdUser[0]?.userName!,
         role: createdUser[0]?.role! as Role,
+        description: null,
+        profileImg: null,
       },
     });
 

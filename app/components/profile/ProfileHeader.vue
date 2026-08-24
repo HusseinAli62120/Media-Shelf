@@ -5,6 +5,8 @@ const { user } = useUserSession();
 const { data } = await useFetch("/api/stats/averageRating", {
   method: "GET",
 });
+
+let isOpen = ref<boolean>(false);
 </script>
 
 <template>
@@ -14,17 +16,37 @@ const { data } = await useFetch("/api/stats/averageRating", {
       <div class="flex flex-col md:flex-row min-w-0 items-center gap-4">
         <!-- Profile picture -->
         <div class="shrink-0 flex flex-row items-center gap-4">
-          <UAvatar
-            :alt="user?.userName"
-            :text="user?.userName?.charAt(0).toUpperCase()"
-            class="shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32"
-          />
+          <div class="relative">
+            <UAvatar
+              v-if="user?.profileImg"
+              :src="user?.profileImg"
+              :alt="user?.userName"
+              :text="user?.userName?.charAt(0).toUpperCase()"
+              class="shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28"
+            />
+
+            <div
+              v-else
+              class="shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-muted flex items-center justify-center border border-neutral-700/50 text-neutral-400 group-hover:text-neutral-200 transition-colors"
+            >
+              <UIcon name="i-lucide-user" class="w-10 h-10" />
+            </div>
+
+            <div
+              class="absolute right-0 bottom-0 sm:w-8 w-6 sm:h-8 h-6 rounded-full bg-muted/20 border border-muted/40 flex items-center justify-center cursor-pointer"
+              @click="isOpen = true"
+            >
+              <UIcon name="i-lucide-user-pen" class="sm:w-4 w-3 sm:h-4 h-3" />
+            </div>
+          </div>
 
           <h6
             class="md:hidden truncate text-2xl font-bold text-center sm:text-start tracking-tight text-highlighted sm:text-3xl"
           >
             {{ user?.userName }}
           </h6>
+
+          <EditProfileModal v-model:open="isOpen" />
         </div>
 
         <!-- Name & description -->
@@ -36,20 +58,17 @@ const { data } = await useFetch("/api/stats/averageRating", {
           </h6>
 
           <p
-            class="mt-1 max-w-xl text-sm font-light text-center sm:text-start leading-6 text-muted sm:text-base"
+            v-if="user?.description"
+            class="mt-1 max-w-xl text-sm font-light text-center sm:text-start leading-6 text-muted sm:text-base max-h-36 md:max-h-24 overflow-y-auto no-scrollbar"
           >
-            Movie and TV enthusiast with a passion for discovering great
-            stories, rating favorites, and building the perfect collection.
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quos
-            architecto iure ratione omnis amet vitae ut ex a eaque! Consequatur
-            modi excepturi libero suscipit enim vero quas cum nemo saepe.
+            {{ user?.description }}
           </p>
         </div>
       </div>
 
       <!-- Average ratings -->
       <div
-        class="flex w-full items-center justify-center gap-4 sm:gap-8 lg:w-auto lg:shrink-0"
+        class="flex items-center justify-center gap-4 sm:gap-8 lg:w-auto lg:shrink-0"
       >
         <div class="flex flex-col items-center gap-2">
           <CircularRating

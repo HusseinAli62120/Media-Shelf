@@ -10,6 +10,8 @@ export const users = pgTable("users", {
   userName: text(),
   password: text(),
   role: role().default("USER"),
+  description: text(),
+  profileImg: text(),
   ...timestamps,
 });
 

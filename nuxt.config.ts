@@ -59,4 +59,13 @@ export default defineNuxtConfig({
   icon: {
     collections: ["lucide", "heroicons", ""],
   },
+
+  nitro: {
+    storage: {
+      uploads: {
+        driver: "fs",
+        base: "./public/uploads",
+      },
+    },
+  },
 });

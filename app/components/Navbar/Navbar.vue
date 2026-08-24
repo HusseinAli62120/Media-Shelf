@@ -6,6 +6,7 @@ defineProps<{
 // Composables
 const { menuItem } = useNavbar();
 const toast = useToast();
+const { user } = useUserSession();
 
 let isHydrated = ref<boolean>(false);
 
@@ -149,9 +150,17 @@ const {
           :disabled="!isHydrated"
           variant="ghost"
           color="neutral"
-          class="hover:bg-transparent cursor-pointer"
+          class="hover:bg-transparent cursor-pointer active:bg-transparent"
         >
-          <UIcon name="i-lucide-user" class="h-6 w-6" />
+          <UAvatar
+            v-if="user?.profileImg"
+            :src="user?.profileImg"
+            :alt="user?.userName"
+            :text="user?.userName?.charAt(0).toUpperCase()"
+            class="shrink-0 w-8 h-8"
+          />
+
+          <UIcon v-else name="i-lucide-user" class="w-6 h-6" />
         </UButton>
       </UDropdownMenu>
     </div>

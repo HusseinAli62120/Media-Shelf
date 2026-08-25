@@ -5,6 +5,7 @@ defineProps<{
   data: CardData[];
   sectionTitle: string;
   sectionDescription: string;
+  to?: string;
 }>();
 </script>
 
@@ -18,6 +19,14 @@ defineProps<{
           {{ sectionDescription }}
         </p>
       </div>
+      <NuxtLink
+        v-if="to"
+        :to="to"
+        class="text-sm text-muted-foreground hover:text-foreground hover:-translate-y-0.5 hover:underline transition-all duration-300 flex items-center"
+      >
+        View More
+        <UIcon name="i-lucide-chevron-right" class="w-4 h-4 ml-1" />
+      </NuxtLink>
     </div>
 
     <!-- Loading Skeleton -->

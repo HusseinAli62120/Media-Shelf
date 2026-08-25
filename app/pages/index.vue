@@ -83,6 +83,7 @@ const {
         :data="topRatedData?.topRated || []"
         sectionTitle="Top Rated"
         sectionDescription="The highest rated movies and shows"
+        to="/more/topRated"
       />
 
       <!-- Discover -->
@@ -92,6 +93,7 @@ const {
         :data="discoverData?.discovered || []"
         sectionTitle="Discover"
         sectionDescription="Discover new movies and shows"
+        to="/more/discover"
       />
     </div>
   </div>

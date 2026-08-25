@@ -1,21 +1,22 @@
 import { db } from "../../utils/drizzleDriver";
 import { watched, media } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
-import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, lte, sql } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   try {
     // Auth
     const { id: userId } = await requireAuth({ event: event });
 
-    const { skip, limit, filter } = getQuery(event);
+    const { skip, limit, filter, order } = getQuery(event);
 
     // Check request parameters
     if (
       skip === undefined ||
       limit === undefined ||
       skip === "" ||
-      limit === ""
+      limit === "" ||
+      !order
     ) {
       throw createError({
         statusCode: 400,
@@ -45,14 +46,25 @@ export default defineEventHandler(async (event) => {
 
     // Determine ordering based on filter
     let orderByClause;
+    // Date added
     if (parsedFilter === "dateAdded") {
-      orderByClause = desc(watched.createdAt);
+      orderByClause =
+        order === "Desc" ? desc(watched.createdAt) : asc(watched?.createdAt);
+      // Release date
     } else if (parsedFilter === "releaseDate") {
-      orderByClause = sql`${media.first_air_date} DESC NULLS LAST`;
+      const query =
+        order === "Desc"
+          ? desc(media.first_air_date)
+          : asc(media.first_air_date);
+      orderByClause = query;
+      // Rating
     } else if (parsedFilter === "rating") {
-      orderByClause = sql`CAST(NULLIF(${watched.rating}, '') AS NUMERIC) DESC NULLS LAST`;
+      const query =
+        order === "Desc" ? desc(watched.rating) : asc(watched.rating);
+      orderByClause = query;
     } else {
-      orderByClause = desc(watched.createdAt);
+      orderByClause =
+        order === "Desc" ? desc(watched.createdAt) : asc(watched?.createdAt);
     }
 
     // Build WHERE clause

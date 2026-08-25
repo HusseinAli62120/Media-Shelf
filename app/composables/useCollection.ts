@@ -7,6 +7,7 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
   let filter = ref<string | Record<string, Record<string, string>> | null>(
     null,
   );
+  let order = ref<"Asc" | "Desc">("Desc");
   let totalCount = ref<number>(0);
 
   // Composables
@@ -39,6 +40,7 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
           skip: skip.value,
           limit: limit.value,
           filter: filter?.value ? filter?.value : null,
+          order: order.value,
         },
       });
 
@@ -72,6 +74,7 @@ export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
     limit,
     pageCount,
     filter,
+    order,
     totalCount,
   };
 }

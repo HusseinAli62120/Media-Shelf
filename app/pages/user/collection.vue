@@ -25,6 +25,7 @@ const {
   pageCount,
   collection,
   filter,
+  order,
   totalCount,
 } = useCollection({});
 let endpoint: string =
@@ -48,6 +49,7 @@ const { data, pending, error } = await useFetch<{
   query: {
     skip: skip.value,
     limit: limit.value,
+    order: order.value,
   },
 
   onResponseError({ response }) {
@@ -86,6 +88,7 @@ watch(route, () => {
   pageCount.value = 0;
   collection.value = [];
   filter.value = "";
+  order.value = "Desc";
 
   fetchCollection({ tab: tab?.value });
 });
@@ -175,18 +178,21 @@ let dateRangeOpen = ref(false);
     <!-- Top Bar -->
     <Topbar
       :count="totalCount ?? 0"
+      :is-fetching="isFetching"
       @open-diary="
         () => {
           diaryOpen = true;
         }
       "
       @on-filter-change="
-        (value) => {
-          if (value === 'dateRange') {
+        (filterType, selectedOrder) => {
+          if (filterType === 'dateRange') {
             dateRangeOpen = true;
             return;
           }
-          filter = value;
+          filter = filterType;
+
+          order = selectedOrder!;
 
           // Reset pagination
           skip = 0;

@@ -1,35 +1,86 @@
 <script setup lang="ts">
 import type { DropdownMenuItem, TabsItem } from "@nuxt/ui";
 
-const { count } = defineProps<{ count: number }>();
+const { count, isFetching } = defineProps<{
+  count: number;
+  isFetching: boolean;
+}>();
 
 const emit = defineEmits<{
   (emit: "openDiary"): void;
   (
     emit: "onFilterChange",
-    value: "dateAdded" | "releaseDate" | "rating" | "dateRange",
+    filterType: "dateAdded" | "releaseDate" | "rating" | "dateRange",
+    order?: "Asc" | "Desc",
   ): void;
 }>();
 
 // Composables
 const route = useRoute();
 
+let ratingFilter = {
+  label: "Rating",
+  icon: "i-lucide-star",
+  children: [
+    {
+      label: "Desc",
+      onSelect: () => {
+        emit("onFilterChange", "rating", "Desc");
+      },
+      icon: "i-lucide-calendar-check",
+    },
+    {
+      label: "Asc",
+      onSelect: () => {
+        emit("onFilterChange", "rating", "Asc");
+      },
+      icon: "i-lucide-calendar-check",
+    },
+  ],
+};
+
 // Filter options
 let filterOptions = ref<DropdownMenuItem[][]>([
   [
     {
       label: "Date Added",
-      onSelect: () => {
-        emit("onFilterChange", "dateAdded");
-      },
       icon: "i-lucide-calendar-check",
+      children: [
+        {
+          label: "Desc",
+          onSelect: () => {
+            emit("onFilterChange", "dateAdded", "Desc");
+          },
+          icon: "i-lucide-calendar-check",
+        },
+        {
+          label: "Asc",
+          onSelect: () => {
+            emit("onFilterChange", "dateAdded", "Asc");
+          },
+          icon: "i-lucide-calendar-check",
+        },
+      ],
     },
     {
       label: "Release Date",
-      onSelect: () => {
-        emit("onFilterChange", "releaseDate");
-      },
       icon: "i-lucide-calendar-1",
+      children: [
+        {
+          label: "Desc",
+          onSelect: () => {
+            emit("onFilterChange", "releaseDate", "Desc");
+          },
+          icon: "i-lucide-calendar-check",
+        },
+        {
+          label: "Asc",
+          onSelect: () => {
+            emit("onFilterChange", "releaseDate", "Asc");
+          },
+          icon: "i-lucide-calendar-check",
+        },
+      ],
     },
     {
       label: "Date Range",
@@ -41,21 +92,30 @@ let filterOptions = ref<DropdownMenuItem[][]>([
   ],
 ]);
 
-let ratingFilter = {
-  label: "Rating",
-  onSelect: () => {
-    emit("onFilterChange", "rating");
-  },
-  icon: "i-lucide-star",
-};
+// Add rating filter on mount if not watchlist
+onMounted(() => {
+  if (route.query.tab !== "watchlist") {
+    filterOptions.value?.[0]?.push(ratingFilter);
+  }
+});
 
 // Don't show rating filter on watchlist tab
-if (route.query.tab === "watchlist") {
-  filterOptions.value?.[0]?.pop();
-} else {
-  filterOptions.value?.[0]?.push(ratingFilter);
-}
-
+watch(
+  () => route.query.tab,
+  (tab) => {
+    if (
+      tab === "watchlist" &&
+      filterOptions.value?.[0]?.includes(ratingFilter)
+    ) {
+      filterOptions.value?.[0]?.pop();
+    } else if (
+      tab !== "watchlist" &&
+      !filterOptions.value?.[0]?.includes(ratingFilter)
+    ) {
+      filterOptions.value?.[0]?.push(ratingFilter);
+    }
+  },
+);
 // Tabs
 const items: TabsItem[] = [
   {
@@ -106,6 +166,7 @@ const active = computed({
     <UTabs
       v-model="active"
       :content="false"
+      :disabled="isFetching"
       :items="items"
       :ui="{
         label: 'hidden min-[500px]:inline',
@@ -125,17 +186,19 @@ const active = computed({
     >
     </UTabs>
 
-    <div class="flex flex-row gap-1 items-center">
-      <p class="text-xs text-muted-foreground font-semibold hidden xs:block">
+    <div class="flex md:flex-row flex-col-reverse gap-1 items-center">
+      <p class="text-xs text-muted-foreground font-semibold">
         Total : {{ count }}
       </p>
-      <span class="xs:hidden text-xs text-muted-foreground font-semibold">
-        {{ count }}
-      </span>
+
       <!-- Filters -->
-      <UDropdownMenu arrow :items="filterOptions">
-        <UButton variant="link">
-          <UIcon class="w-6 h-6" name="i-heroicons-funnel" />
+      <UDropdownMenu arrow :disabled="isFetching" :items="filterOptions">
+        <UButton variant="link" class="p-0 md:px-2.5 md:py-1.5">
+          <UIcon
+            :class="isFetching && 'animate-spin'"
+            class="w-6 h-6"
+            :name="isFetching ? 'i-lucide-loader-2' : 'i-heroicons-funnel'"
+          />
         </UButton>
       </UDropdownMenu>
     </div>

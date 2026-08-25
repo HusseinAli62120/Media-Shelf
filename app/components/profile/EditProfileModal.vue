@@ -89,7 +89,7 @@ const processFile = (file: File) => {
   avatarPreview.value = URL.createObjectURL(file);
   isImageChanged.value = true;
 
-  console.log(avatarFile.value);
+  // console.log(avatarFile.value);
 };
 
 const removeAvatar = () => {
@@ -178,7 +178,7 @@ const handleSave = async () => {
 
     if (res.statusCode === 200 || res.statusCode === 304) {
       await refreshSession();
-      console.log(user.value);
+      // console.log(user.value);
 
       toast.add({
         title: "Success",

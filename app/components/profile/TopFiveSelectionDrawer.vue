@@ -78,12 +78,14 @@ const handleSelectTopFive = async ({ item }: { item: CardData }) => {
         openTopFiveDrawer = false;
       }
     "
-    title="Select Favorite"
     :ui="{
       container: 'no-scrollbar',
       handle: 'mb-3',
     }"
   >
+    <template #title>
+      <h6 class="text-xl" v-if="collection?.length > 0">Select Favorite</h6>
+    </template>
     <template #body>
       <!-- Media grid -->
       <UScrollArea
@@ -105,6 +107,12 @@ const handleSelectTopFive = async ({ item }: { item: CardData }) => {
           @select-top-five="handleSelectTopFive({ item: item })"
         />
       </UScrollArea>
+      <div
+        v-else
+        class="w-full flex-1 flex flex-col items-center justify-center"
+      >
+        <p class="text-muted-foreground">You Have Not Watched Anything Yet!</p>
+      </div>
     </template>
     <!-- Loading More -->
     <UProgress

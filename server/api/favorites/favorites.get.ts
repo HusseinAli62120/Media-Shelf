@@ -1,21 +1,22 @@
 import { db } from "../../utils/drizzleDriver";
 import { favorites, media, watched } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
-import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, lte } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   try {
     // Auth
     const { id: userId } = await requireAuth({ event: event });
 
-    const { skip, limit, filter } = getQuery(event);
+    const { skip, limit, filter, order } = getQuery(event);
 
     // Check request parameters
     if (
       skip === undefined ||
       limit === undefined ||
       skip === "" ||
-      limit === ""
+      limit === "" ||
+      !order
     ) {
       throw createError({
         statusCode: 400,
@@ -45,14 +46,29 @@ export default defineEventHandler(async (event) => {
 
     // Determine ordering based on filter
     let orderByClause;
+    // Date added
     if (parsedFilter === "dateAdded") {
-      orderByClause = desc(favorites.createdAt);
+      orderByClause =
+        order === "Desc"
+          ? desc(favorites.createdAt)
+          : asc(favorites?.createdAt);
+      // Release date
     } else if (parsedFilter === "releaseDate") {
-      orderByClause = sql`${media.first_air_date} DESC NULLS LAST`;
+      const query =
+        order === "Desc"
+          ? desc(media.first_air_date)
+          : asc(media.first_air_date);
+      orderByClause = query;
+      // Rating
     } else if (parsedFilter === "rating") {
-      orderByClause = desc(watched?.rating);
+      const query =
+        order === "Desc" ? desc(watched.rating) : asc(watched.rating);
+      orderByClause = query;
     } else {
-      orderByClause = desc(favorites.createdAt);
+      orderByClause =
+        order === "Desc"
+          ? desc(favorites.createdAt)
+          : asc(favorites?.createdAt);
     }
 
     // Build WHERE clause
@@ -83,7 +99,10 @@ export default defineEventHandler(async (event) => {
       .from(favorites)
       .where(whereClause)
       .fullJoin(media, eq(favorites.mediaId, media.mediaId))
-      .fullJoin(watched, eq(media.mediaId, watched.mediaId))
+      .fullJoin(
+        watched,
+        and(eq(media.mediaId, watched.mediaId), eq(watched.userId, userId)),
+      )
       .orderBy(orderByClause)
       .limit(Number(limit))
       .offset(Number(skip));

@@ -27,6 +27,7 @@ const {
   query: {
     skip: skip.value,
     limit: limit.value,
+    order: "Desc",
   },
 });
 

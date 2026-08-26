@@ -36,12 +36,15 @@ useInfiniteScroll(
       body: ' flex flex-col items-center',
       title: 'text-xl',
     }"
-    title="Diary"
     direction="right"
     class="flex"
     v-model:open="isOpen"
   >
     <slot />
+
+    <template #title>
+      <p class="text-lg">Diary</p>
+    </template>
 
     <template #body>
       <UScrollArea

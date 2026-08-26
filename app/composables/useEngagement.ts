@@ -55,6 +55,7 @@ export default function useEngagement({
   });
 
   const toggleWatchlist = async () => {
+    loading.value = true;
     try {
       let res;
       if (!isWatchlisted.value) {
@@ -93,8 +94,7 @@ export default function useEngagement({
           );
         }
       }
-
-      if (res.statusCode === 200) {
+      if (res.statusCode === 200 || res.statusCode === 304) {
         toast.add({
           title: "Success",
           description: res?.statusMessage,
@@ -108,10 +108,13 @@ export default function useEngagement({
         description: error.data?.statusMessage,
         color: "error",
       });
+    } finally {
+      loading.value = false;
     }
   };
 
   const toggleFavorite = async () => {
+    loading.value = true;
     try {
       let res;
       if (!isFavorite.value) {
@@ -151,7 +154,7 @@ export default function useEngagement({
         }
       }
 
-      if (res.statusCode === 200) {
+      if (res.statusCode === 200 || res.statusCode === 304) {
         toast.add({
           title: "Success",
           description: res?.statusMessage,
@@ -165,6 +168,8 @@ export default function useEngagement({
         description: error.data?.statusMessage,
         color: "error",
       });
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -177,6 +182,7 @@ export default function useEngagement({
   };
 
   const addToWatched = async () => {
+    loading.value = true;
     try {
       const res = await $fetch("/api/watched/watched", {
         method: "POST",
@@ -214,6 +220,8 @@ export default function useEngagement({
         description: error.data?.statusMessage,
         color: "error",
       });
+    } finally {
+      loading.value = false;
     }
   };
 

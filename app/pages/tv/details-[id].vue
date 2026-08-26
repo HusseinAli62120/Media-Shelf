@@ -317,6 +317,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                   :ui="{ text: 'border-none' }"
                 >
                   <UButton
+                    :disabled="loading"
                     :variant="'ghost'"
                     :size="'lg'"
                     :class="isWatchlisted ? 'text-indigo-400' : 'text-neutral '"
@@ -341,6 +342,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                   :ui="{ text: 'border-none' }"
                 >
                   <UButton
+                    :disabled="loading"
                     :variant="'ghost'"
                     :size="'lg'"
                     :color="isFavorite ? 'error' : 'neutral'"
@@ -416,6 +418,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                         "
                       />
                       <UButton
+                        :disabled="loading"
                         @click="
                           () => {
                             if (isSeen) {
@@ -457,7 +460,7 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
                 Overview
               </h3>
               <p
-                class="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base leading-relaxed tracking-wide max-w-3xl font-light"
+                class="text-neutral-600 dark:text-neutral-300 text-sm sm:text-base leading-relaxed tracking-wide max-w-3xl font-normal dark:font-light"
               >
                 {{
                   tvDetails.details.overview ||

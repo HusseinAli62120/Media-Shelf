@@ -20,7 +20,6 @@ const {
     :ui="{
       body: 'no-scrollbar flex flex-col justify-between items-center',
     }"
-    title="Add Diary Entry"
     direction="bottom"
     class="sm:hidden"
     @update:open="
@@ -41,6 +40,9 @@ const {
   >
     <RainbowButton :speed="2">Review & Log</RainbowButton>
 
+    <template #title>
+      <p class="text-lg">Add Diary Entry</p>
+    </template>
     <template class="overflow-hidden" #body>
       <DrawerBody :media="media" />
     </template>
@@ -53,8 +55,9 @@ const {
           class="w-full"
         >
           <UIcon
-            :name="loading ? 'i-lucide-loader' : 'i-lucide-plus'"
-            :class="loading ? 'animate-spin' : ''"
+            v-if="loading"
+            name="i-lucide-loader-2"
+            class="animate-spin w-4 h-4 mr-1"
           />
           {{ loading ? "Adding..." : "Add Entry" }}
         </RainbowButton>

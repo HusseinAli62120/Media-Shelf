@@ -120,13 +120,5 @@ onMounted(() => {
       class="absolute top-0 inset-x-0 z-1"
       :ui="{ base: 'bg-default' }"
     />
-
-    <!-- End of results -->
-    <div
-      v-else-if="page >= totalPages && searchData.length > 0"
-      class="flex items-center justify-center w-full py-6 text-sm text-muted-foreground"
-    >
-      You've reached the end
-    </div>
   </div>
 </template>

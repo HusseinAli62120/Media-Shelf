@@ -19,7 +19,6 @@ const {
 <template>
   <USlideover
     :ui="{ body: 'no-scrollbar flex flex-col items-center' }"
-    title="Add Diary Entry"
     direction="right"
     class="hidden sm:block"
     @update:open="
@@ -39,6 +38,10 @@ const {
   >
     <RainbowButton :speed="2">Review & Log</RainbowButton>
 
+    <template #title>
+      <p class="text-lg">Add Diary Entry</p>
+    </template>
+
     <template class="overflow-hidden" #body>
       <DrawerBody :media="media" />
     </template>
@@ -52,8 +55,8 @@ const {
         >
           <UIcon
             v-if="loading"
-            name="i-lucide-loader"
-            class="animate-spin w-4 h-4"
+            name="i-lucide-loader-2"
+            class="animate-spin w-4 h-4 mr-1"
           />
           {{ loading ? "Adding..." : "Add Entry" }}
         </RainbowButton>

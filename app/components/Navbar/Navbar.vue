@@ -85,7 +85,7 @@ const {
 
       <!-- Desktop Navigation Popovers -->
       <div class="hidden sm:flex flex-row items-center">
-        <UPopover mode="hover" enable-touch>
+        <UPopover arrow mode="hover" enable-touch>
           <UButton label="Movies" color="neutral" variant="link" />
 
           <template #content>
@@ -107,7 +107,7 @@ const {
             </div>
           </template>
         </UPopover>
-        <UPopover mode="hover" enable-touch>
+        <UPopover arrow mode="hover" enable-touch>
           <UButton label="Shows" color="neutral" variant="link" />
 
           <template #content>
@@ -145,7 +145,12 @@ const {
       />
 
       <!-- User Dropdown -->
-      <UDropdownMenu class="hidden sm:inline" :modal="false" :items="menuItem">
+      <UDropdownMenu
+        arrow
+        class="hidden sm:inline"
+        :modal="false"
+        :items="menuItem"
+      >
         <UButton
           :disabled="!isHydrated"
           variant="ghost"

@@ -75,13 +75,6 @@ export default function useNavbar() {
         },
       },
       {
-        label: "Change Password",
-        icon: "i-lucide-settings",
-        onSelect: () => {
-          console.log("Change password");
-        },
-      },
-      {
         label: logoutLoading.value ? "Logging out..." : "Logout",
         icon: logoutLoading.value ? "i-lucide-loader-2" : "i-lucide-log-out",
         color: "error",

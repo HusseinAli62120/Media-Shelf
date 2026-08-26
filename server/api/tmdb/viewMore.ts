@@ -10,7 +10,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const { viewMoreType, page, fetchShows, fetchMovies } = getQuery(event);
+    const { viewMoreType, page, fetchShows, fetchMovies, startDate, endDate } =
+      getQuery(event);
 
     if (!viewMoreType || !page) {
       throw createError({
@@ -19,13 +20,28 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    let sortBy =
-      viewMoreType === "topRated" ? "vote_count.desc" : "popularity.desc";
+    const formattedStartDate =
+      startDate ? new Date(startDate.toString()).toISOString().split("T")[0] : "";
+    const formattedEndDate =
+      endDate ? new Date(endDate.toString()).toISOString().split("T")[0] : "";
+
+    const movieDateFilter =
+      formattedStartDate && formattedEndDate
+        ? `primary_release_date.gte=${formattedStartDate}&primary_release_date.lte=${formattedEndDate}`
+        : "";
+
+    const showDateFilter =
+      formattedStartDate && formattedEndDate
+        ? `first_air_date.gte=${formattedStartDate}&first_air_date.lte=${formattedEndDate}`
+        : "";
+
+    // For most relevent results
+    let sortBy = "vote_count.desc";
     let showResponse: any;
     // Get trending shows
     if (fetchShows) {
       showResponse = await $fetch(
-        `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${page}&sort_by=${sortBy}`,
+        `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${page}${showDateFilter ? "&" + showDateFilter : ""}&sort_by=${sortBy}`,
         {
           method: "GET",
           headers: {
@@ -40,7 +56,7 @@ export default defineEventHandler(async (event) => {
     // Get trending movies
     if (fetchMovies) {
       movieResponse = await $fetch(
-        `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${page}&sort_by=${sortBy}`,
+        `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${page}${movieDateFilter ? "&" + movieDateFilter : ""}&sort_by=${sortBy}`,
         {
           method: "GET",
           headers: {

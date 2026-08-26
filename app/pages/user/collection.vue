@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Role } from "#shared/enums/Role";
 import { useInfiniteScroll } from "@vueuse/core";
-import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
-import { getLocalTimeZone, today } from "@internationalized/date";
 
 definePageMeta({
   layout: "screen",
@@ -109,11 +107,8 @@ useInfiniteScroll(
   { distance: 200 },
 );
 
-// Date Range
-const tz = getLocalTimeZone();
-const breakpoints = useBreakpoints(breakpointsTailwind);
-const isDesktop = breakpoints.greaterOrEqual("sm");
-
+// calendar date range & open state
+let dateRangeOpen = ref(false);
 const ranges = [
   { label: "Last 7 days", days: 7 },
   { label: "Last 14 days", days: 14 },
@@ -121,41 +116,8 @@ const ranges = [
   { label: "Last 3 months", months: 3 },
   { label: "Last 6 months", months: 6 },
   { label: "Last year", years: 1 },
+  { label: "Last 5 years", years: 5 },
 ];
-
-const initialEnd = today(tz);
-const modelValue = shallowRef({
-  start: initialEnd.subtract({ days: 14 }),
-  end: initialEnd,
-});
-
-function computeStart(range: (typeof ranges)[number]) {
-  const end = today(tz);
-  return {
-    start: end.subtract({
-      days: range.days,
-      months: range.months,
-      years: range.years,
-    }),
-    end,
-  };
-}
-
-function isRangeSelected(range: (typeof ranges)[number]) {
-  if (!modelValue.value?.start || !modelValue.value?.end) return false;
-  const { start, end } = computeStart(range);
-
-  return (
-    modelValue.value.start.compare(start) === 0 &&
-    modelValue.value.end.compare(end) === 0
-  );
-}
-
-function selectRange(range: (typeof ranges)[number]) {
-  modelValue.value = computeStart(range);
-}
-
-let dateRangeOpen = ref(false);
 </script>
 
 <template>
@@ -209,7 +171,7 @@ let dateRangeOpen = ref(false);
 
     <!-- Media grid -->
     <UScrollArea
-      v-if="collection?.length && collection?.length > 0"
+      v-show="collection?.length && collection?.length > 0"
       :items="collection"
       v-slot="{ item }"
       ref="scrollArea"
@@ -229,7 +191,7 @@ let dateRangeOpen = ref(false);
 
     <!-- Tab Switch loading -->
     <div
-      v-else-if="isFetching"
+      v-if="isFetching"
       class="flex-1 flex items-center justify-center w-full"
     >
       <UProgress
@@ -246,7 +208,10 @@ let dateRangeOpen = ref(false);
     </div>
 
     <!-- Empty -->
-    <div v-else class="flex flex-1 flex-col items-center justify-center w-full">
+    <div
+      v-if="!isFetching && collection?.length === 0"
+      class="flex flex-1 flex-col items-center justify-center w-full"
+    >
       <FetchMessage :message="'Watched list is empty'" :type="'not-found'" />
     </div>
 
@@ -261,97 +226,30 @@ let dateRangeOpen = ref(false);
   </div>
 
   <!-- Date Range Calender -->
-  <UModal
-    :ui="{
-      header: 'hidden',
-      content: 'w-auto sm:max-w-fit',
-    }"
+  <DateRangeModal
     v-model:open="dateRangeOpen"
-  >
-    <template #body>
-      <div class="flex items-stretch divide-x divide-default">
-        <div class="hidden sm:flex flex-col justify-center py-2">
-          <UButton
-            v-for="(range, index) in ranges"
-            :key="index"
-            :label="range.label"
-            color="neutral"
-            variant="ghost"
-            class="rounded-none px-4"
-            :class="[
-              isRangeSelected(range) ? 'bg-elevated' : 'hover:bg-elevated/50',
-            ]"
-            truncate
-            @click="selectRange(range)"
-          />
-        </div>
+    :loading="isFetching"
+    :ranges="ranges"
+    @apply="
+      async (startDate, endDate) => {
+        filter = {
+          dateRange: {
+            startDate: generateTimestamp({
+              calendarDate: startDate,
+            }).date,
+            endDate: generateTimestamp({
+              calendarDate: endDate,
+            }).date,
+          },
+        };
 
-        <UCalendar
-          :ui="{
-            gridRow: ' gap-10',
-            body: ' gap-4',
-            grid: isDesktop ? 'ml-4' : 'ml-0',
-          }"
-          v-model="modelValue"
-          class="p-5"
-          :number-of-months="isDesktop ? 2 : 1"
-          range
-        />
-      </div>
-    </template>
+        skip = 0;
+        pageCount = 0;
+        collection = [];
 
-    <template #footer>
-      <div class="flex items-center justify-end gap-2 w-full">
-        <UButton
-          class="cursor-pointer"
-          color="neutral"
-          variant="soft"
-          @click="
-            () => {
-              dateRangeOpen = false;
-            }
-          "
-        >
-          <UIcon name="i-lucide-x" class="w-4 h-4" />
-          Cancel
-        </UButton>
-        <UButton
-          class="cursor-pointer"
-          variant="soft"
-          color="info"
-          @click="
-            async () => {
-              if (modelValue?.start && modelValue?.end) {
-                filter = {
-                  dateRange: {
-                    startDate: generateTimestamp({
-                      calendarDate: modelValue.start,
-                    }).date,
-                    endDate: generateTimestamp({
-                      calendarDate: modelValue.end,
-                    }).date,
-                  },
-                };
-              }
-
-              skip = 0;
-              pageCount = 0;
-              collection = [];
-
-              await fetchCollection({ tab: tab });
-              dateRangeOpen = false;
-            }
-          "
-          :disabled="isFetching"
-        >
-          <UIcon
-            :name="isFetching ? 'i-lucide-loader-2' : 'i-lucide-check'"
-            :class="isFetching ? 'animate-spin' : ''"
-            class="w-4 h-4"
-          />
-          {{ isFetching ? "Applying..." : "Apply" }}
-        </UButton>
-      </div>
-    </template>
-  </UModal>
+        await fetchCollection({ tab: tab });
+        dateRangeOpen = false;
+      }
+    "
+  />
 </template>

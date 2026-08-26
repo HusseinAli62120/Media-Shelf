@@ -26,6 +26,21 @@ if (
   navigateTo("*");
 }
 
+const {
+  fetchMore,
+  data,
+  totalMoviePages,
+  totalShowPages,
+  page,
+  isFetchingMore,
+  dateRangeOpen,
+  ranges,
+  fetchMovies,
+  fetchShows,
+  startDate,
+  endDate,
+} = useApi();
+
 // Set title
 let title = ref("");
 if (route.params.viewMore === "topRated") {
@@ -34,19 +49,12 @@ if (route.params.viewMore === "topRated") {
   title.value = "Discover";
 }
 
-// Pagination state
-let page = ref(1);
-let totalShowPages = ref(1);
-let totalMoviePages = ref(1);
-let isFetchingMore = ref(false);
-let viewMoreData = ref<CardData[]>([]);
-
-// Flags to prevent fetching past the last page
-let fetchMovies = ref(true);
-let fetchShows = ref(true);
-
 // Initial fetch
-const { data, pending, error } = await useFetch("/api/tmdb/viewMore", {
+const {
+  data: initialData,
+  pending,
+  error,
+} = await useFetch("/api/tmdb/viewMore", {
   method: "get",
   query: {
     viewMoreType: route.params.viewMore,
@@ -54,6 +62,8 @@ const { data, pending, error } = await useFetch("/api/tmdb/viewMore", {
     // Flags to prevent fetching after one has reached the max number of pages
     fetchShows: fetchShows.value,
     fetchMovies: fetchMovies.value,
+    startDate: null,
+    endDate: null,
   },
   onResponseError({ response }) {
     toast.add({
@@ -64,10 +74,13 @@ const { data, pending, error } = await useFetch("/api/tmdb/viewMore", {
   },
 });
 
-if (data?.value?.statusCode === 200 || data?.value?.statusCode === 304) {
-  viewMoreData.value = data.value.viewMoreData;
-  totalMoviePages.value = data.value.totalMoviePages;
-  totalShowPages.value = data.value.totalShowPages;
+if (
+  initialData?.value?.statusCode === 200 ||
+  initialData?.value?.statusCode === 304
+) {
+  data.value = initialData.value.viewMoreData;
+  totalMoviePages.value = initialData.value.totalMoviePages;
+  totalShowPages.value = initialData.value.totalShowPages;
 }
 
 // Infinite scroll
@@ -94,36 +107,16 @@ onMounted(() => {
         return;
       }
 
-      isFetchingMore.value = true;
       page.value++;
 
-      try {
-        const res = await $fetch("/api/tmdb/viewMore", {
-          method: "get",
-          query: {
-            viewMoreType: route.params.viewMore,
-            page: page.value,
-            // Flags to prevent fetching after one has reached the max number of pages
-            fetchShows: fetchShows.value,
-            fetchMovies: fetchMovies.value,
-          },
-        });
-
-        if (res?.statusCode === 200 || res?.statusCode === 304) {
-          viewMoreData.value = [...viewMoreData.value, ...res.viewMoreData];
-          totalMoviePages.value = res.totalMoviePages;
-          totalShowPages.value = res.totalShowPages;
-        }
-      } catch (err: any) {
-        toast.add({
-          title: "Error",
-          description: err?.data?.message ?? "Failed to load more",
-          color: "error",
-        });
-        page.value--;
-      } finally {
-        isFetchingMore.value = false;
-      }
+      await fetchMore({
+        startDate: startDate.value
+          ? generateTimestamp({ calendarDate: startDate.value }).date
+          : null,
+        endDate: endDate.value
+          ? generateTimestamp({ calendarDate: endDate.value }).date
+          : null,
+      });
     },
     { distance: 200 },
   );
@@ -147,13 +140,64 @@ onMounted(() => {
   </div>
   <!-- Content -->
   <div v-else class="flex h-[90vh] flex-col items-start justify-start w-full">
-    <div class="border-b border-border/40 pb-4 px-4 py-4 w-full">
-      <h1 class="text-3xl font-black tracking-tight">
+    <!-- Title and filters -->
+    <div
+      class="border-b border-border/40 pb-4 px-4 py-4 w-full flex flex-row items-center justify-between"
+    >
+      <h3 class="text-3xl font-black tracking-tight">
         {{ title }}
-      </h1>
+      </h3>
+      <!-- Filters -->
+      <div class="flex flex-row items-center space-x-2">
+        <UIcon
+          :disabled="isFetchingMore || pending"
+          v-if="startDate && endDate"
+          @click="
+            () => {
+              startDate = undefined;
+              endDate = undefined;
+              page = 1;
+              fetchMovies = true;
+              fetchShows = true;
+              data = [];
+              fetchMore({});
+            }
+          "
+          :name="isFetchingMore ? 'i-lucide-loader-2' : 'i-lucide-x'"
+          :class="isFetchingMore ? 'animate-spin' : ''"
+          class="w-3 h-3 mt-1 text-muted-foreground cursor-pointer"
+        />
+
+        <p
+          v-if="startDate && endDate"
+          class="text-xs text-muted-foreground hidden xs:inline"
+        >
+          {{ formatDateTime({ timestamp: startDate }).date }} -
+          {{ formatDateTime({ timestamp: endDate }).date }}
+        </p>
+        <UButton
+          :disabled="isFetchingMore || pending"
+          variant="link"
+          class="p-0 md:px-2.5 md:py-1.5"
+          @click="
+            () => {
+              dateRangeOpen = true;
+            }
+          "
+        >
+          <UIcon
+            :class="isFetchingMore ? 'animate-spin' : ''"
+            class="w-6 h-6"
+            :name="
+              isFetchingMore ? 'i-lucide-loader-2' : 'i-lucide-calendar-search'
+            "
+          />
+        </UButton>
+      </div>
     </div>
     <UScrollArea
-      :items="viewMoreData"
+      v-show="data.length > 0"
+      :items="data"
       v-slot="{ item }"
       ref="scrollArea"
       :ui="{
@@ -165,6 +209,16 @@ onMounted(() => {
       <Card :item="item" />
     </UScrollArea>
 
+    <div
+      v-if="data.length === 0"
+      class="flex-1 flex flex-col items-center justify-center w-full"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="animate-spin text-muted-foreground w-10 h-10"
+      />
+    </div>
+
     <!-- Loading more indicator -->
     <UProgress
       v-if="isFetchingMore"
@@ -172,6 +226,28 @@ onMounted(() => {
       size="xs"
       class="absolute top-0 inset-x-0 z-1"
       :ui="{ base: 'bg-default' }"
+    />
+
+    <DateRangeModal
+      v-model:open="dateRangeOpen"
+      :loading="isFetchingMore"
+      :ranges="ranges"
+      @apply="
+        async (newStartDate, newEndDate) => {
+          startDate = newStartDate;
+          endDate = newEndDate;
+
+          page = 1;
+          fetchMovies = true;
+          fetchShows = true;
+          data = [];
+          await fetchMore({
+            startDate: generateTimestamp({ calendarDate: newStartDate }).date,
+            endDate: generateTimestamp({ calendarDate: newEndDate }).date,
+          });
+          dateRangeOpen = false;
+        }
+      "
     />
   </div>
 </template>

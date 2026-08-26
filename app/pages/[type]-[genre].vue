@@ -12,6 +12,17 @@ definePageMeta({
 // Composables
 const route = useRoute();
 const toast = useToast();
+const {
+  fetchGenreData,
+  page,
+  totalMoviePages,
+  isFetchingMore,
+  data,
+  startDate,
+  endDate,
+  dateRangeOpen,
+  ranges,
+} = useApi();
 
 // Get the genre id from name
 const genreId = getGenreId({
@@ -19,18 +30,18 @@ const genreId = getGenreId({
   genre: route?.params?.genre?.toString() as string,
 });
 
-// Pagination state
-let page = ref(1);
-let totalPages = ref(1);
-let isFetchingMore = ref(false);
-let genreData = ref<CardData[]>([]);
-
 // Initial fetch
-const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
+const {
+  data: initialData,
+  pending,
+  error,
+} = await useFetch("/api/tmdb/discoverByGenre", {
   query: {
     type: route.params.type === "Movies" ? "movie" : "tv",
     genreId: genreId,
     page: 1,
+    startDate: null,
+    endDate: null,
   },
   onResponseError({ response }) {
     toast.add({
@@ -41,9 +52,12 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByGenre", {
   },
 });
 
-if (data.value?.genreMedia) {
-  genreData.value = data.value.genreMedia;
-  totalPages.value = data.value.totalPages ?? 1;
+if (
+  initialData?.value?.statusCode === 200 ||
+  initialData?.value?.statusCode === 304
+) {
+  data.value = initialData?.value.genreMedia;
+  totalMoviePages.value = initialData.value.totalPages;
 }
 
 // Infinite scroll
@@ -53,36 +67,18 @@ onMounted(() => {
   useInfiniteScroll(
     scrollArea?.value?.$el,
     async () => {
-      if (isFetchingMore.value || page.value >= totalPages.value) return;
+      if (isFetchingMore.value || page.value >= totalMoviePages.value) return;
 
-      isFetchingMore.value = true;
       page.value++;
-
-      try {
-        const res = await $fetch<{
-          genreMedia: CardData[];
-          totalPages: number;
-        }>("/api/tmdb/discoverByGenre", {
-          query: {
-            type: route.params.type === "Movies" ? "movie" : "tv",
-            genreId: genreId,
-            page: page.value,
-          },
-        });
-        if (res?.genreMedia?.length) {
-          genreData.value.push(...res.genreMedia);
-          totalPages.value = res.totalPages ?? totalPages.value;
-        }
-      } catch (err: any) {
-        toast.add({
-          title: "Error",
-          description: err?.data?.message ?? "Failed to load more",
-          color: "error",
-        });
-        page.value--;
-      } finally {
-        isFetchingMore.value = false;
-      }
+      await fetchGenreData({
+        genreId: genreId!,
+        startDate: startDate.value
+          ? generateTimestamp({ calendarDate: startDate.value }).date
+          : null,
+        endDate: endDate.value
+          ? generateTimestamp({ calendarDate: endDate.value }).date
+          : null,
+      });
     },
     { distance: 200 },
   );
@@ -106,13 +102,62 @@ onMounted(() => {
   </div>
   <!-- Content -->
   <div v-else class="flex h-[90vh] flex-col items-start justify-start w-full">
-    <div class="border-b border-border/40 pb-4 px-4 lg:px-8 py-4 w-full">
-      <h1 class="text-3xl font-black tracking-tight">
+    <!-- Title and filters -->
+    <div
+      class="border-b border-border/40 pb-4 px-4 py-4 w-full flex flex-row items-center justify-between"
+    >
+      <h3 class="text-3xl font-black tracking-tight">
         {{ route.params.genre }}
-      </h1>
+      </h3>
+      <!-- Filters -->
+      <div class="flex flex-row items-center space-x-2">
+        <UIcon
+          :disabled="isFetchingMore || pending"
+          v-if="startDate && endDate"
+          @click="
+            () => {
+              startDate = undefined;
+              endDate = undefined;
+              page = 1;
+              data = [];
+              fetchGenreData({ genreId: genreId! });
+            }
+          "
+          :name="isFetchingMore ? 'i-lucide-loader-2' : 'i-lucide-x'"
+          :class="isFetchingMore ? 'animate-spin' : ''"
+          class="w-3 h-3 mt-1 text-muted-foreground cursor-pointer"
+        />
+
+        <p
+          v-if="startDate && endDate"
+          class="text-xs text-muted-foreground hidden xs:inline"
+        >
+          {{ formatDateTime({ timestamp: startDate }).date }} -
+          {{ formatDateTime({ timestamp: endDate }).date }}
+        </p>
+        <UButton
+          :disabled="isFetchingMore || pending"
+          variant="link"
+          class="p-0 md:px-2.5 md:py-1.5"
+          @click="
+            () => {
+              dateRangeOpen = true;
+            }
+          "
+        >
+          <UIcon
+            :class="isFetchingMore ? 'animate-spin' : ''"
+            class="w-6 h-6"
+            :name="
+              isFetchingMore ? 'i-lucide-loader-2' : 'i-lucide-calendar-search'
+            "
+          />
+        </UButton>
+      </div>
     </div>
     <UScrollArea
-      :items="genreData"
+      v-show="data.length > 0"
+      :items="data"
       v-slot="{ item }"
       ref="scrollArea"
       :ui="{
@@ -124,6 +169,16 @@ onMounted(() => {
       <Card :item="item" />
     </UScrollArea>
 
+    <div
+      v-if="data.length === 0"
+      class="flex-1 flex flex-col items-center justify-center w-full"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="animate-spin text-muted-foreground w-10 h-10"
+      />
+    </div>
+
     <!-- Loading more indicator -->
     <UProgress
       v-if="isFetchingMore"
@@ -133,12 +188,25 @@ onMounted(() => {
       :ui="{ base: 'bg-default' }"
     />
 
-    <!-- End of results -->
-    <div
-      v-else-if="page >= totalPages && genreData.length > 0"
-      class="flex items-center justify-center w-full py-6 text-sm text-muted-foreground"
-    >
-      You've reached the end
-    </div>
+    <DateRangeModal
+      v-model:open="dateRangeOpen"
+      :loading="isFetchingMore"
+      :ranges="ranges"
+      @apply="
+        async (newStartDate, newEndDate) => {
+          startDate = newStartDate;
+          endDate = newEndDate;
+
+          page = 1;
+          data = [];
+          await fetchGenreData({
+            genreId: genreId!,
+            startDate: generateTimestamp({ calendarDate: newStartDate }).date,
+            endDate: generateTimestamp({ calendarDate: newEndDate }).date,
+          });
+          dateRangeOpen = false;
+        }
+      "
+    />
   </div>
 </template>

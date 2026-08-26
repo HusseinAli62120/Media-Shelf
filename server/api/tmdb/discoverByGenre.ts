@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const { type, genreId, page } = getQuery(event);
+    const { type, genreId, page, startDate, endDate } = getQuery(event);
 
     if (!type || !genreId || !page) {
       throw createError({
@@ -17,8 +17,30 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    const formattedStartDate = startDate
+      ? new Date(startDate.toString()).toISOString().split("T")[0]
+      : "";
+    const formattedEndDate = endDate
+      ? new Date(endDate.toString()).toISOString().split("T")[0]
+      : "";
+
+    const movieDateFilter =
+      formattedStartDate && formattedEndDate
+        ? `primary_release_date.gte=${formattedStartDate}&primary_release_date.lte=${formattedEndDate}`
+        : "";
+
+    const showDateFilter =
+      formattedStartDate && formattedEndDate
+        ? `first_air_date.gte=${formattedStartDate}&first_air_date.lte=${formattedEndDate}`
+        : "";
+
+    const usedFilter = type === "movie" ? movieDateFilter : showDateFilter;
+
+    // For most relevent results
+    let sortBy = "vote_count.desc";
+
     const res: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/${type}?sort_by=popularity.desc&with_genres=${genreId}&page=${page}`,
+      `https://api.themoviedb.org/3/discover/${type}?with_genres=${genreId}&page=${page}&sort_by=${sortBy}${usedFilter ? "&" + usedFilter : ""}`,
       {
         method: "GET",
         headers: {
@@ -36,28 +58,15 @@ export default defineEventHandler(async (event) => {
         mediaType: type === "movie" ? "movie" : "tv",
       });
 
-      // remove duplicates by mediaId
-      genreMedia.filter((item: any, index: number) => {
-        return (
-          genreMedia.findIndex((i: any) => i.mediaId === item.mediaId) === index
-        );
-      });
-
-      // filter shows & movies without a poster
-      genreMedia.filter(
-        (item: any) =>
-          item?.imgURL?.length > 0 && !item?.imgURL?.endsWith("null"),
-      );
+      genreMedia = optimizeApiResults({ data: genreMedia });
 
       const totalPages: number = res.total_pages ?? 1;
-      const count: number = genreMedia.length;
 
       return {
         statusCode: 200,
         message: "Data fetched successfully",
         genreMedia: genreMedia as CardData[],
         totalPages: totalPages,
-        count: count,
       };
     }
 
@@ -66,7 +75,6 @@ export default defineEventHandler(async (event) => {
       message: "Unexpected Error",
       genreMedia: [],
       totalPages: 0,
-      count: 0,
     };
   } catch (error) {
     if (error) {

@@ -103,7 +103,7 @@ const { data: counts, pending: countsPending } = await useFetch(
 
     <!-- Collection tabs -->
     <div
-      class="border-b border-muted w-full px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 md:gap-8"
+      class="border-b border-muted w-full px-4 py-8 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8"
     >
       <!-- Emerald 300-500-700 -->
       <CollectionTab

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Transition } from "motion-v";
+
 const toast = useToast();
 
 defineOptions({
@@ -91,12 +93,27 @@ let noRatingStats = computed(() => {
   }
   return false;
 });
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
 </script>
 
 <template>
   <!-- Donuts -->
   <div class="w-full flex flex-col space-y-4 px-4 py-10 items-start">
-    <h6 class="font-semibold text-xl pb-4 w-full">Most Watched Genres</h6>
+    <ScrewText
+      :label="'Most Watched Genres'"
+      :rotate-direction="'top'"
+      :stagger-duration="0.03"
+      :stagger-from="'first'"
+      :transition="transition"
+      class="text-xl font-bold tracking-tight inline"
+      front-face-class="bg-background text-foreground"
+      second-face-class="bg-background text-foreground"
+    />
     <ClientOnly>
       <div
         v-if="noGenreStats"
@@ -162,7 +179,17 @@ let noRatingStats = computed(() => {
 
   <!-- Bar Chart -->
   <div class="w-full sm:px-6 px-4 py-10">
-    <h6 class="font-semibold text-xl pb-4 w-full">Rating Overview</h6>
+    <!-- <h6 class="font-semibold text-xl pb-4 w-full">Rating Overview</h6> -->
+    <ScrewText
+      :label="'Rating Overview'"
+      :rotate-direction="'top'"
+      :stagger-duration="0.03"
+      :stagger-from="'first'"
+      :transition="transition"
+      class="text-xl font-bold tracking-tight inline"
+      front-face-class="bg-background text-foreground"
+      second-face-class="bg-background text-foreground"
+    />
     <ClientOnly>
       <div
         v-if="noRatingStats"

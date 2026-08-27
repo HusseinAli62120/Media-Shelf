@@ -2,6 +2,7 @@
 import { Role } from "#shared/enums/Role";
 import { useInfiniteScroll } from "@vueuse/core";
 import { onMounted } from "vue";
+import type { Transition } from "motion-v";
 
 definePageMeta({
   layout: "screen",
@@ -83,6 +84,12 @@ onMounted(() => {
     { distance: 200 },
   );
 });
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
 </script>
 
 <template>
@@ -104,11 +111,18 @@ onMounted(() => {
   <div v-else class="flex h-[90vh] flex-col items-start justify-start w-full">
     <!-- Title and filters -->
     <div
-      class="border-b border-border/40 pb-4 px-4 py-4 w-full flex flex-row items-center justify-between"
+      class="border-b border-border/40 px-4 py-2 w-full flex flex-row items-center justify-between"
     >
-      <h3 class="text-3xl font-black tracking-tight">
-        {{ route.params.genre }}
-      </h3>
+      <ScrewText
+        :label="route.params.genre!.toString()"
+        :rotate-direction="'top'"
+        :stagger-duration="0.03"
+        :stagger-from="'first'"
+        :transition="transition"
+        class="text-xl xs:text-3xl font-bold tracking-tight inline"
+        front-face-class="bg-background text-foreground"
+        second-face-class="bg-background text-foreground"
+      />
       <!-- Filters -->
       <div class="flex flex-row items-center space-x-2">
         <UIcon
@@ -162,8 +176,7 @@ onMounted(() => {
       ref="scrollArea"
       :ui="{
         root: 'no-scrollbar',
-        viewport:
-          'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 py-4 lg:px-8 px-4 ',
+        viewport: 'card-grid',
       }"
     >
       <Card :item="item" />

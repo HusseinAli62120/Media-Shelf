@@ -120,7 +120,7 @@ const particlesOptions = {
       >
         Your Personal
         <span
-          class="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+          class="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent bg-size-[200%_auto] animate-[gradient_3s_ease_infinite]"
         >
           Media Shelf
         </span>

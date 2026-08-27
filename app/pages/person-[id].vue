@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role } from "#shared/enums/Role";
+import type { Transition } from "motion-v";
 
 definePageMeta({
   layout: "screen",
@@ -19,6 +20,12 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
     console.log(response?._data?.statusMessage);
   },
 });
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
 </script>
 
 <template>
@@ -106,18 +113,25 @@ const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
       </div>
 
       <!-- Works / Filmography Section -->
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col gap-4">
         <div class="border-b border-border/40 pb-4">
-          <h2 class="text-2xl font-black tracking-tight">Works</h2>
+          <ScrewText
+            :label="'Works'"
+            :rotate-direction="'top'"
+            :stagger-duration="0.03"
+            :stagger-from="'first'"
+            :transition="transition"
+            class="text-xl xs:text-2xl font-bold tracking-tight inline"
+            front-face-class="bg-background text-foreground"
+            second-face-class="bg-background text-foreground"
+          />
           <p class="text-muted-foreground text-sm mt-1">
             Explore movies and TV shows featuring {{ data?.actorData?.name }}
           </p>
         </div>
 
         <!-- Grid of Media -->
-        <div
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6"
-        >
+        <div class="card-grid">
           <Card
             v-for="(media, index) in data?.discovered"
             :key="index"

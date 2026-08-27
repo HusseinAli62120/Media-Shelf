@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role } from "#shared/enums/Role";
+import type { Transition } from "motion-v";
 
 definePageMeta({
   layout: "screen",
@@ -77,6 +78,12 @@ let watchedPopoverOpen = ref<boolean>(false);
 const handleCastClick = ({ memberId }: { memberId: number }) => {
   navigateTo(`/person-${memberId}`);
 };
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
 </script>
 
 <template>
@@ -481,7 +488,16 @@ const handleCastClick = ({ memberId }: { memberId: number }) => {
           class="flex justify-between items-end border-b border-border/40 pb-4 mb-6"
         >
           <div>
-            <h3 class="text-2xl font-black tracking-tight">Cast</h3>
+            <ScrewText
+              :label="'Cast'"
+              :rotate-direction="'top'"
+              :stagger-duration="0.03"
+              :stagger-from="'first'"
+              :transition="transition"
+              class="text-xl xs:text-2xl font-bold tracking-tight inline"
+              front-face-class="bg-background text-foreground"
+              second-face-class="bg-background text-foreground"
+            />
             <p class="text-muted-foreground text-sm mt-0.5">
               Top billed cast members
             </p>

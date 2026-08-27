@@ -160,7 +160,7 @@ const active = computed({
 
 <template>
   <div
-    class="border-b border-border/40 pb-4 px-4 lg:px-4 py-4 w-full flex flex-row items-center justify-between"
+    class="border-b border-border/40 px-4 py-2 w-full flex flex-row items-center justify-between"
   >
     <!-- Tabs -->
     <UTabs

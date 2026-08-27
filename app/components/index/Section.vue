@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Transition } from "motion-v";
+
 defineProps<{
   loading: boolean;
   error: any;
@@ -7,15 +9,32 @@ defineProps<{
   sectionDescription: string;
   to?: string;
 }>();
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
     <!-- Section headline -->
-    <div class="flex justify-between items-end border-b border-border/40 pb-4">
+    <div
+      class="flex justify-between items-center border-b border-border/40 pb-4"
+    >
       <div>
-        <h3 class="text-xl font-black tracking-tight">{{ sectionTitle }}</h3>
-        <p class="text-muted-foreground text-sm mt-0.5">
+        <ScrewText
+          :label="sectionTitle"
+          :rotate-direction="'top'"
+          :stagger-duration="0.03"
+          :stagger-from="'first'"
+          :transition="transition"
+          class="text-xl xs:text-2xl font-bold tracking-tight inline"
+          front-face-class="bg-background text-foreground"
+          second-face-class="bg-background text-foreground"
+        />
+        <p class="text-muted-foreground text-xs xs:text-sm mt-0.5">
           {{ sectionDescription }}
         </p>
       </div>

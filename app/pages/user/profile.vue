@@ -184,5 +184,16 @@ const { data: counts, pending: countsPending } = await useFetch(
         sectionDescription="Discover new movies & shows based on your watchlist"
       />
     </div>
+
+    <!-- Background Particles -->
+    <div class="relative">
+      <ClientOnly>
+        <vue-particles
+          id="tsparticles"
+          class="absolute inset-0 z-0"
+          :options="particlesOptions"
+        />
+      </ClientOnly>
+    </div>
   </div>
 </template>

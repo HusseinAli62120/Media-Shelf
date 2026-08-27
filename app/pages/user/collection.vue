@@ -221,6 +221,17 @@ const ranges = [
       class="absolute top-0 inset-x-0 z-1"
       :ui="{ base: 'bg-default' }"
     />
+
+    <!-- Background Particles -->
+    <div class="relative">
+      <ClientOnly>
+        <vue-particles
+          id="tsparticles"
+          class="absolute inset-0 z-0"
+          :options="particlesOptions"
+        />
+      </ClientOnly>
+    </div>
   </div>
 
   <!-- Date Range Calender -->

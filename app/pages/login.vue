@@ -77,7 +77,7 @@ const login = async () => {
 
 <template>
   <div
-    class="w-full min-h-screen lg:grid lg:grid-cols-2 flex justify-center items-center lg:flex-none lg:items-stretch dark:bg-secondary-background"
+    class="w-full min-h-screen lg:grid lg:grid-cols-2 flex justify-center items-center lg:flex-none lg:items-stretch lg:dark:bg-secondary-background dark:bg-background"
   >
     <!-- Left Side -->
     <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -169,14 +169,14 @@ const login = async () => {
               v-if="loading"
               class="animate-spin"
             />
-            <span v-else>Sign In</span>
+            <span v-else>Login</span>
           </UButton>
         </UForm>
 
         <USeparator label="Or" class="w-full max-w-75" />
-        <div class="flex flex-row items-center max-w-75">
-          <p class="text-muted mr-1">Don't have an account?</p>
-          <NuxtLink class="hover:underline text-foreground" to="/signup">
+        <div class="max-w-75 text-xs xs:text-sm text-center">
+          <p class="text-muted mr-1 inline">Don't have an account?</p>
+          <NuxtLink class="hover:underline inline text-foreground" to="/signup">
             Signup here
           </NuxtLink>
         </div>
@@ -232,5 +232,15 @@ const login = async () => {
         </div>
       </div>
     </div>
+  </div>
+  <!-- Background Particles -->
+  <div class="block w-full lg:hidden relative">
+    <ClientOnly>
+      <vue-particles
+        id="tsparticles"
+        class="absolute inset-0 z-0"
+        :options="particlesOptions"
+      />
+    </ClientOnly>
   </div>
 </template>

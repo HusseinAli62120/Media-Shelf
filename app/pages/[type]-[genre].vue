@@ -221,5 +221,16 @@ const transition = computed<Transition>(() => ({
         }
       "
     />
+
+    <!-- Background Particles -->
+    <div class="relative">
+      <ClientOnly>
+        <vue-particles
+          id="tsparticles"
+          class="absolute inset-0 z-0"
+          :options="particlesOptions"
+        />
+      </ClientOnly>
+    </div>
   </div>
 </template>

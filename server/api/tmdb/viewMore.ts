@@ -40,11 +40,15 @@ export default defineEventHandler(async (event) => {
         ? `first_air_date.gte=${formattedStartDate}&first_air_date.lte=${formattedEndDate}`
         : "";
 
+    // Since the query values are passed as strings, not boolean
+    const shouldFetchShows = String(fetchShows) === "true";
+    const shouldFetchMovies = String(fetchMovies) === "true";
+
     // For most relevent results
     let sortBy = "vote_count.desc";
     let showResponse: any;
     // Get trending shows
-    if (fetchShows) {
+    if (shouldFetchShows) {
       showResponse = await $fetch(
         `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${page}${showDateFilter ? "&" + showDateFilter : ""}&sort_by=${sortBy}`,
         {
@@ -59,7 +63,7 @@ export default defineEventHandler(async (event) => {
 
     let movieResponse: any;
     // Get trending movies
-    if (fetchMovies) {
+    if (shouldFetchMovies) {
       movieResponse = await $fetch(
         `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${page}${movieDateFilter ? "&" + movieDateFilter : ""}&sort_by=${sortBy}`,
         {
@@ -80,15 +84,19 @@ export default defineEventHandler(async (event) => {
       let movies = [];
 
       // Format the returned shows
-      shows = formatCardData({
-        items: showResponse?.results,
-        mediaType: "tv",
-      });
+      shows = showResponse?.results
+        ? formatCardData({
+            items: showResponse?.results,
+            mediaType: "tv",
+          })
+        : [];
       // Format the returned movies
-      movies = formatCardData({
-        items: movieResponse?.results,
-        mediaType: "movie",
-      });
+      movies = movieResponse?.results
+        ? formatCardData({
+            items: movieResponse?.results,
+            mediaType: "movie",
+          })
+        : [];
 
       let data = [...movies, ...shows];
       data = optimizeApiResults({ data });

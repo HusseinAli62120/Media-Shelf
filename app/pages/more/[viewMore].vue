@@ -2,6 +2,8 @@
 import { Role } from "#shared/enums/Role";
 import { useInfiniteScroll } from "@vueuse/core";
 import { onMounted } from "vue";
+import type { Transition } from "motion-v";
+import type { DropdownMenuItem } from "@nuxt/ui";
 
 definePageMeta({
   layout: "screen",
@@ -39,6 +41,7 @@ const {
   fetchShows,
   startDate,
   endDate,
+  type,
 } = useApi();
 
 // Set title
@@ -64,6 +67,7 @@ const {
     fetchMovies: fetchMovies.value,
     startDate: null,
     endDate: null,
+    type: type.value,
   },
   onResponseError({ response }) {
     toast.add({
@@ -121,6 +125,69 @@ onMounted(() => {
     { distance: 200 },
   );
 });
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
+
+// Filter options
+let filterOptions = ref<DropdownMenuItem[][]>([
+  [
+    {
+      label: "Type",
+      icon: "i-heroicons-adjustments-vertical",
+      children: [
+        {
+          label: "Movies",
+          onSelect: async () => {
+            type.value = "movie";
+            page.value = 1;
+            fetchMovies.value = true;
+            fetchShows.value = false;
+            data.value = [];
+            await fetchMore({
+              startDate: startDate.value
+                ? generateTimestamp({ calendarDate: startDate.value }).date
+                : null,
+              endDate: endDate.value
+                ? generateTimestamp({ calendarDate: endDate.value }).date
+                : null,
+            });
+          },
+          icon: "i-heroicons-film",
+        },
+        {
+          label: "TV",
+          onSelect: async () => {
+            type.value = "tv";
+            page.value = 1;
+            fetchMovies.value = false;
+            fetchShows.value = true;
+            data.value = [];
+            await fetchMore({
+              startDate: startDate.value
+                ? generateTimestamp({ calendarDate: startDate.value }).date
+                : null,
+              endDate: endDate.value
+                ? generateTimestamp({ calendarDate: endDate.value }).date
+                : null,
+            });
+          },
+          icon: "i-heroicons-tv",
+        },
+      ],
+    },
+    {
+      label: "Date Range",
+      onSelect: () => {
+        dateRangeOpen.value = true;
+      },
+      icon: "i-lucide-calendar-search",
+    },
+  ],
+]);
 </script>
 
 <template>
@@ -144,18 +211,26 @@ onMounted(() => {
     <div
       class="border-b border-border/40 pb-4 px-4 py-4 w-full flex flex-row items-center justify-between"
     >
-      <h3 class="text-3xl font-black tracking-tight">
-        {{ title }}
-      </h3>
+      <ScrewText
+        :label="title"
+        :rotate-direction="'top'"
+        :stagger-duration="0.03"
+        :stagger-from="'first'"
+        :transition="transition"
+        class="text-xl xs:text-3xl font-bold tracking-tight inline"
+        front-face-class="bg-background text-foreground"
+        second-face-class="bg-background text-foreground"
+      />
       <!-- Filters -->
       <div class="flex flex-row items-center space-x-2">
         <UIcon
           :disabled="isFetchingMore || pending"
-          v-if="startDate && endDate"
+          v-if="(startDate && endDate) || type"
           @click="
             () => {
               startDate = undefined;
               endDate = undefined;
+              type = null;
               page = 1;
               fetchMovies = true;
               fetchShows = true;
@@ -175,24 +250,29 @@ onMounted(() => {
           {{ formatDateTime({ timestamp: startDate }).date }} -
           {{ formatDateTime({ timestamp: endDate }).date }}
         </p>
-        <UButton
-          :disabled="isFetchingMore || pending"
-          variant="link"
-          class="p-0 md:px-2.5 md:py-1.5"
-          @click="
-            () => {
-              dateRangeOpen = true;
-            }
-          "
+
+        <UBadge
+          v-if="type"
+          variant="soft"
+          :color="type === 'movie' ? 'success' : 'error'"
+          size="xs"
         >
-          <UIcon
-            :class="isFetchingMore ? 'animate-spin' : ''"
-            class="w-6 h-6"
-            :name="
-              isFetchingMore ? 'i-lucide-loader-2' : 'i-lucide-calendar-search'
-            "
-          />
-        </UButton>
+          {{ type === "movie" ? "Movie" : "TV" }}
+        </UBadge>
+        <UDropdownMenu arrow :disabled="isFetchingMore" :items="filterOptions">
+          <UButton
+            variant="link"
+            class="p-0 md:px-2.5 md:py-1.5 cursor-pointer"
+          >
+            <UIcon
+              :class="isFetchingMore && 'animate-spin'"
+              class="w-6 h-6"
+              :name="
+                isFetchingMore ? 'i-lucide-loader-2' : 'i-heroicons-funnel'
+              "
+            />
+          </UButton>
+        </UDropdownMenu>
       </div>
     </div>
     <UScrollArea
@@ -237,8 +317,8 @@ onMounted(() => {
           endDate = newEndDate;
 
           page = 1;
-          fetchMovies = true;
-          fetchShows = true;
+          fetchMovies = type === 'movie' || type === null;
+          fetchShows = type === 'tv' || type === null;
           data = [];
           await fetchMore({
             startDate: generateTimestamp({ calendarDate: newStartDate }).date,

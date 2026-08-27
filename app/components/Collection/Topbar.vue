@@ -27,14 +27,14 @@ let ratingFilter = {
       onSelect: () => {
         emit("onFilterChange", "rating", "Desc");
       },
-      icon: "i-lucide-calendar-check",
+      icon: "i-heroicons-bars-arrow-down",
     },
     {
       label: "Asc",
       onSelect: () => {
         emit("onFilterChange", "rating", "Asc");
       },
-      icon: "i-lucide-calendar-check",
+      icon: "i-heroicons-bars-arrow-up",
     },
   ],
 };
@@ -51,14 +51,14 @@ let filterOptions = ref<DropdownMenuItem[][]>([
           onSelect: () => {
             emit("onFilterChange", "dateAdded", "Desc");
           },
-          icon: "i-lucide-calendar-check",
+          icon: "i-heroicons-bars-arrow-down",
         },
         {
           label: "Asc",
           onSelect: () => {
             emit("onFilterChange", "dateAdded", "Asc");
           },
-          icon: "i-lucide-calendar-check",
+          icon: "i-heroicons-bars-arrow-up",
         },
       ],
     },
@@ -71,14 +71,14 @@ let filterOptions = ref<DropdownMenuItem[][]>([
           onSelect: () => {
             emit("onFilterChange", "releaseDate", "Desc");
           },
-          icon: "i-lucide-calendar-check",
+          icon: "i-heroicons-bars-arrow-down",
         },
         {
           label: "Asc",
           onSelect: () => {
             emit("onFilterChange", "releaseDate", "Asc");
           },
-          icon: "i-lucide-calendar-check",
+          icon: "i-heroicons-bars-arrow-up",
         },
       ],
     },
@@ -193,7 +193,7 @@ const active = computed({
 
       <!-- Filters -->
       <UDropdownMenu arrow :disabled="isFetching" :items="filterOptions">
-        <UButton variant="link" class="p-0 md:px-2.5 md:py-1.5">
+        <UButton variant="link" class="p-0 md:px-2.5 md:py-1.5 cursor-pointer">
           <UIcon
             :class="isFetching && 'animate-spin'"
             class="w-6 h-6"

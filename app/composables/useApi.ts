@@ -23,6 +23,9 @@ export default function useApi() {
   let fetchMovies = ref(true);
   let fetchShows = ref(true);
 
+  // Filtered Data Types
+  let type = ref<"movie" | "tv" | null>(null);
+
   // Calendar ranges
   const ranges = [
     { label: "Last Year", years: 1 },
@@ -51,6 +54,7 @@ export default function useApi() {
           fetchMovies: fetchMovies.value,
           startDate: startDate,
           endDate: endDate,
+          type: type.value,
         },
       });
 
@@ -62,7 +66,7 @@ export default function useApi() {
     } catch (err: any) {
       toast.add({
         title: "Error",
-        description: err?.data?.message ?? "Failed to load more",
+        description: err?.data?.statusMessage ?? "Failed to load more",
         color: "error",
       });
       page.value--;
@@ -101,7 +105,7 @@ export default function useApi() {
     } catch (err: any) {
       toast.add({
         title: "Error",
-        description: err?.data?.message ?? "Failed to load more",
+        description: err?.data?.statusMessage ?? "Failed to load more",
         color: "error",
       });
       page.value--;
@@ -122,6 +126,7 @@ export default function useApi() {
     data,
     startDate,
     endDate,
+    type,
     fetchMovies,
     fetchShows,
   };

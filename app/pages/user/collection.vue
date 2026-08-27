@@ -116,7 +116,6 @@ const ranges = [
   { label: "Last 3 months", months: 3 },
   { label: "Last 6 months", months: 6 },
   { label: "Last year", years: 1 },
-  { label: "Last 5 years", years: 5 },
 ];
 </script>
 

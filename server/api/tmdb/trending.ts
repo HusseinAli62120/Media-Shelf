@@ -1,7 +1,11 @@
-import formatApiData from "~~/server/utils/formatApiData";
+import formatCardData from "~~/server/utils/formatCardData";
+import type { CardData } from "#shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
 
     if (!apiKey) {
@@ -42,23 +46,38 @@ export default defineEventHandler(async (event) => {
       let trendingShows = [];
       let trendingMovies = [];
 
-      // Format the returned shows
-      trendingShows = formatApiData(showResponse?.results, "show");
-      // Format the returned movies
-      trendingMovies = formatApiData(movieResponse?.results, "movie");
+      // console.log(movieResponse?.results);
 
-      // Return the first ten elements of each array
-      trendingShows = trendingShows.slice(0, 10);
-      trendingMovies = trendingMovies.slice(0, 10);
+      // Format the returned shows
+      trendingShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "tv",
+      });
+      // Format the returned movies
+      trendingMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "movie",
+      });
+
+      // Shuffle the arrays
+      trendingShows = trendingShows.sort(() => 0.5 - Math.random());
+      trendingMovies = trendingMovies.sort(() => 0.5 - Math.random());
+
+      // Return the first five elements of each array
+      trendingShows = trendingShows.slice(0, 6);
+      trendingMovies = trendingMovies.slice(0, 6);
 
       // Combine the arrays
       let trending = trendingShows.concat(trendingMovies);
+
+      trending = optimizeApiResults({ data: trending });
       // Shuffle the array
       trending = trending.sort(() => 0.5 - Math.random());
+
       return {
         status: 200,
         message: "Data fetched successfully",
-        trending: trending,
+        trending: trending as CardData[],
         count: trending.length,
       };
     }

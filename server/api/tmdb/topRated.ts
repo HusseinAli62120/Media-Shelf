@@ -1,7 +1,11 @@
-import formatApiData from "~~/server/utils/formatApiData";
+import formatCardData from "~~/server/utils/formatCardData";
+import type { CardData } from "#shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
 
     if (!apiKey) {
@@ -11,9 +15,15 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Get trending shows
+    // Random number between 1-5
+    const randomPage = Math.floor(Math.random() * 10) + 1;
+
+    // For most relevent results
+    const sortBy = "vote_count.desc";
+
+    // Get top rated shows
     const showResponse: any = await $fetch(
-      "https://api.themoviedb.org/3/tv/top_rated?language=en-US&include_adult=true&page=1",
+      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${randomPage}&sort_by=${sortBy}`,
       {
         method: "GET",
         headers: {
@@ -23,9 +33,9 @@ export default defineEventHandler(async (event) => {
       },
     );
 
-    // Get trending movies
+    // Get top rated movies
     const movieResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?language=en-US&include_adult=true&page=1`,
+      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${randomPage}&sort_by=${sortBy}`,
       {
         method: "GET",
         headers: {
@@ -43,22 +53,35 @@ export default defineEventHandler(async (event) => {
       let topRatedMovies = [];
 
       // Format the returned shows
-      topRatedShows = formatApiData(showResponse?.results, "show");
+      topRatedShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "tv",
+      });
       // Format the returned movies
-      topRatedMovies = formatApiData(movieResponse?.results, "movie");
+      topRatedMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "movie",
+      });
 
-      // Return the first ten elements of each array
-      topRatedShows = topRatedShows.slice(0, 10);
-      topRatedMovies = topRatedMovies.slice(0, 10);
+      // Shuffle the arrays
+      topRatedShows = topRatedShows.sort(() => 0.5 - Math.random());
+      topRatedMovies = topRatedMovies.sort(() => 0.5 - Math.random());
+
+      // Return the first six elements of each array
+      topRatedShows = topRatedShows.slice(0, 6);
+      topRatedMovies = topRatedMovies.slice(0, 6);
 
       // Combine the arrays
       let topRated = topRatedShows.concat(topRatedMovies);
+
+      topRated = optimizeApiResults({ data: topRated });
+
       // Shuffle the array
       topRated = topRated.sort(() => 0.5 - Math.random());
       return {
         status: 200,
         message: "Data fetched successfully",
-        topRated: topRated,
+        topRated: topRated as CardData[],
         count: topRated.length,
       };
     }

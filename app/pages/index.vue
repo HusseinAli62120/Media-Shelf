@@ -7,77 +7,94 @@ definePageMeta({
   allowedRoles: [Role.USER, Role.ADMIN],
 });
 
-const routes: Ref<string[]> = ref(["Admin"]);
-
-const colorMode = useColorMode();
-
 // The Auth data
-const { user, clear: clearSession } = useUserSession();
-// console.log(user);
+const { user } = useUserSession();
 
-const toggleTheme = () => {
-  colorMode.preference = colorMode.preference === "light" ? "dark" : "light";
-};
+// Fetch trending movies and shows
+const {
+  data: trendingData,
+  pending: trendingPending,
+  error: trendingError,
+} = await useFetch("/api/tmdb/trending");
 
-const logout = async () => {
-  await clearSession();
-  await navigateTo("/login");
-};
+// Fetch the top rated movies and shows
+const {
+  data: topRatedData,
+  pending: topRatedPending,
+  error: topRatedError,
+} = await useFetch("/api/tmdb/topRated");
+
+// Discover movies and shows
+const {
+  data: discoverData,
+  pending: discoverPending,
+  error: discoverError,
+} = await useFetch("/api/tmdb/discover");
 </script>
 
 <template>
-  <div class="flex-1 w-full flex flex-col items-center justify-center gap-3">
-    <div class="w-full flex flex-col items-center justify-center gap-3">
-      <!-- Gretting message -->
-      <p>
-        Hello <b>{{ user?.userName }}</b>
-      </p>
-      <p>
-        Welcome to This template. It uses
-        <span class="text-emerald-600 underline">
-          <CustomLink :text="'Nuxt'" :url="'https://nuxt.com/'" />
-        </span>
-        with
-        <span class="text-yellow-600 underline">
-          <CustomLink
-            :text="'Drizzle ORM'"
-            :url="'https://orm.drizzle.team/'"
-          />
-        </span>
-        and
-        <span class="text-emerald-600 underline">
-          <CustomLink :text="'Nuxt UI'" :url="'https://ui.nuxt.com/'" />
-        </span>
-      </p>
+  <Navbar />
+  <div class="flex-1 w-full flex flex-col bg-background text-foreground">
+    <!-- Hero section -->
+    <HeroSection />
 
-      <!-- Buttons -->
-      <div class="flex flex-row items-center justify-center gap-3">
-        <CustomLink
-          v-for="route in routes"
-          :text="route"
-          :url="route"
-          :key="route"
-        />
-
-        <ClientOnly>
-          <UButton color="neutral" variant="solid" @click="toggleTheme">
-            {{ colorMode?.value }}
+    <!-- Main Content Area -->
+    <div class="px-4 py-12 flex-1 flex flex-col gap-10">
+      <!-- Welcome message -->
+      <div
+        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-secondary-background border border-border/40 p-6 rounded-2xl shadow-sm"
+      >
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">
+            Welcome back, {{ user?.userName }}!
+          </h2>
+          <p class="text-muted-foreground text-sm mt-1">
+            Explore what's popular this week, search the database, or manage
+            your personal media shelf.
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <UButton
+            v-if="user?.role === Role.ADMIN"
+            color="neutral"
+            variant="subtle"
+            to="/admin"
+            icon="i-lucide-settings"
+            class="rounded-xl font-medium"
+          >
+            Admin Dashboard
           </UButton>
-
-          <template #fallback>
-            <button class="px-3 py-1 rounded">loading...</button>
-          </template>
-        </ClientOnly>
-
-        <UButton
-          class="text-white"
-          color="error"
-          variant="solid"
-          @click="logout"
-        >
-          Logout
-        </UButton>
+        </div>
       </div>
+
+      <!-- Trending -->
+      <Section
+        :loading="trendingPending"
+        :error="trendingError"
+        :data="trendingData?.trending || []"
+        sectionTitle="Trending Now"
+        sectionDescription="The most popular movies and shows this week"
+      />
+
+      <!-- Top Rated -->
+      <Section
+        :loading="topRatedPending"
+        :error="topRatedError"
+        :data="topRatedData?.topRated || []"
+        sectionTitle="Top Rated"
+        sectionDescription="The highest rated movies and shows"
+        to="/more/topRated"
+      />
+
+      <!-- Discover -->
+      <Section
+        :loading="discoverPending"
+        :error="discoverError"
+        :data="discoverData?.discovered || []"
+        sectionTitle="Discover"
+        sectionDescription="Discover new movies and shows"
+        to="/more/discover"
+      />
     </div>
   </div>
 </template>

@@ -1,0 +1,94 @@
+<script setup lang="ts">
+import type { Transition } from "motion-v";
+
+defineProps<{
+  loading: boolean;
+  error: any;
+  data: CardData[];
+  sectionTitle: string;
+  sectionDescription: string;
+  to?: string;
+}>();
+
+const transition = computed<Transition>(() => ({
+  type: "spring",
+  stiffness: 160,
+  damping: 25,
+}));
+</script>
+
+<template>
+  <div class="flex flex-col gap-6">
+    <!-- Section headline -->
+    <div
+      class="flex justify-between items-center border-b border-border/40 pb-4"
+    >
+      <div>
+        <ScrewText
+          :label="sectionTitle"
+          :rotate-direction="'top'"
+          :stagger-duration="0.03"
+          :stagger-from="'first'"
+          :transition="transition"
+          class="text-xl xs:text-2xl font-bold tracking-tight inline"
+          front-face-class="bg-background text-foreground"
+          second-face-class="bg-background text-foreground"
+        />
+        <p class="text-muted-foreground text-xs xs:text-sm mt-0.5">
+          {{ sectionDescription }}
+        </p>
+      </div>
+      <NuxtLink
+        v-if="to"
+        :to="to"
+        class="text-sm text-muted-foreground hover:text-foreground hover:-translate-y-0.5 hover:underline transition-all duration-300 flex items-center"
+      >
+        View More
+        <UIcon name="i-lucide-chevron-right" class="w-4 h-4 ml-1" />
+      </NuxtLink>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div
+      v-if="loading"
+      class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
+    >
+      <div
+        v-for="i in 6"
+        :key="i"
+        class="flex flex-col gap-3 animate-pulse w-37.5 sm:w-45 md:w-50 lg:w-56.75 flex-none"
+      >
+        <div class="aspect-2/3 w-full bg-muted rounded-xl" />
+        <div class="h-4 w-3/4 bg-muted rounded" />
+        <div class="h-3 w-1/2 bg-muted rounded" />
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center py-12 text-red-500">
+      <p class="font-medium">Failed to load media. Please try again later.</p>
+    </div>
+
+    <!-- No Data State -->
+    <div
+      v-else-if="data.length === 0"
+      class="text-center py-12 text-muted-foreground"
+    >
+      <p class="font-medium">No media found.</p>
+    </div>
+
+    <!-- Media Grid -->
+    <div
+      v-else
+      class="flex flex-row overflow-x-auto gap-6 pt-2 pb-4 no-scrollbar"
+    >
+      <!-- Card -->
+      <Card
+        v-for="(item, index) in data"
+        :key="index"
+        :item="item"
+        class="w-37.5 sm:w-45 md:w-50 lg:w-56.75 flex-none"
+      />
+    </div>
+  </div>
+</template>

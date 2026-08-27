@@ -1,7 +1,9 @@
-import formatApiData from "~~/server/utils/formatApiData";
+import formatCardData from "~~/server/utils/formatCardData";
+import type { CardData } from "#shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
+    await requireAuth({ event: event });
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
 
     if (!apiKey) {
@@ -11,9 +13,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    // Random page between 1-50
+    const randomPage = Math.floor(Math.random() * 50) + 1;
+
     // Get trending shows
     const showResponse: any = await $fetch(
-      "https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=1",
+      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${randomPage}`,
       {
         method: "GET",
         headers: {
@@ -25,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
     // Get trending movies
     const movieResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=1`,
+      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${randomPage}`,
       {
         method: "GET",
         headers: {
@@ -43,26 +48,35 @@ export default defineEventHandler(async (event) => {
       let discoveredMovies = [];
 
       // Format the returned shows
-      discoveredShows = formatApiData(showResponse?.results, "show");
+      discoveredShows = formatCardData({
+        items: showResponse?.results,
+        mediaType: "tv",
+      });
       // Format the returned movies
-      discoveredMovies = formatApiData(movieResponse?.results, "movie");
+      discoveredMovies = formatCardData({
+        items: movieResponse?.results,
+        mediaType: "movie",
+      });
 
-      // Shuffle and return the first ten elements of each array
+      // Shuffle and return the first twelve elements of each array
       discoveredShows = discoveredShows
         .sort(() => 0.5 - Math.random())
-        .slice(0, 10);
+        .slice(0, 6);
       discoveredMovies = discoveredMovies
         .sort(() => 0.5 - Math.random())
-        .slice(0, 10);
+        .slice(0, 6);
 
       // Combine the arrays
       let discovered = discoveredShows.concat(discoveredMovies);
+
+      discovered = optimizeApiResults({ data: discovered });
       // Shuffle the array
       discovered = discovered.sort(() => 0.5 - Math.random());
+
       return {
         status: 200,
         message: "Data fetched successfully",
-        discovered: discovered,
+        discovered: discovered as CardData[],
         count: discovered.length,
       };
     }

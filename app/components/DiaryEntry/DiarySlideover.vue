@@ -1,0 +1,66 @@
+<script setup lang="ts">
+// Props
+
+const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
+
+// Composables
+const {
+  resetValues,
+  rating,
+  ratingRef,
+  addDiaryEntry,
+  loading,
+  slideoverOpen,
+} = useEngagement({
+  media: media,
+});
+</script>
+
+<template>
+  <USlideover
+    :ui="{ body: 'no-scrollbar flex flex-col items-center' }"
+    direction="right"
+    class="hidden sm:block"
+    @update:open="
+      (value) => {
+        if (value) {
+          rating = 0;
+        }
+      }
+    "
+    v-model:open="slideoverOpen"
+    @after:leave="
+      () => {
+        resetValues();
+        rating = ratingRef;
+      }
+    "
+  >
+    <RainbowButton :speed="2">Review & Log</RainbowButton>
+
+    <template #title>
+      <p class="text-lg">Add Diary Entry</p>
+    </template>
+
+    <template class="overflow-hidden" #body>
+      <DrawerBody :media="media" />
+    </template>
+    <!-- Footer -->
+    <template #footer>
+      <div class="w-full flex flex-col items-start space-y-5">
+        <RainbowButton
+          :disabled="loading"
+          @click="addDiaryEntry"
+          class="w-full"
+        >
+          <UIcon
+            v-if="loading"
+            name="i-lucide-loader-2"
+            class="animate-spin w-4 h-4 mr-1"
+          />
+          {{ loading ? "Adding..." : "Add Entry" }}
+        </RainbowButton>
+      </div>
+    </template>
+  </USlideover>
+</template>

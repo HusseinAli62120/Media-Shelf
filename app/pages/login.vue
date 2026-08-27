@@ -24,6 +24,12 @@ const credentials = reactive({
 
 const showPassword = ref<boolean>(false);
 const loading = ref<boolean>(false);
+const hydrated = ref<boolean>(false);
+
+// To prevent form submission before the page is mounted
+onMounted(() => {
+  hydrated.value = true;
+});
 
 // Login function
 const login = async () => {
@@ -71,25 +77,25 @@ const login = async () => {
 
 <template>
   <div
-    class="w-full min-h-screen lg:grid lg:grid-cols-2 flex justify-center items-center lg:flex-none lg:items-stretch dark:bg-secondary-background"
+    class="w-full min-h-screen lg:grid lg:grid-cols-2 flex justify-center items-center lg:flex-none lg:items-stretch lg:dark:bg-secondary-background dark:bg-background"
   >
     <!-- Left Side -->
     <div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div
         :class="[
-          'flex flex-col items-center justify-center lg:w-full lg:max-w-[400px] sm:w-[450px] w-full space-y-4 p-8 sm:p-10 rounded-2xl border border-gray-700 shadow-sm lg:border-0 lg:shadow-none lg:p-0',
+          'flex flex-col items-center justify-center lg:w-full lg:max-w-100 sm:w-112.5 w-full space-y-4 p-8 sm:p-10 rounded-2xl border border-gray-700 shadow-sm lg:border-0 lg:shadow-none lg:p-0',
         ]"
       >
         <!-- Title and description -->
         <div
-          class="w-full max-w-[300px] flex flex-col space-y-2 text-center lg:text-left"
+          class="w-full max-w-75 flex flex-col space-y-2 text-center lg:text-left"
         >
           <!-- Mobile Logo -->
           <div class="flex justify-center lg:hidden mb-4">
             <div
               class="h-12 w-12 bg-gray-950 dark:border dark:border-gray-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-slate-200 dark:shadow-gray-900"
             >
-              <LucideFilm :size="24" />
+              <UIcon name="i-lucide-film" :size="24" />
             </div>
           </div>
 
@@ -104,13 +110,14 @@ const login = async () => {
 
         <!-- Form -->
         <UForm
-          class="w-full max-w-[300px] flex flex-col gap-3"
+          class="w-full max-w-75 flex flex-col gap-3"
           @submit.prevent="login"
         >
           <!-- Username -->
           <UFormField label="Username">
             <UInput
-              class="w-full max-w-[300px]"
+              :disabled="!hydrated"
+              class="w-full max-w-75"
               color="neutral"
               v-model="credentials.userName"
               placeholder="Enter your username"
@@ -121,7 +128,8 @@ const login = async () => {
           <!-- Password -->
           <UFormField orientation="vertical" label="Password">
             <UInput
-              class="w-full max-w-[300px]"
+              :disabled="!hydrated"
+              class="w-full max-w-75"
               color="neutral"
               v-model="credentials.password"
               placeholder="Password"
@@ -138,7 +146,11 @@ const login = async () => {
                   :aria-label="showPassword ? 'Hide password' : 'Show password'"
                   :aria-pressed="showPassword"
                   aria-controls="password"
-                  @click="showPassword = !showPassword"
+                  @click="
+                    () => {
+                      showPassword = !showPassword;
+                    }
+                  "
                 />
               </template>
             </UInput>
@@ -146,21 +158,25 @@ const login = async () => {
 
           <!-- Submit Button -->
           <UButton
-            :disabled="loading"
+            :disabled="!hydrated || loading"
             color="neutral"
             variant="solid"
             type="submit"
-            class="w-full max-w-[300px] flex justify-center"
+            class="w-full max-w-75 flex justify-center"
           >
-            <LucideLoader2 v-if="loading" class="animate-spin" />
-            <span v-else>Sign In</span>
+            <UIcon
+              name="i-lucide-loader-2"
+              v-if="loading"
+              class="animate-spin"
+            />
+            <span v-else>Login</span>
           </UButton>
         </UForm>
 
-        <USeparator label="Or" class="w-full max-w-[300px]" />
-        <div class="flex flex-row items-center max-w-[300px]">
-          <p class="text-muted mr-1">Don't have an account?</p>
-          <NuxtLink class="hover:underline text-foreground" to="/signup">
+        <USeparator label="Or" class="w-full max-w-75" />
+        <div class="max-w-75 text-xs xs:text-sm text-center">
+          <p class="text-muted mr-1 inline">Don't have an account?</p>
+          <NuxtLink class="hover:underline inline text-foreground" to="/signup">
             Signup here
           </NuxtLink>
         </div>
@@ -180,7 +196,7 @@ const login = async () => {
       <div
         class="absolute top-10 left-10 flex items-center text-lg font-medium z-10"
       >
-        <LucideFilm class="mr-2 h-6 w-6" />
+        <UIcon name="i-lucide-film" class="mr-2 h-6 w-6" />
         MediaShelf
       </div>
 
@@ -216,5 +232,15 @@ const login = async () => {
         </div>
       </div>
     </div>
+  </div>
+  <!-- Background Particles -->
+  <div class="block w-full lg:hidden relative">
+    <ClientOnly>
+      <vue-particles
+        id="tsparticles"
+        class="absolute inset-0 z-0"
+        :options="particlesOptions"
+      />
+    </ClientOnly>
   </div>
 </template>

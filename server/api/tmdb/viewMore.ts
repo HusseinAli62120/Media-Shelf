@@ -2,6 +2,9 @@ import optimizeApiResults from "~~/server/utils/optimizeApiResults";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
     if (!apiKey) {
       throw createError({
@@ -20,10 +23,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const formattedStartDate =
-      startDate ? new Date(startDate.toString()).toISOString().split("T")[0] : "";
-    const formattedEndDate =
-      endDate ? new Date(endDate.toString()).toISOString().split("T")[0] : "";
+    const formattedStartDate = startDate
+      ? new Date(startDate.toString()).toISOString().split("T")[0]
+      : "";
+    const formattedEndDate = endDate
+      ? new Date(endDate.toString()).toISOString().split("T")[0]
+      : "";
 
     const movieDateFilter =
       formattedStartDate && formattedEndDate

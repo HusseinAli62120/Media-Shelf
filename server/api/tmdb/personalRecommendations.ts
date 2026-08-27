@@ -63,27 +63,7 @@ export default defineEventHandler(async (event) => {
           // Shuffle the array
           formattedResults.sort(() => 0.5 - Math.random());
 
-          // filter shows & movies without a poster
-          formattedResults = formattedResults.filter(
-            (item: any) =>
-              item?.imgURL?.length > 0 && !item?.imgURL?.endsWith("null"),
-          );
-
-          // remove duplicates by mediaId
-          formattedResults = formattedResults.filter(
-            (item: any, index: number) => {
-              return (
-                formattedResults.findIndex(
-                  (i: any) => i.mediaId === item.mediaId,
-                ) === index
-              );
-            },
-          );
-
-          // Filter results with rating less that 4.5
-          formattedResults = formattedResults.filter(
-            (item: any) => item?.averageRating >= 4.5,
-          );
+          formattedResults = optimizeApiResults({ data: formattedResults });
           // Return the first four element of the array
           recommendations.push(...formattedResults.slice(0, 4));
 

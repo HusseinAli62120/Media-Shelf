@@ -5,6 +5,9 @@ import type { ActorData } from "#shared/types/ActorData";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const { actorId } = getQuery(event);
 
     if (!actorId) {
@@ -48,44 +51,24 @@ export default defineEventHandler(async (event) => {
     // Shows/movies acted in
     const cast = combinedCredits?.cast || [];
 
-    // Filter and sort by popularity
-    const topMovies = cast.filter(
-      (item: any) =>
-        item.media_type === "movie" &&
-        item.poster_path &&
-        item?.vote_average > 3.5, // To remove obscure results
-    );
-
-    const topShows = cast.filter(
-      (value: any) =>
-        value.media_type === "tv" &&
-        value.poster_path &&
-        value?.vote_average > 3.5, // To remove obscure results
-    );
-
     // Format data
     const formattedMovies = formatCardData({
-      items: topMovies,
+      items: cast,
       mediaType: "movie",
     });
 
     const formattedShows = formatCardData({
-      items: topShows,
+      items: cast,
       mediaType: "tv",
     });
 
     let discovered = formattedMovies.concat(formattedShows);
 
+    discovered = optimizeApiResults({ data: discovered });
+
     discovered = discovered.sort(
       (a: any, b: any) => (b.voteCount || 0) - (a.voteCount || 0),
     );
-
-    // remove duplicates by mediaId
-    discovered = discovered.filter((item: any, index: number) => {
-      return (
-        discovered.findIndex((i: any) => i.mediaId === item.mediaId) === index
-      );
-    });
 
     const formattedActorData = formatActorData({ actorData: actorData });
 

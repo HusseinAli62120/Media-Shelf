@@ -4,6 +4,9 @@ import formatTvDetails from "~~/server/utils/formatTvDetails";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const { mediaId, mediaType } = getQuery(event);
 
     if (!mediaId || !mediaType) {

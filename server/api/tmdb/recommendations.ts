@@ -3,6 +3,9 @@ import type { CardData } from "~~/shared/types/CardData";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const { mediaType, mediaId } = getQuery(event);
 
     // Check the request parameters
@@ -36,10 +39,12 @@ export default defineEventHandler(async (event) => {
     if (res?.results?.length > 0) {
       const desiredType = mediaType === "tv" ? "tv" : "movie";
 
-      const formattedResults = formatCardData({
+      let formattedResults = formatCardData({
         items: res.results,
         mediaType: desiredType,
       });
+
+      formattedResults = optimizeApiResults({ data: formattedResults });
 
       // Shuffle the array
       formattedResults.sort(() => 0.5 - Math.random());

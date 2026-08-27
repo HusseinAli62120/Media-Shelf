@@ -3,6 +3,9 @@ import formatCardData from "~~/server/utils/formatCardData";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const { searchQuery, page } = getQuery(event);
 
     // Check the search query
@@ -44,18 +47,7 @@ export default defineEventHandler(async (event) => {
         (item) => item.media_type === "movie" || item.media_type === "tv",
       );
 
-      // filter shows & movies without a poster
-      formattedData = formattedData.filter(
-        (item) => item?.imgURL?.length > 0 && !item?.imgURL?.endsWith("null"),
-      );
-
-      // remove duplicates by mediaId
-      formattedData = formattedData.filter((item: any, index: number) => {
-        return (
-          formattedData.findIndex((i: any) => i.mediaId === item.mediaId) ===
-          index
-        );
-      });
+      formattedData = optimizeApiResults({ data: formattedData });
 
       const totalPages: number = response.total_pages ?? 1;
       const count: number = formattedData.length;

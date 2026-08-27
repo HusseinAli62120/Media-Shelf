@@ -5,6 +5,9 @@ import formatVideos from "~~/server/utils/formatVideos";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const { mediaId, mediaType } = getQuery(event);
 
     if (!mediaId || !mediaType) {

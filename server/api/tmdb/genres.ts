@@ -2,6 +2,9 @@ import type { Genre } from "~~/server/types/Genre";
 
 export default defineEventHandler(async (event) => {
   try {
+    // Auth
+    await requireAuth({ event: event });
+
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
 
     if (!apiKey) {

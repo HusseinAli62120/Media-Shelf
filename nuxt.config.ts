@@ -9,6 +9,13 @@ export default defineNuxtConfig({
     disableTransition: false,
   },
 
+  app: {
+    head: {
+      title: "Media Shelf",
+      link: [{ rel: "icon", type: "image/png", href: "/movie.png" }],
+    },
+  },
+
   runtimeConfig: {
     // Environment variables that are accessible on the client-side
     public: {
@@ -43,6 +50,7 @@ export default defineNuxtConfig({
         "@vue/devtools-core",
         "@vue/devtools-kit",
         "@vueuse/core",
+        "motion-v",
       ],
     },
   },
@@ -54,6 +62,7 @@ export default defineNuxtConfig({
     "@tsparticles/nuxt4",
     "nuxt-rating",
     "nuxt-charts",
+    "@vercel/analytics",
   ],
 
   icon: {

@@ -63,6 +63,7 @@ export default defineNuxtConfig({
     "nuxt-rating",
     "nuxt-charts",
     "@vercel/analytics",
+    "@vercel/speed-insights",
   ],
 
   icon: {

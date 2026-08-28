@@ -3,11 +3,16 @@ import { users } from "~~/server/db/schema";
 import { db } from "~~/server/utils/drizzleDriver";
 import { Role } from "#shared/enums/Role";
 import type { MultiPartData } from "h3";
+import checkEnvironment from "~~/server/utils/checkEnvrionment";
+import { del } from "@vercel/blob";
 
 export default defineEventHandler(async (event) => {
   try {
     // Auth
     const { id: userId, profileImg } = await requireAuth({ event: event });
+
+    // Check environment
+    const appEnv = checkEnvironment();
 
     // Read the multipart form data
     const formData = await readMultipartFormData(event);
@@ -44,7 +49,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    let newImage = profileImg ?? null;
+    let newImage = profileImg ?? undefined;
 
     // Check if the user image has changed
     if (isImageChanged) {
@@ -53,18 +58,36 @@ export default defineEventHandler(async (event) => {
       // Check if a new file has been uploaded, if so, delete the old image (if it exists) and upload the new one
       if (file) {
         if (profileImg) {
-          // get the timestamp-filename from path
-          const oldKey = profileImg.replace(/^\/uploads\//, "");
-          await storage.removeItem(oldKey);
+          if (appEnv === "development") {
+            // get the timestamp-filename from path
+            const oldKey = profileImg.replace(/^\/uploads\//, "");
+            await storage.removeItem(oldKey);
+          }
+          if (appEnv === "production") {
+            let blobPath = profileImg.replace(/^\/api\/storage\//, "");
+            await del(blobPath, {
+              storeId: process.env.BLOB_STORE_ID,
+              token: process.env.BLOB_READ_WRITE_TOKEN,
+            });
+          }
         }
         newImage = await uploadFile({ file: file });
       } else {
         // Old image was removed but no new image was uploaded
         if (profileImg) {
-          const oldKey = profileImg.replace(/^\/uploads\//, "");
-          await storage.removeItem(oldKey);
+          if (appEnv === "development") {
+            const oldKey = profileImg.replace(/^\/uploads\//, "");
+            await storage.removeItem(oldKey);
+          }
+          if (appEnv === "production") {
+            const blobPath = profileImg.replace(/^\/api\/storage\//, "");
+            await del(blobPath, {
+              storeId: process.env.BLOB_STORE_ID,
+              token: process.env.BLOB_READ_WRITE_TOKEN,
+            });
+          }
         }
-        newImage = null;
+        newImage = undefined;
       }
     }
 
@@ -142,7 +165,7 @@ export default defineEventHandler(async (event) => {
       .set({
         userName: userName,
         description: description,
-        profileImg: newImage,
+        profileImg: newImage ? newImage : null,
       })
       .where(eq(users.id, userId))
       .returning({ role: users.role });
@@ -154,7 +177,7 @@ export default defineEventHandler(async (event) => {
         userName: userName,
         role: updatedUser[0]?.role as Role,
         description: description ?? undefined,
-        profileImg: newImage,
+        profileImg: newImage ? newImage : null,
       },
     });
 

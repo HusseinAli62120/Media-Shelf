@@ -1,6 +1,10 @@
+import { put } from "@vercel/blob";
 import type { MultiPartData } from "h3";
+import checkEnvironment from "./checkEnvrionment";
 
 export default async function uploadFile({ file }: { file: MultiPartData }) {
+  // Check the environment variable
+  const appEnv = checkEnvironment();
   if (!file) {
     throw createError({
       statusCode: 400,
@@ -28,13 +32,41 @@ export default async function uploadFile({ file }: { file: MultiPartData }) {
     });
   }
 
-  const storage = useStorage("uploads");
+  if (appEnv === "development") {
+    const storage = useStorage("uploads");
 
-  // Create unique filename
-  const fileName = `${Date.now()}-${file.filename}`;
+    // Create unique filename
+    const fileName = `${Date.now()}-${file.filename}`;
 
-  // Upload file
-  await storage.setItemRaw(fileName, file.data);
+    // Upload file
+    await storage.setItemRaw(fileName, file.data);
 
-  return `/uploads/${fileName}`;
+    return `/uploads/${fileName}`;
+  }
+  if (appEnv === "production") {
+    // Check the .env variables
+    if (!process.env.BLOB_READ_WRITE_TOKEN || !process.env.BLOB_STORE_ID) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Internal Server Error",
+      });
+    }
+
+    const vercelToken = process.env.BLOB_READ_WRITE_TOKEN as string;
+    const vercelStoreId = process.env.BLOB_STORE_ID as string;
+
+    // Upload to Vercel Blob
+    const blob = await put(
+      `uploads/${Date.now()}-${file.filename}`,
+      file.data,
+      {
+        access: "private",
+        contentType: file.type,
+        token: vercelToken,
+        storeId: vercelStoreId,
+      },
+    );
+
+    return `/api/storage/${blob.pathname}`;
+  }
 }

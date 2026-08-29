@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
       // Bad request if format is invalid
       if (!result.success) {
         throw createError({
-          status: 400,
-          message: "Invalid credentials format",
+          statusCode: 400,
+          statusMessage: "Invalid credentials format",
         });
       }
 
@@ -35,8 +35,8 @@ export default defineEventHandler(async (event) => {
 
     if (user.length === 0) {
       throw createError({
-        status: 404,
-        message: "User not found",
+        statusCode: 404,
+        statusMessage: "User not found",
       });
     }
 
@@ -44,8 +44,8 @@ export default defineEventHandler(async (event) => {
     const isPasswordValid = await verifyPassword(user[0]?.password!, password);
     if (!isPasswordValid) {
       throw createError({
-        status: 401,
-        message: "Incorrect username or password",
+        statusCode: 401,
+        statusMessage: "Incorrect username or password",
       });
     }
 
@@ -60,17 +60,18 @@ export default defineEventHandler(async (event) => {
       },
     });
     return {
-      status: 200,
-      message: "Login successful",
+      statusCode: 200,
+      statusMessage: "Login successful",
     };
   } catch (error) {
     if (error) {
+      console.log(error);
       throw error;
     }
 
     throw createError({
-      status: 500,
-      message: "Internal Server Error",
+      statusCode: 500,
+      statusMessage: "Internal Server Error",
     });
   }
 });

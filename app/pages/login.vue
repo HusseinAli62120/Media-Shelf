@@ -34,7 +34,7 @@ onMounted(() => {
 // Login function
 const login = async () => {
   // Check the userName length
-  if (credentials?.userName.length < 4) {
+  if (credentials?.userName?.trim()?.length < 4) {
     toast.add({
       title: "Username too short",
       description: "Username must be at least 4 characters long",
@@ -43,7 +43,7 @@ const login = async () => {
     return;
   }
   // Check the password length
-  if (credentials?.password.length < 8) {
+  if (credentials?.password?.trim()?.length < 8) {
     toast.add({
       title: "Password too short",
       description: "Password must be at least 8 characters long",
@@ -55,10 +55,13 @@ const login = async () => {
     loading.value = true;
     const res = await $fetch("/api/login", {
       method: "POST",
-      body: credentials,
+      body: {
+        userName: credentials.userName.trim(),
+        password: credentials.password.trim(),
+      },
     });
 
-    if (res.status === 200 || res.status === 304) {
+    if (res.statusCode === 200 || res.statusCode === 304) {
       // Refresh the session on client-side and redirect to the home page
       await refreshSession();
       toast.clear();
@@ -66,7 +69,8 @@ const login = async () => {
     }
   } catch (error: any) {
     toast.add({
-      title: error.response._data.message,
+      title: "Error",
+      description: error?.data.statusMessage,
       color: "error",
     });
   } finally {
@@ -169,7 +173,7 @@ const login = async () => {
               v-if="loading"
               class="animate-spin"
             />
-            <span v-else>Login</span>
+            <span>Login</span>
           </UButton>
         </UForm>
 

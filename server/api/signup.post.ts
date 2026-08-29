@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
       // Bad request if format is invalid
       if (!result.success) {
         throw createError({
-          status: 400,
-          message: "Invalid credentials format",
+          statusCode: 400,
+          statusMessage: "Invalid credentials format",
         });
       }
 
@@ -34,8 +34,8 @@ export default defineEventHandler(async (event) => {
 
     if (user.length > 0) {
       throw createError({
-        status: 409,
-        message: "User already exists",
+        statusCode: 409,
+        statusMessage: "User already exists",
       });
     }
 
@@ -68,8 +68,8 @@ export default defineEventHandler(async (event) => {
     });
 
     return {
-      status: 200,
-      message: "Sign up successful",
+      statusCode: 200,
+      statusMessage: "Sign up successful",
     };
   } catch (error) {
     console.log(error);
@@ -81,8 +81,8 @@ export default defineEventHandler(async (event) => {
 
     // Fallback if no error was thrown, but we reached this
     throw createError({
-      status: 500,
-      message: "Internal server error",
+      statusCode: 500,
+      statusMessage: "Internal server error",
     });
   }
 });

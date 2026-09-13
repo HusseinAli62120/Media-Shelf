@@ -189,20 +189,10 @@ const ranges = [
 
     <!-- Tab Switch loading -->
     <div
-      v-if="isFetching"
-      class="flex-1 flex items-center justify-center w-full"
+      v-if="isFetching && collection?.length === 0"
+      class="flex-1 flex card-grid w-full"
     >
-      <UProgress
-        indeterminate
-        size="xs"
-        class="absolute top-0 inset-x-0 z-1"
-        :ui="{ base: 'bg-default' }"
-      />
-
-      <UIcon
-        name="i-lucide-loader-2"
-        class="animate-spin text-muted-foreground w-10 h-10"
-      />
+      <CardSkeleton is-collection v-for="i in 32" :key="i" />
     </div>
 
     <!-- Empty -->

@@ -5,6 +5,9 @@ export default function useNavbar() {
   const toast = useToast();
   const { clear: clearSession, user } = useUserSession();
   const colorMode = useColorMode();
+  const { favoriteIds, watchListIds, watchedIds } = useIdRef({
+    autoFetch: false,
+  });
 
   // Variables
   const logoutLoading = ref<boolean>(false);
@@ -13,6 +16,12 @@ export default function useNavbar() {
     try {
       logoutLoading.value = true;
       await clearSession();
+
+      // Reset id refs
+      favoriteIds.value = [];
+      watchListIds.value = [];
+      watchedIds.value = [];
+
       await navigateTo("/login");
     } catch (error) {
       console.log(error);

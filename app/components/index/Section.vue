@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import type { SelectMenuItem } from "@nuxt/ui";
 import type { Transition } from "motion-v";
+
+const emit = defineEmits<{
+  (emit: "onTrendingDateChange", value: "day" | "week"): void;
+}>();
 
 defineProps<{
   loading: boolean;
@@ -15,6 +20,18 @@ const transition = computed<Transition>(() => ({
   stiffness: 160,
   damping: 25,
 }));
+
+const items = ref<SelectMenuItem[]>([
+  {
+    label: "Today",
+    value: "day",
+  },
+  {
+    label: "Week",
+    value: "week",
+  },
+]);
+const trendingValue = ref("Today");
 </script>
 
 <template>
@@ -46,6 +63,25 @@ const transition = computed<Transition>(() => ({
         View More
         <UIcon name="i-lucide-chevron-right" class="w-4 h-4 ml-1" />
       </NuxtLink>
+
+      <USelectMenu
+        variant="ghost"
+        class="bg-transparent hover:bg-transparent"
+        :ui="{
+          base: 'text-muted-foreground focus:bg-transparent',
+          trailingIcon:
+            'group-data-[state=open]:rotate-180 transition-transform duration-200',
+          input: 'hidden',
+        }"
+        v-if="sectionTitle.toLowerCase().includes('trending')"
+        v-model="trendingValue"
+        :items="items"
+        @update:model-value="
+          (value) => {
+            emit('onTrendingDateChange', Object(value).value);
+          }
+        "
+      />
     </div>
 
     <!-- Loading Skeleton -->

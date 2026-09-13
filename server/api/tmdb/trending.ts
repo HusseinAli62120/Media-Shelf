@@ -6,18 +6,27 @@ export default defineEventHandler(async (event) => {
     // Auth
     await requireAuth({ event: event });
 
+    const { dateRange } = getQuery(event);
+
+    if (!dateRange) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Bad Request Parameters",
+      });
+    }
+
     const apiKey = process.env.NUXT_SHOW_MOVIE_API_KEY;
 
     if (!apiKey) {
       throw createError({
-        status: 500,
-        message: "Internal server error",
+        statusCode: 500,
+        statusMessage: "Internal server error",
       });
     }
 
     // Get trending shows
     const showResponse: any = await $fetch(
-      "https://api.themoviedb.org/3/trending/tv/week?language=en-US",
+      `https://api.themoviedb.org/3/trending/tv/${dateRange}?language=en-US`,
       {
         method: "GET",
         headers: {
@@ -29,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
     // Get trending movies
     const movieResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/trending/movie/week?language=en-US`,
+      `https://api.themoviedb.org/3/trending/movie/${dateRange}?language=en-US`,
       {
         method: "GET",
         headers: {
@@ -60,8 +69,10 @@ export default defineEventHandler(async (event) => {
       });
 
       // Shuffle the arrays
-      trendingShows = trendingShows.sort(() => 0.5 - Math.random());
-      trendingMovies = trendingMovies.sort(() => 0.5 - Math.random());
+      if (dateRange === "week") {
+        trendingShows = trendingShows.sort(() => 0.5 - Math.random());
+        trendingMovies = trendingMovies.sort(() => 0.5 - Math.random());
+      }
 
       // Return the first five elements of each array
       trendingShows = trendingShows.slice(0, 6);
@@ -75,16 +86,16 @@ export default defineEventHandler(async (event) => {
       trending = trending.sort(() => 0.5 - Math.random());
 
       return {
-        status: 200,
-        message: "Data fetched successfully",
+        statusCode: 200,
+        statusMessage: "Data fetched successfully",
         trending: trending as CardData[],
         count: trending.length,
       };
     }
 
     return {
-      status: 400,
-      message: "Unexpected error",
+      statusCode: 400,
+      statusMessage: "Unexpected error",
       trending: [],
       count: 0,
     };
@@ -95,8 +106,8 @@ export default defineEventHandler(async (event) => {
     }
 
     throw createError({
-      status: 500,
-      message: "Internal Server Error",
+      statusCode: 500,
+      statusMessage: "Internal Server Error",
     });
   }
 });

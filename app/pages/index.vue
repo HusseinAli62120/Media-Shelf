@@ -7,15 +7,26 @@ definePageMeta({
   allowedRoles: [Role.USER, Role.ADMIN],
 });
 
+let trendingLoading = ref<boolean>(false);
+let trending = ref<CardData[]>([]);
+let dateRange = ref<"day" | "week">("day");
+
 // The Auth data
 const { user } = useUserSession();
+
+// Composables
+const toast = useToast();
 
 // Fetch trending movies and shows
 const {
   data: trendingData,
   pending: trendingPending,
   error: trendingError,
-} = await useFetch("/api/tmdb/trending");
+} = await useFetch("/api/tmdb/trending", {
+  query: {
+    dateRange: "day",
+  },
+});
 
 // Fetch the top rated movies and shows
 const {
@@ -30,6 +41,38 @@ const {
   pending: discoverPending,
   error: discoverError,
 } = await useFetch("/api/tmdb/discover");
+
+// Set trending value
+if (
+  trendingData.value?.statusCode === 200 ||
+  trendingData.value?.statusCode === 304
+) {
+  trending.value = trendingData.value?.trending;
+}
+
+const handleTrendingFetch = async ({ value }: { value: "day" | "week" }) => {
+  try {
+    trendingLoading.value = true;
+    const res = await $fetch("/api/tmdb/trending", {
+      query: {
+        dateRange: value,
+      },
+    });
+
+    if (res.statusCode === 200 || res.statusCode === 304) {
+      trending.value = res.trending;
+    }
+  } catch (error: any) {
+    console.log(error);
+    toast.add({
+      color: "error",
+      title: "Error",
+      description: error?.data?.statusMessage || "Unexpected error",
+    });
+  } finally {
+    trendingLoading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -69,11 +112,17 @@ const {
 
       <!-- Trending -->
       <Section
-        :loading="trendingPending"
+        :loading="trendingPending || trendingLoading"
         :error="trendingError"
-        :data="trendingData?.trending || []"
-        sectionTitle="Trending Now"
-        sectionDescription="The most popular movies and shows this week"
+        :data="trending || []"
+        sectionTitle="Trending"
+        :sectionDescription="`The most popular movies and shows ${dateRange === 'day' ? 'today' : 'this week'}`"
+        @onTrendingDateChange="
+          (value) => {
+            handleTrendingFetch({ value: value });
+            dateRange = value;
+          }
+        "
       />
 
       <!-- Top Rated -->

@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
     // Get top rated shows
     const showResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${randomPage}&sort_by=${sortBy}`,
+      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=false&page=${randomPage}&sort_by=${sortBy}`,
       {
         method: "GET",
         headers: {
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     // Get top rated movies
     const movieResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${randomPage}&sort_by=${sortBy}`,
+      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=false&page=${randomPage}&sort_by=${sortBy}`,
       {
         method: "GET",
         headers: {

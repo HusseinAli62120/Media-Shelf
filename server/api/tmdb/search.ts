@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const response: any = await $fetch(
-      `https://api.themoviedb.org/3/search/multi?query=${searchQuery}&language=en-US&include_adult=true&page=${page}`,
+      `https://api.themoviedb.org/3/search/multi?query=${searchQuery}&language=en-US&include_adult=false&page=${page}`,
       {
         method: "GET",
         headers: {

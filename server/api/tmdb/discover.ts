@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     // Get trending shows
     const showResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${randomPage}`,
+      `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=false&page=${randomPage}`,
       {
         method: "GET",
         headers: {
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
     // Get trending movies
     const movieResponse: any = await $fetch(
-      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${randomPage}`,
+      `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=false&page=${randomPage}`,
       {
         method: "GET",
         headers: {

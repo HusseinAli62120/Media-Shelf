@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     // Get trending shows
     if (shouldFetchShows) {
       showResponse = await $fetch(
-        `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=true&page=${page}${showDateFilter ? "&" + showDateFilter : ""}&sort_by=${sortBy}`,
+        `https://api.themoviedb.org/3/discover/tv?language=en-US&include_adult=false&page=${page}${showDateFilter ? "&" + showDateFilter : ""}&sort_by=${sortBy}`,
         {
           method: "GET",
           headers: {
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     // Get trending movies
     if (shouldFetchMovies) {
       movieResponse = await $fetch(
-        `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=true&page=${page}${movieDateFilter ? "&" + movieDateFilter : ""}&sort_by=${sortBy}`,
+        `https://api.themoviedb.org/3/discover/movie?language=en-US&include_adult=false&page=${page}${movieDateFilter ? "&" + movieDateFilter : ""}&sort_by=${sortBy}`,
         {
           method: "GET",
           headers: {

@@ -1,5 +1,5 @@
 import { db } from "../../utils/drizzleDriver";
-import { watchList } from "../../db/schema";
+import { favorites, media, watched, watchList } from "../../db/schema";
 import { and, eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
@@ -32,6 +32,26 @@ export default defineEventHandler(async (event) => {
     await db
       .delete(watchList)
       .where(and(eq(watchList.mediaId, mediaId), eq(watchList.userId, userId)));
+
+    // Check if the media as any other references
+    const otherReferences = await db
+      .select()
+      .from(media)
+      .where(eq(media.mediaId, mediaId))
+      .fullJoin(watchList, eq(media.mediaId, watchList.mediaId))
+      .fullJoin(favorites, eq(media.mediaId, favorites.mediaId))
+      .fullJoin(watched, eq(media.mediaId, watched.mediaId));
+
+    const hasOtherReferences =
+      otherReferences[0] &&
+      (otherReferences[0].watchList !== null ||
+        otherReferences[0].favorites !== null ||
+        otherReferences[0].watched !== null);
+
+    // If no other references to this media exist, delete the media entry.
+    if (!hasOtherReferences) {
+      await db.delete(media).where(eq(media.mediaId, mediaId));
+    }
 
     return {
       statusCode: 200,

@@ -194,7 +194,9 @@ const hasRating = computed(() => {
         <!-- Rating & liked (Collection Only (watched & favorites)) -->
         <div v-if="showEngagement" class="flex flex-row items-center space-x-1">
           <div v-if="hasRating" class="flex flex-row items-center space-x-0.5">
-            <RatingDisplay :item="item" :top-five-item="topFiveItem" />
+            <RatingDisplay
+              :rating="String(item?.rating || topFiveItem?.rating || 0)"
+            />
           </div>
 
           <USeparator

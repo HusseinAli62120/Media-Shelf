@@ -39,7 +39,7 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
       <!-- Card -->
       <div
         class="flex flex-row w-full space-x-4"
-        :class="!reviewed && !rated && 'items-center'"
+        :class="!reviewed && 'items-center'"
       >
         <!-- Poster -->
         <NuxtLink
@@ -76,7 +76,7 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
           </div>
           <div
             v-if="rated || reviewed"
-            class="w-full flex flex-row items-center space-x-2 my-5"
+            class="w-full flex flex-row items-center my-3"
           >
             <UAccordion
               v-if="reviewed"
@@ -92,33 +92,22 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 },
               ]"
             >
-              <NuxtRating
-                v-if="Number(item?.rating) > 0"
-                :read-only="true"
-                border-color="#db8403"
-                active-color="#ffa41c"
-                :inactive-color="
-                  colorMode.preference === 'light' ? '#cecece' : '#fff'
-                "
-                :border-width="0"
-                :rating-value="Number(item?.rating)"
-                :rating-size="width < 400 ? 16 : 20"
-              />
+              <div v-if="rated" class="flex flex-row items-center">
+                <RatingDisplay
+                  :rating="String(item?.rating)"
+                  :diary-card="true"
+                />
+              </div>
               <p v-else class="text-sm font-semibold text-foreground/70">
                 Review
               </p>
             </UAccordion>
-            <NuxtRating
+
+            <!-- Rated without review -->
+            <RatingDisplay
               v-else-if="rated"
-              :read-only="true"
-              border-color="#db8403"
-              active-color="#ffa41c"
-              :inactive-color="
-                colorMode.preference === 'light' ? '#cecece' : '#fff'
-              "
-              :border-width="0"
-              :rating-value="Number(item?.rating)"
-              :rating-size="width < 400 ? 16 : 20"
+              :rating="String(item?.rating)"
+              :diary-card="true"
             />
           </div>
         </div>
@@ -154,8 +143,10 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
     </template>
 
     <template #body>
-      <div class="text-base text-error flex flex-col items-start space-y-5">
-        <p>Are you sure you want to delete this entry?</p>
+      <div class="text-base text-error flex flex-col items-center space-y-5">
+        <p class="w-full text-start">
+          Are you sure you want to delete this entry?
+        </p>
         <!-- Entry Details -->
         <div class="flex flex-row w-full items-center space-x-4">
           <!-- Poster -->
@@ -190,18 +181,12 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 }}
               </p>
             </div>
-            <NuxtRating
-              class="my-5"
-              :read-only="true"
-              border-color="#db8403"
-              active-color="#ffa41c"
-              :inactive-color="
-                colorMode.preference === 'light' ? '#cecece' : '#fff'
-              "
-              :border-width="0"
-              :rating-value="Number(item?.rating)"
-              :rating-size="width < 400 ? 16 : 20"
-            />
+            <div v-if="rated" class="flex flex-row items-center my-3">
+              <RatingDisplay
+                :rating="String(item?.rating)"
+                :diary-card="true"
+              />
+            </div>
           </div>
         </div>
       </div>

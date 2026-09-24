@@ -143,7 +143,7 @@ export default defineEventHandler(async (event) => {
 
       if (!isPasswordValid) {
         throw createError({
-          statusCode: 401,
+          statusCode: 403,
           statusMessage: "Incorrect Password",
         });
       }

@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     if (user.length === 0) {
       throw createError({
         statusCode: 404,
-        statusMessage: "User not found",
+        statusMessage: "Incorrect username or password",
       });
     }
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     const isPasswordValid = await verifyPassword(user[0]?.password!, password);
     if (!isPasswordValid) {
       throw createError({
-        statusCode: 401,
+        statusCode: 403,
         statusMessage: "Incorrect username or password",
       });
     }

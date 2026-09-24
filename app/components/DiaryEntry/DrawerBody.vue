@@ -3,16 +3,10 @@ import { getLocalTimeZone } from "@internationalized/date";
 const { media } = defineProps<{ media: MovieDetails | TvDetails }>();
 
 const { getReleaseYear, hasPoster } = details({ media: media });
-const {
-  isFavorite,
-  toggleFavorite,
-  handleMediaRating,
-  rating,
-  reviewText,
-  diaryDate,
-} = useEngagement({
-  media: media,
-});
+const { handleMediaRating, rating, reviewText, diaryDate, diaryLiked } =
+  useEngagement({
+    media: media,
+  });
 
 const { preference } = useColorMode();
 </script>
@@ -97,12 +91,16 @@ const { preference } = useColorMode();
         <UButton
           :variant="'ghost'"
           :size="'lg'"
-          :color="isFavorite ? 'error' : 'neutral'"
+          :color="diaryLiked ? 'error' : 'neutral'"
           class="rounded-full font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-          @click="toggleFavorite"
+          @click="
+            () => {
+              diaryLiked = !diaryLiked;
+            }
+          "
         >
           <UIcon
-            :name="isFavorite ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
+            :name="diaryLiked ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'"
             class="h-8 w-8"
           />
         </UButton>

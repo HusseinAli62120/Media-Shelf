@@ -9,7 +9,7 @@
     }"
   >
     <NuxtLoadingIndicator
-      color="linear-gradient(to right, #6366f1, #a855f7, #ec4899)"
+      color="linear-gradient(to right, #34d399, #22d3ee, #60a5fa)"
     />
     <NuxtLayout>
       <NuxtPage />

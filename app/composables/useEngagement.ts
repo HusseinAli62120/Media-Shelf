@@ -17,6 +17,9 @@ let diaryDate = shallowRef<CalendarDate>(
   ),
 );
 
+// Like flag for diary entry
+let diaryLiked = ref<boolean>(false);
+
 export default function useEngagement({
   media,
   autoFetch = false,
@@ -259,6 +262,7 @@ export default function useEngagement({
 
   const resetValues = () => {
     reviewText.value = "";
+    diaryLiked.value = false;
     diaryDate.value = new CalendarDate(
       new Date().getFullYear(),
       new Date().getMonth() + 1,
@@ -277,6 +281,7 @@ export default function useEngagement({
           mediaId: media.id,
           review: reviewText.value,
           rating: rating.value,
+          diaryLiked: diaryLiked.value,
           timestamp: timestamp,
           name: media.title,
           first_air_date: media.release_date,
@@ -301,6 +306,12 @@ export default function useEngagement({
             ratingRef.value = rating.value;
           }
         }
+
+        // Add media id to favorites ref if it was added to favorites
+        if (res.addedToFav) {
+          favoriteIds.value.push(media?.id);
+        }
+
         toast.add({
           title: "Success",
           description: res?.statusMessage,
@@ -346,5 +357,6 @@ export default function useEngagement({
     diaryDate,
     resetValues,
     addDiaryEntry,
+    diaryLiked,
   };
 }

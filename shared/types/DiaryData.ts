@@ -4,6 +4,7 @@ export type DiaryData = {
   name: string;
   imgURL: string;
   rating: string;
+  isLiked: boolean;
   review: string;
   mediaType: string;
   createdAt: string | Date;

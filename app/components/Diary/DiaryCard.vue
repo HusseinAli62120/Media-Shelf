@@ -8,10 +8,6 @@ const { item, last, deleteEntry } = defineProps<{
   deleteEntry: ({ id }: { id: string }) => Promise<void>;
 }>();
 
-// Composables
-const colorMode = useColorMode();
-const { width } = useWindowSize();
-
 // Delete states
 let isDeleting = ref(false);
 let modalOpen = ref(false);
@@ -39,7 +35,7 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
       <!-- Card -->
       <div
         class="flex flex-row w-full space-x-4"
-        :class="!reviewed && !rated && 'items-center'"
+        :class="!reviewed && 'items-center'"
       >
         <!-- Poster -->
         <NuxtLink
@@ -75,8 +71,8 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
             </p>
           </div>
           <div
-            v-if="rated || reviewed"
-            class="w-full flex flex-row items-center space-x-2 my-5"
+            v-if="rated || reviewed || item.isLiked"
+            class="w-full flex flex-row items-center my-3"
           >
             <UAccordion
               v-if="reviewed"
@@ -92,34 +88,46 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 },
               ]"
             >
-              <NuxtRating
-                v-if="Number(item?.rating) > 0"
-                :read-only="true"
-                border-color="#db8403"
-                active-color="#ffa41c"
-                :inactive-color="
-                  colorMode.preference === 'light' ? '#cecece' : '#fff'
-                "
-                :border-width="0"
-                :rating-value="Number(item?.rating)"
-                :rating-size="width < 400 ? 16 : 20"
-              />
+              <div
+                v-if="rated || item.isLiked"
+                class="flex flex-row items-center"
+              >
+                <RatingDisplay
+                  v-if="rated"
+                  :rating="String(item?.rating)"
+                  :diary-card="true"
+                />
+
+                <UIcon
+                  v-if="item.isLiked"
+                  name="i-heroicons-heart-solid"
+                  class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                  :class="rated && 'mx-2'"
+                />
+              </div>
               <p v-else class="text-sm font-semibold text-foreground/70">
                 Review
               </p>
             </UAccordion>
-            <NuxtRating
-              v-else-if="rated"
-              :read-only="true"
-              border-color="#db8403"
-              active-color="#ffa41c"
-              :inactive-color="
-                colorMode.preference === 'light' ? '#cecece' : '#fff'
-              "
-              :border-width="0"
-              :rating-value="Number(item?.rating)"
-              :rating-size="width < 400 ? 16 : 20"
-            />
+
+            <!-- Rated without review -->
+            <div
+              v-else-if="rated || item.isLiked"
+              class="flex flex-row items-center"
+            >
+              <RatingDisplay
+                v-if="rated"
+                :rating="String(item?.rating)"
+                :diary-card="true"
+              />
+
+              <UIcon
+                v-if="item.isLiked"
+                name="i-heroicons-heart-solid"
+                class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                :class="rated && 'mx-2'"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -154,8 +162,10 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
     </template>
 
     <template #body>
-      <div class="text-base text-error flex flex-col items-start space-y-5">
-        <p>Are you sure you want to delete this entry?</p>
+      <div class="text-base text-error flex flex-col items-center space-y-5">
+        <p class="w-full text-start">
+          Are you sure you want to delete this entry?
+        </p>
         <!-- Entry Details -->
         <div class="flex flex-row w-full items-center space-x-4">
           <!-- Poster -->
@@ -190,18 +200,23 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 }}
               </p>
             </div>
-            <NuxtRating
-              class="my-5"
-              :read-only="true"
-              border-color="#db8403"
-              active-color="#ffa41c"
-              :inactive-color="
-                colorMode.preference === 'light' ? '#cecece' : '#fff'
-              "
-              :border-width="0"
-              :rating-value="Number(item?.rating)"
-              :rating-size="width < 400 ? 16 : 20"
-            />
+            <div
+              v-if="rated || item.isLiked"
+              class="flex flex-row items-center my-3"
+            >
+              <RatingDisplay
+                v-if="rated"
+                :rating="String(item?.rating)"
+                :diary-card="true"
+              />
+
+              <UIcon
+                v-if="item.isLiked"
+                name="i-heroicons-heart-solid"
+                class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                :class="rated && 'mx-2'"
+              />
+            </div>
           </div>
         </div>
       </div>

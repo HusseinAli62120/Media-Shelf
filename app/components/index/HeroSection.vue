@@ -49,7 +49,7 @@ const handleSearch = () => {
       >
         Your Personal
         <span
-          class="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent bg-size-[200%_auto] animate-[gradient_3s_ease_infinite]"
+          class="bg-linear-to-r from-[#42b883] via-[#4cc9b0] to-[#60a5fa] bg-clip-text text-transparent bg-size-[200%_auto] animate-[gradient_3s_ease_infinite]"
         >
           Media Shelf
         </span>

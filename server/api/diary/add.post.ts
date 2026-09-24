@@ -1,4 +1,4 @@
-import { media, diary, watched } from "../../db/schema";
+import { media, diary, watched, favorites } from "../../db/schema";
 import { and, eq } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
       mediaId,
       review,
       rating,
+      diaryLiked,
       timestamp,
       name,
       first_air_date,
@@ -84,11 +85,36 @@ export default defineEventHandler(async (event) => {
         .where(and(eq(watched.mediaId, mediaId), eq(watched.userId, userId)));
     }
 
+    // Flag to send back if media is added to favorites for the first time, so that the its id is added to favorites ref
+    let addedToFav = false;
+    // If diary Liked, check if it is already in favorites, if not add it.
+    if (diaryLiked) {
+      // Check if the media is already in favorites
+      const favoriteRef = await db
+        .select()
+        .from(favorites)
+        .where(
+          and(eq(favorites.mediaId, mediaId), eq(favorites.userId, userId)),
+        );
+
+      if (favoriteRef.length === 0) {
+        await db.insert(favorites).values({
+          mediaId: mediaId,
+          userId: userId,
+          createdAt: new Date(timestamp),
+        });
+
+        // Set addedToFav to true
+        addedToFav = true;
+      }
+    }
+
     // Add new diary entry
     await db.insert(diary).values({
       mediaId: mediaId,
       userId: userId,
       review: review,
+      isLiked: diaryLiked,
       rating: rating,
       createdAt: new Date(timestamp),
     });
@@ -96,6 +122,7 @@ export default defineEventHandler(async (event) => {
     return {
       statusCode: 200,
       statusMessage: "New Diary Entry Added",
+      addedToFav: addedToFav,
     };
   } catch (error) {
     if (error) {

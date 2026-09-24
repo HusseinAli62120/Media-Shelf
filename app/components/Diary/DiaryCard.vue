@@ -8,10 +8,6 @@ const { item, last, deleteEntry } = defineProps<{
   deleteEntry: ({ id }: { id: string }) => Promise<void>;
 }>();
 
-// Composables
-const colorMode = useColorMode();
-const { width } = useWindowSize();
-
 // Delete states
 let isDeleting = ref(false);
 let modalOpen = ref(false);
@@ -75,7 +71,7 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
             </p>
           </div>
           <div
-            v-if="rated || reviewed"
+            v-if="rated || reviewed || item.isLiked"
             class="w-full flex flex-row items-center my-3"
           >
             <UAccordion
@@ -92,10 +88,21 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 },
               ]"
             >
-              <div v-if="rated" class="flex flex-row items-center">
+              <div
+                v-if="rated || item.isLiked"
+                class="flex flex-row items-center"
+              >
                 <RatingDisplay
+                  v-if="rated"
                   :rating="String(item?.rating)"
                   :diary-card="true"
+                />
+
+                <UIcon
+                  v-if="item.isLiked"
+                  name="i-heroicons-heart-solid"
+                  class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                  :class="rated && 'mx-2'"
                 />
               </div>
               <p v-else class="text-sm font-semibold text-foreground/70">
@@ -104,11 +111,23 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
             </UAccordion>
 
             <!-- Rated without review -->
-            <RatingDisplay
-              v-else-if="rated"
-              :rating="String(item?.rating)"
-              :diary-card="true"
-            />
+            <div
+              v-else-if="rated || item.isLiked"
+              class="flex flex-row items-center"
+            >
+              <RatingDisplay
+                v-if="rated"
+                :rating="String(item?.rating)"
+                :diary-card="true"
+              />
+
+              <UIcon
+                v-if="item.isLiked"
+                name="i-heroicons-heart-solid"
+                class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                :class="rated && 'mx-2'"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -181,10 +200,21 @@ let reviewed = computed(() => item?.review && item?.review?.length > 0);
                 }}
               </p>
             </div>
-            <div v-if="rated" class="flex flex-row items-center my-3">
+            <div
+              v-if="rated || item.isLiked"
+              class="flex flex-row items-center my-3"
+            >
               <RatingDisplay
+                v-if="rated"
                 :rating="String(item?.rating)"
                 :diary-card="true"
+              />
+
+              <UIcon
+                v-if="item.isLiked"
+                name="i-heroicons-heart-solid"
+                class="h-4 w-4 xs:w-5 xs:h-5 text-red-500"
+                :class="rated && 'mx-2'"
               />
             </div>
           </div>

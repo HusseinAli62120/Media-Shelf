@@ -1,4 +1,11 @@
-import { pgTable, text, uuid, pgEnum, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  uuid,
+  pgEnum,
+  integer,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { timestamps } from "../utils/timestamps";
 
 // Need to be exported for the push to work even if not used
@@ -79,6 +86,7 @@ export const diary = pgTable("diary", {
     onUpdate: "cascade",
   }),
   rating: text(), // 0-5
+  isLiked: boolean().default(false),
   review: text(),
   ...timestamps,
 });

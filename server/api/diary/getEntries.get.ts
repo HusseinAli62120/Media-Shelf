@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
         name: media?.name,
         imgURL: media?.imgURL,
         rating: diary?.rating,
+        isLiked: diary?.isLiked,
         review: diary?.review,
         mediaType: media?.media_type,
         createdAt: diary?.createdAt,

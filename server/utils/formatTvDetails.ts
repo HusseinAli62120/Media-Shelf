@@ -23,7 +23,6 @@ export default function formatTvDetails({
     status: item.status,
     number_of_episodes: item.number_of_episodes,
     number_of_seasons: item.number_of_seasons,
-    voteCount: item?.vote_count,
     genres: item.genres.map((genre: any) => genre.name),
     cast: cast,
   };

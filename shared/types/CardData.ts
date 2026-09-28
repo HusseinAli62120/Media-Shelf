@@ -3,7 +3,6 @@ export type CardData = {
   mediaId: number | null; // tmdb id
   name: string | null;
   first_air_date: string | null;
-  overview: string | null;
   imgURL: string | null;
   averageRating: string | null;
   media_type: "movie" | "tv" | null;

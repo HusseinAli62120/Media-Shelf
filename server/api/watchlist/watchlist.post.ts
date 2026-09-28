@@ -13,11 +13,9 @@ export default defineEventHandler(async (event) => {
       mediaId,
       name,
       first_air_date,
-      overview,
       imgURL,
       averageRating,
       media_type,
-      voteCount,
       genres,
     } = await readBody(event);
 
@@ -27,11 +25,9 @@ export default defineEventHandler(async (event) => {
       !userId ||
       !name ||
       !first_air_date ||
-      !overview ||
       !imgURL ||
       !averageRating ||
       !media_type ||
-      !voteCount ||
       !genres
     ) {
       throw createError({
@@ -52,11 +48,9 @@ export default defineEventHandler(async (event) => {
         mediaId: mediaId,
         name: name,
         first_air_date: first_air_date,
-        overview: overview,
         imgURL: imgURL,
         averageRating: averageRating,
         media_type: media_type,
-        voteCount: voteCount,
         genres: genres,
       });
     }

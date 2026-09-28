@@ -26,11 +26,9 @@ export const media = pgTable("media", {
   mediaId: integer().primaryKey(),
   name: text(),
   first_air_date: text(),
-  overview: text(),
   imgURL: text(),
   averageRating: text(), // float
   media_type: mediaType(),
-  voteCount: integer(),
   genres: text("genres").array(),
   ...timestamps,
 });

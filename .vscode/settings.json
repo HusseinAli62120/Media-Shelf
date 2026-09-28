@@ -12,5 +12,6 @@
   "tailwindCSS.classFunctions": [
     "defineAppConfig"
   ],
-  "tailwindCSS.experimental.configFile": "app/assets/css/main.css"
+  "tailwindCSS.experimental.configFile": "app/assets/css/main.css",
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

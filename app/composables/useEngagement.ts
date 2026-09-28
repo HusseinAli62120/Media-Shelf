@@ -32,7 +32,7 @@ export default function useEngagement({
   const route = useRoute();
   const { watchListIds, favoriteIds, watchedIds } = useIdRef({ autoFetch });
   const { fetchMediaHistory } = useMediaHistory({
-    mediaId: media.id,
+    mediaId: media?.id,
   });
 
   // Variables

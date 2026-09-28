@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     if (!mediaId || !mediaType) {
       throw createError({
         status: 400,
-        message: "Bad Request Parameters",
+        statusMessage: "Bad Request Parameters",
       });
     }
 
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     if (!apiKey) {
       throw createError({
         status: 500,
-        message: "Internal server error",
+        statusMessage: "Internal server error",
       });
     }
 
@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       status: 200,
-      message: "Success",
+      statusMessage: "Success",
       details: details as MovieDetails,
     };
   } catch (error) {
@@ -104,7 +104,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       status: 500,
-      message: "Internal server error",
+      statusText: "Internal server error",
     });
   }
 });

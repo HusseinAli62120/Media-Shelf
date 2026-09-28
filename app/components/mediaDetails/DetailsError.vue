@@ -15,7 +15,7 @@ defineProps<{
     <h2 class="text-2xl font-bold mb-2">Failed to Load Movie</h2>
     <p class="text-muted-foreground text-sm mb-6">
       {{
-        movieError?.message ||
+        movieError?.statusMessage ||
         "We encountered an error while fetching details for this movie. Please try again later."
       }}
     </p>

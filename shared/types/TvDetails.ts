@@ -13,7 +13,6 @@ export type TvDetails = {
   status: string;
   number_of_episodes: number;
   number_of_seasons: number;
-  voteCount: number;
   genres: string[];
   cast: CastData[];
 };

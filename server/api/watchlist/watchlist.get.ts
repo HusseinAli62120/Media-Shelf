@@ -87,7 +87,6 @@ export default defineEventHandler(async (event) => {
         imgURL: media?.imgURL,
         averageRating: media?.averageRating,
         media_type: media?.media_type,
-        voteCount: media?.voteCount,
       })
       .from(watchList)
       .where(whereClause)

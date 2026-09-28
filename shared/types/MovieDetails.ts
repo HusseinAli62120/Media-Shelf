@@ -11,7 +11,6 @@ export type MovieDetails = {
   backdrop_path: string;
   averageRating: string; // vote_average
   release_date: string;
-  voteCount: number;
   runtime: string;
   trailer: string;
   genres: string[];

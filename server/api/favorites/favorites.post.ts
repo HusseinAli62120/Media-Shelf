@@ -16,7 +16,6 @@ export default defineEventHandler(async (event) => {
       imgURL,
       averageRating,
       media_type,
-      voteCount,
       genres,
     } = await readBody(event);
 
@@ -29,7 +28,6 @@ export default defineEventHandler(async (event) => {
       !imgURL ||
       !averageRating ||
       !media_type ||
-      !voteCount ||
       !genres
     ) {
       throw createError({
@@ -53,7 +51,6 @@ export default defineEventHandler(async (event) => {
         imgURL: imgURL,
         averageRating: averageRating,
         media_type: media_type,
-        voteCount: voteCount,
         genres: genres,
       });
     }

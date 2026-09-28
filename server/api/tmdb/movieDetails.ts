@@ -1,5 +1,6 @@
 import type { MovieDetails } from "#shared/types/MovieDetails";
 import formatCast from "~~/server/utils/formatCast";
+import formatCrew from "~~/server/utils/formatCrew";
 import formatMovieDetails from "~~/server/utils/formatMovieDetails";
 import formatVideos from "~~/server/utils/formatVideos";
 
@@ -75,10 +76,18 @@ export default defineEventHandler(async (event) => {
     // Get cast
     const cast = formatCast({ cast: credits?.cast });
 
+    // Get crew
+    const crew = formatCrew({ crew: credits?.crew });
+
     // console.log(cast);
 
     // Format movie details
-    const details = formatMovieDetails({ item: res, trailer: trailer, cast });
+    const details = formatMovieDetails({
+      item: res,
+      trailer: trailer,
+      cast,
+      crew,
+    });
 
     // console.log(details);
 

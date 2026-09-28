@@ -78,10 +78,13 @@ const {
 });
 
 const colorMode = useColorMode();
+const directorCookie = useCookie<number | string | null>("director_person_id");
 
 let watchedPopoverOpen = ref<boolean>(false);
 
 const handleCastClick = ({ memberId }: { memberId: number }) => {
+  // Reset director flag to null when clicking a cast member
+  directorCookie.value = null;
   navigateTo(`/person-${memberId}`);
 };
 
@@ -475,7 +478,7 @@ const transition = computed<Transition>(() => ({
             <!-- Overview Section -->
             <div class="mt-10 text-left">
               <h3
-                class="text-[11px] font-black tracking-widest text-neutral-400 dark:text-neutral-500 uppercase border-b border-border/30 pb-2 mb-3"
+                class="text-xs font-black tracking-widest text-neutral-400 dark:text-neutral-500 uppercase border-b border-border/30 pb-2 mb-3"
               >
                 Overview
               </h3>
@@ -488,6 +491,42 @@ const transition = computed<Transition>(() => ({
                 }}
               </p>
             </div>
+
+            <!-- Directors -->
+            <div class="mt-10 flex flex-row items-center gap-2">
+              <p
+                class="text-xs font-black tracking-widest text-neutral-400 dark:text-neutral-500 uppercase border-b border-border/30"
+              >
+                {{
+                  movie?.details?.crew.length >= 2 ? "Directors:" : "Director:"
+                }}
+              </p>
+              <div
+                class="flex items-center space-x-0.5 hover:-translate-y-0.5 transition-all duration-300 group"
+              >
+                <NuxtLink
+                  :to="{
+                    path: `/person-${member.id}`,
+                    state: { isDirector: true },
+                  }"
+                  @click="
+                    () => {
+                      directorCookie = member.id!;
+                    }
+                  "
+                  class="text-muted-foreground group-hover:text-foreground text-xs group-hover:underline"
+                  v-for="(member, index) in movie?.details?.crew"
+                  :key="member.id"
+                >
+                  {{ member.name }}
+                  {{ index < movie?.details?.crew.length - 1 ? ", " : "" }}
+                </NuxtLink>
+                <UIcon
+                  name="i-lucide-chevron-right"
+                  class="h-3 w-3 text-muted-foreground group-hover:text-foreground"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -498,7 +537,7 @@ const transition = computed<Transition>(() => ({
         class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-6"
       >
         <div
-          class="flex justify-between items-end border-b border-border/40 pb-4 mb-6"
+          class="flex justify-between items-center border-b border-border/40 pb-4 mb-6"
         >
           <div>
             <ScrewText

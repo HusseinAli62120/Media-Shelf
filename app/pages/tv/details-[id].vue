@@ -72,10 +72,12 @@ const {
 });
 
 const colorMode = useColorMode();
+const directorCookie = useCookie<number | string | null>("director_person_id");
 
 let watchedPopoverOpen = ref<boolean>(false);
 
 const handleCastClick = ({ memberId }: { memberId: number }) => {
+  directorCookie.value = null;
   navigateTo(`/person-${memberId}`);
 };
 

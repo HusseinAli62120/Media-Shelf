@@ -10,11 +10,27 @@ definePageMeta({
 
 // Composables
 const route = useRoute();
+const directorCookie = useCookie<number | string | null>("director_person_id");
+
+// Check if the director cookie is set and is equal to the id, if so it is a director, since the cookie is set only when clicking on a director.
+const isDirector = computed(() => {
+  if (
+    directorCookie.value &&
+    String(directorCookie.value) === String(route.params.id)
+  ) {
+    return true;
+  }
+  if (import.meta.client && history.state?.isDirector) {
+    return true;
+  }
+  return false;
+});
 
 // Fetching
 const { data, pending, error } = await useFetch("/api/tmdb/discoverByActor", {
   query: {
     actorId: route.params.id,
+    isDirector: isDirector,
   },
   onResponseError({ response }) {
     console.log(response?._data?.statusMessage);
@@ -126,7 +142,9 @@ const transition = computed<Transition>(() => ({
             second-face-class="bg-background text-foreground"
           />
           <p class="text-muted-foreground text-sm mt-1">
-            Explore movies and TV shows featuring {{ data?.actorData?.name }}
+            Explore movies and TV shows
+            {{ isDirector ? "directed by" : "featuring" }}
+            {{ data?.actorData?.name }}
           </p>
         </div>
 

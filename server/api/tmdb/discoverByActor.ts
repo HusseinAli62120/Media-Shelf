@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     // Auth
     await requireAuth({ event: event });
 
-    const { actorId } = getQuery(event);
+    const { actorId, isDirector } = getQuery(event);
 
     if (!actorId) {
       throw createError({
@@ -48,8 +48,11 @@ export default defineEventHandler(async (event) => {
       },
     );
 
-    // Shows/movies acted in
-    const cast = combinedCredits?.cast || [];
+    const isDirectorBool = isDirector === true || isDirector === "true";
+
+    // Shows/movies acted in or directed
+    const cast =
+      (isDirectorBool ? combinedCredits?.crew : combinedCredits?.cast) || [];
 
     // Format data
     const formattedMovies = formatCardData({

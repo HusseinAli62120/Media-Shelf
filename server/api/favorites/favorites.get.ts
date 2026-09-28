@@ -90,7 +90,6 @@ export default defineEventHandler(async (event) => {
         mediaId: media?.mediaId,
         name: media?.name,
         first_air_date: media?.first_air_date,
-        overview: media?.overview,
         imgURL: media?.imgURL,
         averageRating: media?.averageRating,
         media_type: media?.media_type,

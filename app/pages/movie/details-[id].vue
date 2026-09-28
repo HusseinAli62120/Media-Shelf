@@ -501,9 +501,7 @@ const transition = computed<Transition>(() => ({
                   movie?.details?.crew.length >= 2 ? "Directors:" : "Director:"
                 }}
               </p>
-              <div
-                class="flex items-center space-x-0.5 hover:-translate-y-0.5 transition-all duration-300 group"
-              >
+              <div class="flex items-center space-x-0.5 group">
                 <NuxtLink
                   :to="{
                     path: `/person-${member.id}`,
@@ -514,7 +512,7 @@ const transition = computed<Transition>(() => ({
                       directorCookie = member.id!;
                     }
                   "
-                  class="text-muted-foreground group-hover:text-foreground text-xs group-hover:underline"
+                  class="text-muted-foreground hover:text-foreground text-xs hover:underline hover:-translate-y-0.5 transition-all duration-300"
                   v-for="(member, index) in movie?.details?.crew"
                   :key="member.id"
                 >
@@ -523,7 +521,7 @@ const transition = computed<Transition>(() => ({
                 </NuxtLink>
                 <UIcon
                   name="i-lucide-chevron-right"
-                  class="h-3 w-3 text-muted-foreground group-hover:text-foreground"
+                  class="h-3 w-3 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all duration-300"
                 />
               </div>
             </div>

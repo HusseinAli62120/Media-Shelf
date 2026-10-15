@@ -534,24 +534,20 @@ const transition = computed<Transition>(() => ({
         v-if="movie?.details?.cast && movie.details.cast.length > 0"
         class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-6"
       >
-        <div
-          class="flex justify-between items-center border-b border-border/40 pb-4 mb-6"
-        >
-          <div>
-            <ScrewText
-              :label="'Cast'"
-              :rotate-direction="'top'"
-              :stagger-duration="0.03"
-              :stagger-from="'first'"
-              :transition="transition"
-              class="text-xl xs:text-2xl font-bold tracking-tight inline"
-              front-face-class="bg-background text-foreground"
-              second-face-class="bg-background text-foreground"
-            />
-            <p class="text-muted-foreground text-sm mt-0.5">
-              Top billed cast members
-            </p>
-          </div>
+        <div class="border-b border-border/40 pb-4 mb-6">
+          <ScrewText
+            :label="'Cast'"
+            :rotate-direction="'top'"
+            :stagger-duration="0.03"
+            :stagger-from="'first'"
+            :transition="transition"
+            class="text-xl xs:text-2xl font-bold tracking-tight inline"
+            front-face-class="bg-background text-foreground"
+            second-face-class="bg-background text-foreground"
+          />
+          <p class="text-muted-foreground text-sm mt-0.5">
+            Top billed cast members
+          </p>
         </div>
 
         <div class="flex flex-row overflow-x-auto gap-6 pb-4 no-scrollbar">
@@ -595,6 +591,20 @@ const transition = computed<Transition>(() => ({
             </span>
           </div>
         </div>
+      </div>
+
+      <!-- Collection -->
+      <div
+        v-if="movie?.collection?.name"
+        class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 mt-6"
+      >
+        <Section
+          :loading="movieLoading"
+          :data="movie.collection?.parts || []"
+          :error="movieError"
+          :section-title="movie.collection.name"
+          :section-description="movie.collection.overview"
+        />
       </div>
 
       <!-- Similar Section -->

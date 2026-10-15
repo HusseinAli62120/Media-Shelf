@@ -1,8 +1,10 @@
 import type { MovieDetails } from "#shared/types/MovieDetails";
 import formatCast from "~~/server/utils/formatCast";
+import formatCollection from "~~/server/utils/formatCollection";
 import formatCrew from "~~/server/utils/formatCrew";
 import formatMovieDetails from "~~/server/utils/formatMovieDetails";
 import formatVideos from "~~/server/utils/formatVideos";
+import { CollectionData } from "~~/shared/types/CollectionData";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -33,7 +35,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Fetch the movie details
-    const res = await $fetch(
+    const res: any = await $fetch(
       `https://api.themoviedb.org/3/movie/${mediaId}?language=en-US`,
       {
         method: "GET",
@@ -43,6 +45,26 @@ export default defineEventHandler(async (event) => {
         },
       },
     );
+
+    const collectionId = res?.belongs_to_collection?.id ?? null;
+
+    let collection = {};
+
+    // Fetch collection if it exists
+    if (collectionId) {
+      const res: any = await $fetch(
+        `https://api.themoviedb.org/3/collection/${collectionId}?language=en-US`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+        },
+      );
+
+      collection = formatCollection({ data: res });
+    }
 
     // Fetch the movie related videos
     const videos: any = await $fetch(
@@ -95,6 +117,7 @@ export default defineEventHandler(async (event) => {
       status: 200,
       statusMessage: "Success",
       details: details as MovieDetails,
+      collection: collection as CollectionData,
     };
   } catch (error) {
     if (error) {

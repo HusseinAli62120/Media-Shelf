@@ -54,6 +54,14 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    // Check if the poster is up to date
+    if (mediaRef[0]?.imgURL !== imgURL) {
+      await db
+        .update(media)
+        .set({ imgURL: imgURL })
+        .where(eq(media.mediaId, mediaId));
+    }
+
     // Check if media exists in the watched table
     const existingMedia = await db
       .select()

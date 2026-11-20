@@ -54,7 +54,14 @@ const transition = computed<Transition>(() => ({
     <div v-else class="w-full px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-10">
       <!-- Actor Profile Header Section -->
       <div
-        class="flex flex-col md:flex-row gap-8 md:gap-10 items-start bg-secondary-background border border-border/40 p-6 sm:p-8 rounded-3xl shadow-sm"
+        class="flex flex-col md:flex-row gap-8 md:gap-10 bg-secondary-background border border-border/40 p-6 sm:p-8 rounded-3xl shadow-sm"
+        :class="[
+          data?.actorData?.biography !== '' ||
+          data?.actorData?.birthday ||
+          data?.actorData?.placeOfBirth
+            ? 'items-start'
+            : 'items-center',
+        ]"
       >
         <!-- Actor Image -->
         <div class="w-36 sm:w-44 md:w-52 shrink-0 mx-auto md:mx-0">
@@ -62,7 +69,10 @@ const transition = computed<Transition>(() => ({
             class="aspect-square w-full rounded-2xl overflow-hidden shadow-md border border-border/40 bg-muted transform transition-all duration-300 hover:scale-[1.02]"
           >
             <img
-              v-if="data?.actorData?.image"
+              v-if="
+                data?.actorData?.image &&
+                !data?.actorData?.image.endsWith('null')
+              "
               :src="data.actorData.image"
               :alt="data.actorData.name"
               class="w-full h-full object-cover"

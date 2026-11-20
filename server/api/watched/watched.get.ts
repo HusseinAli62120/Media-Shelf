@@ -1,7 +1,7 @@
 import { db } from "../../utils/drizzleDriver";
 import { watched, media } from "../../db/schema";
 import requireAuth from "../../utils/requireAuth";
-import { and, asc, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, lte, SQL } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Determine ordering based on filter
-    let orderByClause;
+    let orderByClause: SQL[] | SQL;
     // Date added
     if (parsedFilter === "dateAdded") {
       orderByClause =
@@ -60,7 +60,9 @@ export default defineEventHandler(async (event) => {
       // Rating
     } else if (parsedFilter === "rating") {
       const query =
-        order === "Desc" ? desc(watched.rating) : asc(watched.rating);
+        order === "Desc"
+          ? [desc(watched.rating), desc(watched.createdAt)]
+          : [asc(watched.rating), asc(watched.createdAt)];
       orderByClause = query;
     } else {
       orderByClause =
@@ -93,7 +95,9 @@ export default defineEventHandler(async (event) => {
       .from(watched)
       .where(whereClause)
       .fullJoin(media, eq(watched.mediaId, media.mediaId))
-      .orderBy(orderByClause)
+      .orderBy(
+        ...(Array.isArray(orderByClause) ? orderByClause : [orderByClause]),
+      )
       .limit(Number(limit))
       .offset(Number(skip));
 

@@ -82,7 +82,7 @@ watch(route, () => {
 
   // Reset pagination
   skip.value = 0;
-  limit.value = 16;
+  limit.value = 32;
   pageCount.value = 0;
   collection.value = [];
   filter.value = "";

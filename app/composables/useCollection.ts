@@ -1,6 +1,6 @@
 export default function useCollection({ autoFetch }: { autoFetch?: boolean }) {
   let skip = ref<number>(0);
-  let limit = ref<number>(16);
+  let limit = ref<number>(32);
   let pageCount = ref<number>(0);
   let isFetching = ref<boolean>(false);
   let collection = ref<CardData[]>([]);
